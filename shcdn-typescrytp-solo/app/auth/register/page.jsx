@@ -53,20 +53,12 @@ function RegisterPage() {
           className="p-3 rounded block mb-2 bg-slate-900 text-slate-300 w-full"
           placeholder="yourUser123"
         />
-{/*  original
+
         {errors.username && (
           <span className="text-red-500 text-xs">
             {errors.username.message}
           </span>
-        ) */}
-        {errors.username && (
-  <span className="text-red-500 text-xs">
-    {typeof errors.username.message === 'string' && errors.username.message}
-  </span>
-)
-}
-
-
+        )}
 
         <label htmlFor="email" className="text-slate-500 mb-2 block text-sm">
           Email:
@@ -83,7 +75,7 @@ function RegisterPage() {
           placeholder="user@email.com"
         />
         {errors.email && (
-          <span className="text-red-500 text-xs">{errors.email.message ==='string' && errors.email.message}</span>
+          <span className="text-red-500 text-xs">{errors.email.message}</span>
         )}
 
         <label htmlFor="password" className="text-slate-500 mb-2 block text-sm">
@@ -102,7 +94,7 @@ function RegisterPage() {
         />
         {errors.password && (
           <span className="text-red-500 text-sm">
-            {errors.password.message === 'string' && errors.password.message}
+            {errors.password.message}
           </span>
         )}
 
@@ -125,7 +117,7 @@ function RegisterPage() {
         />
         {errors.confirmPassword && (
           <span className="text-red-500 text-sm">
-            {errors.confirmPassword.message === 'string' && errors.confirmPassword.message}
+            {errors.confirmPassword.message}
           </span>
         )}
 
