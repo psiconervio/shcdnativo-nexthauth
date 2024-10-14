@@ -197,7 +197,7 @@ export function Dashboard() {
                     defaultValue="/content/plugins"
                   />
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="include" defaultChecked />
+                    {/* <Checkbox id="include" defaultChecked /> */}
                     <label
                       htmlFor="include"
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
