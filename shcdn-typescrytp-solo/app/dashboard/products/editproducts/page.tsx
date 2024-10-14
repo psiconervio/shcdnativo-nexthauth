@@ -60,7 +60,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
+// import { Textarea } from "@/components/ui/textarea"
+// import { Textarea } from "@/components/ui/textarea"
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -318,11 +319,11 @@ export default function Dashboard() {
                       </div>
                       <div className="grid gap-3">
                         <Label htmlFor="description">Description</Label>
-                        <Textarea
+                        {/* <Textarea
                           id="description"
                           defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
                           className="min-h-32"
-                        />
+                        /> */}
                       </div>
                     </div>
                   </CardContent>
