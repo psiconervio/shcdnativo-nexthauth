@@ -63,12 +63,12 @@ import { ModeToggle } from "@/components/ModeToggle";
 
 export default function HeaderUno() {
   return (
-    <div 
-    // className="flex min-h-screen w-full flex-col bg-muted/40 pasandole la redimension de pantalla a el layout" 
-    > 
+    <div
+    // className="flex min-h-screen w-full flex-col bg-muted/40 pasandole la redimension de pantalla a el layout"
+    >
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-    <ModeToggle/>
+          <ModeToggle />
 
           <Link
             href="/"
@@ -159,6 +159,7 @@ export default function HeaderUno() {
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -175,6 +176,8 @@ export default function HeaderUno() {
                   <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">Acme Inc</span>
                 </Link>
+    <ModeToggle/>
+
                 <Link
                   href="#"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
