@@ -33,10 +33,8 @@ const recentSales = [
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-gray-100">
-
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
+      <main className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <div className="flex items-center space-x-4">
@@ -50,7 +48,6 @@ export default function Dashboard() {
             </Button>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
