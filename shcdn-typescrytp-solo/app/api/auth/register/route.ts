@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import db from "@/lib/db";
 
-export default async function POST(request) {
+export async function POST(request) {
   try {
     const data = await request.json();
 
