@@ -79,7 +79,7 @@ import {
 // export const description =
 //   "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information."
 
-export function Dashboard() {
+export default function Dashboard() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       {/* <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
