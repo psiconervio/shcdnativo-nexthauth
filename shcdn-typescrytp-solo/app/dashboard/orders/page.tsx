@@ -53,8 +53,11 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
+// } from "@/components/ui/pagination"
 } from "@/components/ui/pagination"
+// import { Progress } from "@/components/ui/progress"
 import { Progress } from "@/components/ui/progress"
+// import { Separator } from "@/components/ui/separator"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
@@ -74,16 +77,17 @@ import {
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
 export const description =
   "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information."
 
-export function Dashboard() {
+export default function Dashboard() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+      {/* <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
             href="#"
@@ -92,6 +96,7 @@ export function Dashboard() {
             <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
             <span className="sr-only">Acme Inc</span>
           </Link>
+          <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -104,6 +109,8 @@ export function Dashboard() {
             </TooltipTrigger>
             <TooltipContent side="right">Dashboard</TooltipContent>
           </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -116,6 +123,8 @@ export function Dashboard() {
             </TooltipTrigger>
             <TooltipContent side="right">Orders</TooltipContent>
           </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -128,6 +137,8 @@ export function Dashboard() {
             </TooltipTrigger>
             <TooltipContent side="right">Products</TooltipContent>
           </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -152,8 +163,10 @@ export function Dashboard() {
             </TooltipTrigger>
             <TooltipContent side="right">Analytics</TooltipContent>
           </Tooltip>
+          </TooltipProvider>
         </nav>
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+        <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -166,10 +179,12 @@ export function Dashboard() {
             </TooltipTrigger>
             <TooltipContent side="right">Settings</TooltipContent>
           </Tooltip>
+          </TooltipProvider>
         </nav>
-      </aside>
+      </aside> */}
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+        {/* Permitir poder alternar el sitio de la barra de navegaccion asi no se duplique  */}
+        {/* <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -276,7 +291,7 @@ export function Dashboard() {
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </header>
+        </header> */}
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
