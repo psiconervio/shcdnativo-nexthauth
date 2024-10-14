@@ -1,1 +1,3 @@
 HACER FUNCIONES Y TODA LA IMPLEMENTAICON PARA PODER SACAR LA APP LO MAS FUNCIONAL POSIBLE !!!
+
+se agregaron las variables de entorno a el deploy
