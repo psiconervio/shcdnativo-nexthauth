@@ -93,7 +93,7 @@ export default function HeaderUno() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/dashboard/editproduct"
+                  href="/dashboard/product/editproducts"
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
@@ -159,7 +159,6 @@ export default function HeaderUno() {
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="sm:hidden">
@@ -176,7 +175,7 @@ export default function HeaderUno() {
                   <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">Acme Inc</span>
                 </Link>
-    <ModeToggle/>
+                <ModeToggle />
 
                 <Link
                   href="#"

@@ -29,6 +29,18 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0) // Nuevo campo para cantidad de stock
+  featured    Boolean  @default(false) // Nuevo campo para destacar el producto
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
 // generator client {
 //   provider = "prisma-client-js"
 // }
