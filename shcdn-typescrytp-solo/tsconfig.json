@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/auth/login/page.jsx", "app/api/auth/[...nextauth]/route.ts", "app/auth/register/page.jsx", "app/api/auth/register/route.js", "app/page.jsx", "app/layout.tsx", "app/dashboard/layout.tsx", "app/api/auth/products/[id]/route.js", "app/api/auth/products/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/auth/login/page.jsx", "app/api/auth/[...nextauth]/route.ts", "app/auth/register/page.jsx", "app/api/auth/register/route.js", "app/page.jsx", "app/layout.tsx", "app/dashboard/layout.tsx", "app/api/auth/products/[id]/route.js", "app/api/auth/products/route.js", "components/ProductionPlanned.js", "app/products/page.js"],
   "exclude": ["node_modules"]
 }
