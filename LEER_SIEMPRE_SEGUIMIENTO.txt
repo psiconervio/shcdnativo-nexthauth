@@ -5,3 +5,5 @@ se agregaron las variables de entorno a el deploy
 MODIFICAR O AUTH/Register
 
 O API/AUTH/REGISTER
+
+añadir funcionalidad para agregar ingrediente y producto

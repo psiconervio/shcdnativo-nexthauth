@@ -161,7 +161,7 @@ export default function Ingredients() {
                           Price
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Total Sales
+                          Stock
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
@@ -175,7 +175,7 @@ export default function Ingredients() {
                     <TableBody>
                     {ingredients.map((ingredient) => (
 
-                      <><TableRow>
+                      <TableRow key={ingredient.id}>
                         <TableCell className="hidden sm:table-cell">
                           <Image
                             alt="Product image"
@@ -185,16 +185,16 @@ export default function Ingredients() {
                             width="64" />
                         </TableCell>
                         <TableCell className="font-medium">
-                        {ingredients.name}
+                        {ingredient.name ?? 'N/A'}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">Draft</Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                        ${ingredient.price.toFixed(2)}
+                        ${ingredient.price?.toFixed(2) ?? 'N/A'}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                        {ingredient.quantity}
+                        {ingredient.quantity ?? 'N/A'}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
                         {new Date().toLocaleString()}
@@ -218,7 +218,7 @@ export default function Ingredients() {
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
-                      </TableRow></>
+                      </TableRow>
                       ))}
                     </TableBody>
                   </Table>
