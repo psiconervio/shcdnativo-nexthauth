@@ -213,7 +213,9 @@ export default function Ingredients() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
+                              <Link href='dashboard/ingredients/editingredient'> 
+                              <DropdownMenuItem >Edit</DropdownMenuItem>
+                              </Link>
                               <DropdownMenuItem>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
