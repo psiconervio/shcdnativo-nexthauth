@@ -117,7 +117,7 @@ export default function HeaderUno() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href="/dashboard/ingredients"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Users2 className="h-5 w-5" />
@@ -199,14 +199,14 @@ export default function HeaderUno() {
                   Products
                 </Link>
                 <Link
-                  href="#"
+                  href="/dashboard/ingredients"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="h-5 w-5" />
                   Customers
                 </Link>
                 <Link
-                  href="#"
+                  href="/dashboard/ingredients"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <LineChart className="h-5 w-5" />
