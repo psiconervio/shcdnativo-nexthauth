@@ -20,15 +20,33 @@ export default function IngredientList() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    await fetch('/api/ingredients', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newIngredient)
-    })
-    setNewIngredient({ name: '', unit: '', price: 0, quantity: 0 })
-    fetchIngredients()
-  }
+    e.preventDefault();
+    
+    const formattedIngredient = {
+      ...newIngredient,
+      price: parseFloat(newIngredient.price),
+      quantity: parseFloat(newIngredient.quantity),
+    };
+  
+    console.log('Enviando:', formattedIngredient);
+  
+    try {
+      const response = await fetch('/api/ingredients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formattedIngredient)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+  
+      setNewIngredient({ name: '', unit: '', price: 0, quantity: 0 });
+      fetchIngredients();
+    } catch (error) {
+      console.error('Error al agregar ingrediente:', error);
+    }
+  };
 
   const handleDelete = async (id) => {
     await fetch(`/api/ingredients/${id}`, { method: 'DELETE' })
@@ -52,9 +70,10 @@ export default function IngredientList() {
           name="unit"
           value={newIngredient.unit}
           onChange={handleInputChange}
-          placeholder="Unidad"
+          placeholder="UnidadDemedida"
           className="border p-2 mr-2"
         />
+        <p>precio</p>
         <input
           type="number"
           name="price"
@@ -63,6 +82,7 @@ export default function IngredientList() {
           placeholder="Precio"
           className="border p-2 mr-2"
         />
+        <p>cantidad</p>
         <input
           type="number"
           name="quantity"

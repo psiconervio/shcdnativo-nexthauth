@@ -43,15 +43,36 @@ export default function ProductList() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    await fetch('/api/products', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newProduct)
-    })
-    setNewProduct({ name: '', ingredients: [] })
-    fetchProducts()
-  }
+    e.preventDefault();
+  
+    const formattedProduct = {
+      ...newProduct,
+      ingredients: newProduct.ingredients.map(ing => ({
+        ...ing,
+        ingredientId: parseInt(ing.ingredientId, 10),
+        quantity: parseFloat(ing.quantity)
+      }))
+    };
+  
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formattedProduct)
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al crear producto:', errorData);
+        return;
+      }
+  
+      setNewProduct({ name: '', ingredients: [] });
+      fetchProducts();
+    } catch (error) {
+      console.error('Error al agregar producto:', error);
+    }
+  };
 
   const handleDelete = async (id) => {
     await fetch(`/api/products/${id}`, { method: 'DELETE' })
@@ -83,6 +104,7 @@ export default function ProductList() {
                 <option key={i.id} value={i.id}>{i.name}</option>
               ))}
             </select>
+            <p>CANTIDAD</p>
             <input
               type="number"
               name="quantity"
