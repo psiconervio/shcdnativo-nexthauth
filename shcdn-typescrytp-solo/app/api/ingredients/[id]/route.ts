@@ -25,6 +25,7 @@ export async function PUT(request, { params }) {
     });
     return NextResponse.json(ingredient);
   } catch (error) {
+    console.error('Error al actualizar ingrediente:', error);
     return NextResponse.json({ error: 'Error updating ingredient' }, { status: 500 });
   }
 }

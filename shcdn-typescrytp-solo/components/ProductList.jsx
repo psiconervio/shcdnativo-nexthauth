@@ -63,7 +63,7 @@ export default function ProductList() {
   
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error al crear producto:', errorData);
+        console.error('Error al crear producto:', errorData); 
         return;
       }
   

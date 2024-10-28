@@ -9,3 +9,5 @@ O API/AUTH/REGISTER
 añadir funcionalidad para agregar ingrediente y producto
 
 modularizar toda la logica  
+
+modificar handle para modificar el producto
