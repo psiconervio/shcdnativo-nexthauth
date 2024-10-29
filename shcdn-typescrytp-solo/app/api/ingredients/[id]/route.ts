@@ -30,13 +30,25 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+// export async function DELETE(request, { params }) {
+//   try {
+//     await prisma.ingredient.delete({
+//       where: { id: parseInt(params.id) },
+//     });
+//     return NextResponse.json({ message: 'Ingredient deleted successfully' });
+//   } catch (error) {
+//     return NextResponse.json({ error: 'Error deleting ingredient' }, { status: 500 });
+//   }
+// }
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const id = parseInt(params.id, 10);
     await prisma.ingredient.delete({
-      where: { id: parseInt(params.id) },
+      where: { id },
     });
-    return NextResponse.json({ message: 'Ingredient deleted successfully' });
+    return NextResponse.json({ message: "Ingrediente eliminado exitosamente" });
   } catch (error) {
-    return NextResponse.json({ error: 'Error deleting ingredient' }, { status: 500 });
+    console.error("Error al eliminar el ingrediente:", error);
+    return NextResponse.json({ message: "Error al eliminar el ingrediente" }, { status: 500 });
   }
 }

@@ -1,60 +1,33 @@
-// src/app/api/ingredients/route.js
+// app/api/ingredients/route.ts
 import { NextResponse } from 'next/server';
-import  prisma  from '@/lib/db';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export async function POST(req: Request) {
+  const { name, unit, price, quantity } = await req.json();
+  
+  const ingredient = await prisma.ingredient.create({
+    data: { name, unit, price, quantity },
+  });
+
+  return NextResponse.json(ingredient, { status: 201 });
+}
+
+
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  const { name, unit, price, quantity } = await req.json();
+
+  const updatedIngredient = await prisma.ingredient.update({
+    where: { id: parseInt(params.id) },
+    data: { name, unit, price, quantity },
+  });
+
+  return NextResponse.json(updatedIngredient, { status: 200 });
+}
+
 
 export async function GET() {
-  try {
-    const ingredients = await prisma.ingredient.findMany();
-    return NextResponse.json(ingredients);
-  } catch (error) {
-    return NextResponse.json({ error: 'Error fetching ingredients' }, { status: 500 });
-  }
+  const ingredients = await prisma.ingredient.findMany();
+  return NextResponse.json(ingredients, { status: 200 });
 }
-
-export async function POST(request) {
-  try {
-    const data = await request.json();
-    
-    // Validación sencilla de los datos (ajusta según sea necesario)
-    if (!data.name || !data.unit || typeof data.price !== 'number' || typeof data.quantity !== 'number') {
-      return NextResponse.json({ error: 'Datos no válidos' }, { status: 400 });
-    }
-
-    const ingredient = await prisma.ingredient.create({ data });
-    return NextResponse.json(ingredient);
-  } catch (error) {
-    console.error('Error al crear ingrediente:', error);
-    return NextResponse.json({ error: 'Error creating ingredient' }, { status: 500 });
-  }
-}
-// export async function POST(request) {
-//   try {
-//     const data = await request.json();
-//     const ingredient = await prisma.ingredient.create({ data });
-//     return NextResponse.json(ingredient);
-//   } catch (error) {
-//     return NextResponse.json({ error: 'Error creating ingredient' }, { status: 500 });
-//   }
-// }
-// // src/app/api/ingredients/route.js
-// import { NextResponse } from 'next/server';
-// import  prisma  from '@/lib/db';
-
-// export async function GET() {
-//   try {
-//     const ingredients = await prisma.ingredient.findMany();
-//     return NextResponse.json(ingredients);
-//   } catch (error) {
-//     return NextResponse.json({ error: 'Error fetching ingredients' }, { status: 500 });
-//   }
-// }
-
-// export async function POST(request) {
-//   try {
-//     const data = await request.json();
-//     const ingredient = await prisma.ingredient.create({ data });
-//     return NextResponse.json(ingredient);
-//   } catch (error) {
-//     return NextResponse.json({ error: 'Error creating ingredient' }, { status: 500 });
-//   }
-// }
