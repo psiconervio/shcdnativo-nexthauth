@@ -21,30 +21,31 @@ datasource db {
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
-model Ingredient {
-  id       Int    @id @default(autoincrement())
-  name     String
-  unit     String
-  price    Float
-  quantity Float
-  products ProductIngredient[]
+model MateriaPrima {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  unidad    String   // Ej: kilo, unidad, litro
+  costoUnit Float
+  productos IngredienteProducto[]
 }
 
-model Product {
-  id          Int               @id @default(autoincrement())
-  name        String
-  stock       Int
-  featured    Boolean
-  ingredients ProductIngredient[]
+model Producto {
+  id        Int                   @id @default(autoincrement())
+  nombre    String
+  tipo      String                // Ej: Raviolones, Sorrentino, etc.
+  ingredientes IngredienteProducto[]
+  costoTotal   Float
+  costoPorPorcion Float
+  precioVenta   Float
 }
 
-model ProductIngredient {
-  id           Int        @id @default(autoincrement())
-  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId    Int
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
-  ingredientId Int
-  quantity     Float
+model IngredienteProducto {
+  id           Int          @id @default(autoincrement())
+  cantidad     Float        // Cantidad de ingrediente en la receta
+  materiaPrima MateriaPrima @relation(fields: [materiaPrimaId], references: [id])
+  materiaPrimaId Int
+  producto     Producto     @relation(fields: [productoId], references: [id])
+  productoId   Int
 }
 
 // generator client {
