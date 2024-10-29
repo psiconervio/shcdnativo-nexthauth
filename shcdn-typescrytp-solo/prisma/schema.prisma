@@ -22,7 +22,7 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 model Ingredient {
-  id       Int     @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
   unit     String
   price    Float
@@ -31,22 +31,22 @@ model Ingredient {
 }
 
 model Product {
-  id          Int                 @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   name        String
-  cost        Float
-  portions    Int
+  stock       Int
+  featured    Boolean
   ingredients ProductIngredient[]
 }
 
 model ProductIngredient {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId    Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   ingredientId Int
   quantity     Float
-
-  product      Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 }
+
 // generator client {
 //   provider = "prisma-client-js"
 // }

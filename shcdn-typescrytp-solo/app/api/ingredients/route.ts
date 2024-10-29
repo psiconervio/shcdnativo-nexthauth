@@ -1,33 +1,18 @@
 // app/api/ingredients/route.ts
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/db';
 
-const prisma = new PrismaClient();
+// GET: Obtener todos los ingredientes
+export async function GET() {
+  const ingredients = await prisma.ingredient.findMany();
+  return NextResponse.json(ingredients);
+}
 
-export async function POST(req: Request) {
+// POST: Crear un nuevo ingrediente
+export async function POST(req: NextRequest) {
   const { name, unit, price, quantity } = await req.json();
-  
   const ingredient = await prisma.ingredient.create({
     data: { name, unit, price, quantity },
   });
-
-  return NextResponse.json(ingredient, { status: 201 });
-}
-
-
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const { name, unit, price, quantity } = await req.json();
-
-  const updatedIngredient = await prisma.ingredient.update({
-    where: { id: parseInt(params.id) },
-    data: { name, unit, price, quantity },
-  });
-
-  return NextResponse.json(updatedIngredient, { status: 200 });
-}
-
-
-export async function GET() {
-  const ingredients = await prisma.ingredient.findMany();
-  return NextResponse.json(ingredients, { status: 200 });
+  return NextResponse.json(ingredient);
 }
