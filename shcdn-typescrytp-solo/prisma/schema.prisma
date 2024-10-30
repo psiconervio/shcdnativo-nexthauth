@@ -34,9 +34,9 @@ model Producto {
   nombre    String
   tipo      String                // Ej: Raviolones, Sorrentino, etc.
   ingredientes IngredienteProducto[]
-  costoTotal   Float
-  costoPorPorcion Float
-  precioVenta   Float
+  costoTotal   Float?
+  costoPorPorcion Float?
+  precioVenta   Float?
 }
 
 model IngredienteProducto {
