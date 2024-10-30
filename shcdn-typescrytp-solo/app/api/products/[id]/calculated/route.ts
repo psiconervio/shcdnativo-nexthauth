@@ -1,25 +1,37 @@
-import prisma from '@/lib/db';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/lib/prisma"; // Reemplaza con tu configuración de Prisma
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const product = await prisma.product.findUnique({
-    where: { id: parseInt(params.id) },
-    include: { ingredients: { include: { ingredient: true } } }
-  });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { id } = req.query;
 
-  if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  if (req.method === "GET") {
+    const productId = parseInt(id as string, 10);
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "ID de producto inválido." });
+    }
 
-  let totalCost = 0;
-  product.ingredients.forEach((ing) => {
-    totalCost += ing.quantity * ing.ingredient.price;
-  });
+    try {
+      const product = await prisma.product.findUnique({
+        where: { id: productId },
+        include: { ingredients: true },
+      });
 
-  const costPerPortion = totalCost / product.portionsPerBatch;
-  const sellingPrice = costPerPortion * (1 + product.margin / 100) * (1 + product.tax / 100);
+      if (!product) {
+        return res.status(404).json({ error: "Producto no encontrado." });
+      }
 
-  return NextResponse.json({
-    totalCost,
-    costPerPortion,
-    sellingPrice,
-  });
+      // Lógica para calcular el costo
+      const cost = product.ingredients.reduce((total, ingredient) => {
+        return total + ingredient.quantity * ingredient.ingredient.price;
+      }, 0);
+
+      res.status(200).json({ cost });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error al calcular el costo." });
+    }
+  } else {
+    res.setHeader("Allow", ["GET"]);
+    res.status(405).end(`Método ${req.method} no permitido`);
+  }
 }
