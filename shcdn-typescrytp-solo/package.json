@@ -2,7 +2,9 @@
   "name": "shcdn-typescrytp-solo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
+    "seed": "node prisma/seed.js",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",

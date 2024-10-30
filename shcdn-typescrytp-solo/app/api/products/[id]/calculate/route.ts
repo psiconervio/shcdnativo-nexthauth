@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma"; // Reemplaza con tu configuración de Prisma
+import prisma from "@/lib/db"; // Reemplaza con tu configuración de Prisma
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;

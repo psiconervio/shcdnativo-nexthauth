@@ -79,11 +79,24 @@ const IngredientList = () => {
       .then(setIngredients);
   }, []);
 
-  const deleteIngredient = (id: number) => {
-    fetch(`/api/ingredients/${id}`, { method: "DELETE" }).then(() => {
-      setIngredients((prev) => prev.filter((ing) => ing.id !== id));
-    });
+  const deleteIngredient = async (id: number) => {
+    try {
+      const response = await fetch(`/api/ingredients/${id}`, { method: "DELETE" });
+      if (!response.ok) {
+        throw new Error('Error deleting ingredient');
+      }
+      setIngredients(prev => prev.filter(ing => ing.id !== id));
+    } catch (error) {
+      console.error('Error:', error);
+      // Aquí podrías manejar el error de manera más sofisticada, como mostrando una notificación al usuario
+    }
   };
+  
+  // const deleteIngredient = (id: number) => {
+  //   fetch(`/api/ingredients/${id}`, { method: "DELETE" }).then(() => {
+  //     setIngredients((prev) => prev.filter((ing) => ing.id !== id));
+  //   });
+  // };
 
   const handleSave = () => {
     setEditingIngredient(null);
@@ -200,7 +213,7 @@ const IngredientList = () => {
                         {ingredient.unit}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        2023-07-12 10:42 AM
+                        {ingredient.id}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>

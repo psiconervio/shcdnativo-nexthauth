@@ -10,7 +10,7 @@ import EditProductForm from '@/components/EditProductForm';
 export default function IngredientsPage() {
   return <>
   <h1  className='text-sky-400 my-10'>calcular producto</h1>
-  <ProductCalculate productId={0}/>
+  <ProductCalculate productId={2}/>
   <h1  className='text-sky-400 my-10'>productform</h1>
   <ProductForm />
     <h1  className='text-sky-400 my-10'>lista de ingredientes</h1>
