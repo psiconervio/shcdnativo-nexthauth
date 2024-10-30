@@ -21,31 +21,36 @@ datasource db {
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
-model MateriaPrima {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  unidad    String   // Ej: kilo, unidad, litro
-  costoUnit Float
-  productos IngredienteProducto[]
+// Modelo para Ingredientes
+// Modelo para Ingredientes
+model Ingredient {
+  id             Int               @id @default(autoincrement())
+  name           String
+  unit           String            // Unidad de medida (por ejemplo, kilo, unidad, litro)
+  price          Float             // Precio por unidad
+  products       ProductIngredient[] @relation("IngredientToProductIngredient")  // Relación opuesta
 }
 
-model Producto {
-  id        Int                   @id @default(autoincrement())
-  nombre    String
-  tipo      String                // Ej: Raviolones, Sorrentino, etc.
-  ingredientes IngredienteProducto[]
-  costoTotal   Float?
-  costoPorPorcion Float?
-  precioVenta   Float?
+// Modelo para Productos (como raviolones, sorrentinos, etc.)
+model Product {
+  id               Int               @id @default(autoincrement())
+  name             String
+  portionSize      Float             // Tamaño de la porción
+  portionsPerBatch Int               // Cantidad de porciones
+  margin           Float             // Margen de ganancia como porcentaje
+  tax              Float             // Impuesto en porcentaje
+  ingredients      ProductIngredient[] @relation("ProductToProductIngredient")  // Relación opuesta
 }
 
-model IngredienteProducto {
-  id           Int          @id @default(autoincrement())
-  cantidad     Float        // Cantidad de ingrediente en la receta
-  materiaPrima MateriaPrima @relation(fields: [materiaPrimaId], references: [id])
-  materiaPrimaId Int
-  producto     Producto     @relation(fields: [productoId], references: [id])
-  productoId   Int
+// Relación entre productos e ingredientes
+model ProductIngredient {
+  id           Int        @id @default(autoincrement())
+  productId    Int
+  ingredientId Int
+  quantity     Float      // Cantidad de ingrediente por batch del producto
+
+  product      Product     @relation("ProductToProductIngredient", fields: [productId], references: [id])
+  ingredient   Ingredient  @relation("IngredientToProductIngredient", fields: [ingredientId], references: [id])
 }
 
 // generator client {

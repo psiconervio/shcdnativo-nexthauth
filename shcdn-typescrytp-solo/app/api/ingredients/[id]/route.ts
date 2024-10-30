@@ -1,25 +1,21 @@
-// app/api/ingredients/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
 
-// GET: Obtener un ingrediente por ID
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+// Leer ingrediente por ID (GET /api/ingredients/[id])
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const ingredient = await prisma.ingredient.findUnique({ where: { id: parseInt(params.id) } });
+  return ingredient ? NextResponse.json(ingredient) : NextResponse.json({ error: 'Not found' }, { status: 404 });
+}
+
+// Actualizar ingrediente por ID (PUT /api/ingredients/[id])
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const data = await request.json();
+  const ingredient = await prisma.ingredient.update({ where: { id: parseInt(params.id) }, data });
   return NextResponse.json(ingredient);
 }
 
-// PUT: Actualizar un ingrediente por ID
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const { name, unit, price, quantity } = await req.json();
-  const updatedIngredient = await prisma.ingredient.update({
-    where: { id: parseInt(params.id) },
-    data: { name, unit, price, quantity },
-  });
-  return NextResponse.json(updatedIngredient);
-}
-
-// DELETE: Eliminar un ingrediente por ID
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+// Eliminar ingrediente por ID (DELETE /api/ingredients/[id])
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   await prisma.ingredient.delete({ where: { id: parseInt(params.id) } });
-  return NextResponse.json({ message: 'Ingrediente eliminado' });
+  return NextResponse.json({ message: 'Ingredient deleted' });
 }
