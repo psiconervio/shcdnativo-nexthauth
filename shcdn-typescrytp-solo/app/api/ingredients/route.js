@@ -10,16 +10,17 @@ export async function GET() {
     return NextResponse.json({ error: 'Error fetching ingredients' }, { status: 500 });
   }
 }
-
 export async function POST(request) {
   try {
     const data = await request.json();
     const ingredient = await prisma.ingredient.create({ data });
     return NextResponse.json(ingredient);
   } catch (error) {
-    return NextResponse.json({ error: 'Error creating ingredient' }, { status: 500 });
+    console.error("Error creating ingredient:", error);
+    return NextResponse.json({ error: error.message || 'Error creating ingredient' }, { status: 500 });
   }
 }
+
 // import prisma from '@/lib/db';
 // import { NextRequest, NextResponse } from 'next/server';
 
