@@ -21,37 +21,60 @@ datasource db {
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
-// Modelo para Ingredientes
-// Modelo para Ingredientes
 model Ingredient {
-  id             Int               @id @default(autoincrement())
-  name           String
-  unit           String            // Unidad de medida (por ejemplo, kilo, unidad, litro)
-  price          Float             // Precio por unidad
-  products       ProductIngredient[] @relation("IngredientToProductIngredient")  // Relación opuesta
+  id       Int      @id @default(autoincrement())
+  name     String
+  unit     String
+  price    Float
+  quantity Float
+  products ProductIngredient[]
 }
 
-// Modelo para Productos (como raviolones, sorrentinos, etc.)
 model Product {
-  id               Int               @id @default(autoincrement())
-  name             String
-  portionSize      Float             // Tamaño de la porción
-  portionsPerBatch Int               // Cantidad de porciones
-  margin           Float             // Margen de ganancia como porcentaje
-  tax              Float             // Impuesto en porcentaje
-  ingredients      ProductIngredient[] @relation("ProductToProductIngredient")  // Relación opuesta
+  id          Int      @id @default(autoincrement())
+  name        String
+  ingredients ProductIngredient[]
 }
 
-// Relación entre productos e ingredientes
 model ProductIngredient {
-  id           Int        @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
+  product      Product   @relation(fields: [productId], references: [id])
   productId    Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   ingredientId Int
-  quantity     Float      // Cantidad de ingrediente por batch del producto
-
-  product      Product     @relation("ProductToProductIngredient", fields: [productId], references: [id])
-  ingredient   Ingredient  @relation("IngredientToProductIngredient", fields: [ingredientId], references: [id])
+  quantity     Float
 }
+// Modelo para Ingredientes
+// Modelo para Ingredientes
+// model Ingredient {
+//   id             Int               @id @default(autoincrement())
+//   name           String
+//   unit           String            // Unidad de medida (por ejemplo, kilo, unidad, litro)
+//   price          Float             // Precio por unidad
+//   products       ProductIngredient[] @relation("IngredientToProductIngredient")  // Relación opuesta
+// }
+
+// // Modelo para Productos (como raviolones, sorrentinos, etc.)
+// model Product {
+//   id               Int               @id @default(autoincrement())
+//   name             String
+//   portionSize      Float             // Tamaño de la porción
+//   portionsPerBatch Int               // Cantidad de porciones
+//   margin           Float             // Margen de ganancia como porcentaje
+//   tax              Float             // Impuesto en porcentaje
+//   ingredients      ProductIngredient[] @relation("ProductToProductIngredient")  // Relación opuesta
+// }
+
+// // Relación entre productos e ingredientes
+// model ProductIngredient {
+//   id           Int        @id @default(autoincrement())
+//   productId    Int
+//   ingredientId Int
+//   quantity     Float      // Cantidad de ingrediente por batch del producto
+
+//   product      Product     @relation("ProductToProductIngredient", fields: [productId], references: [id])
+//   ingredient   Ingredient  @relation("IngredientToProductIngredient", fields: [ingredientId], references: [id])
+// }
 
 // generator client {
 //   provider = "prisma-client-js"

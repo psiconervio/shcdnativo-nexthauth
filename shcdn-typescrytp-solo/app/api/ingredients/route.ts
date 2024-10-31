@@ -1,15 +1,37 @@
-import prisma from '@/lib/db';
-import { NextRequest, NextResponse } from 'next/server';
+// src/app/api/ingredients/route.js
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
-// Listar ingredientes (GET /api/ingredients)
 export async function GET() {
-  const ingredients = await prisma.ingredient.findMany();
-  return NextResponse.json(ingredients);
+  try {
+    const ingredients = await prisma.ingredient.findMany();
+    return NextResponse.json(ingredients);
+  } catch (error) {
+    return NextResponse.json({ error: 'Error fetching ingredients' }, { status: 500 });
+  }
 }
 
-// Crear ingrediente (POST /api/ingredients)
-export async function POST(request: NextRequest) {
-  const data = await request.json();
-  const ingredient = await prisma.ingredient.create({ data });
-  return NextResponse.json(ingredient);
+export async function POST(request) {
+  try {
+    const data = await request.json();
+    const ingredient = await prisma.ingredient.create({ data });
+    return NextResponse.json(ingredient);
+  } catch (error) {
+    return NextResponse.json({ error: 'Error creating ingredient' }, { status: 500 });
+  }
 }
+// import prisma from '@/lib/db';
+// import { NextRequest, NextResponse } from 'next/server';
+
+// // Listar ingredientes (GET /api/ingredients)
+// export async function GET() {
+//   const ingredients = await prisma.ingredient.findMany();
+//   return NextResponse.json(ingredients);
+// }
+
+// // Crear ingrediente (POST /api/ingredients)
+// export async function POST(request: NextRequest) {
+//   const data = await request.json();
+//   const ingredient = await prisma.ingredient.create({ data });
+//   return NextResponse.json(ingredient);
+// }
