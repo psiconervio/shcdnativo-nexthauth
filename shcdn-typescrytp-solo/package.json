@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "seed": "node prisma/seed.js",
+    "test": "node __test__/api.test.js",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
@@ -34,6 +35,7 @@
     "next": "14.2.15",
     "next-auth": "^4.24.8",
     "next-themes": "^0.3.0",
+    "node-mocks-http": "^1.16.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
@@ -45,7 +47,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/jest": "^29.5.13",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "@types/react": "^18",

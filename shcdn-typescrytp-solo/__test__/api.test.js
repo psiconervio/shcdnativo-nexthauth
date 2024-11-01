@@ -1,5 +1,8 @@
+
+import { NextRequest, NextResponse } from 'next/server';
 import { createMocks } from 'node-mocks-http';
-import { GET, POST } from '../src/app/api/ingredients/route';
+// import { GET, POST } from '../src/app/api/ingredients/route.js';
+import { GET, POST } from '../app/api/ingredients/route.js';
 
 describe('/api/ingredients', () => {
   it('creates a new ingredient', async () => {
