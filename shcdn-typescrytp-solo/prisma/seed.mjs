@@ -1,42 +1,41 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const seedData = {
-  products: [
-    { id: 1, name: "Raviolones de Ricotta y Espinaca", portionSize: 200, portionsPerBatch: 10, margin: 25, tax: 10 },
-    { id: 2, name: "Sorrentinos de Jamón y Queso", portionSize: 250, portionsPerBatch: 8, margin: 20, tax: 10 },
-    { id: 3, name: "Ñoquis de Papa", portionSize: 300, portionsPerBatch: 15, margin: 22, tax: 8 }
-  ],
-  ingredients: [
-    { id: 1, name: "Harina", price: 1.5, unit: "kg" },
-    { id: 2, name: "Ricotta", price: 4.0, unit: "kg" },
-    { id: 3, name: "Jamón", price: 3.5, unit: "kg" },
-    { id: 4, name: "Queso Mozzarella", price: 5.0, unit: "kg" },
-    { id: 5, name: "Papa", price: 2.0, unit: "kg" }
-  ],
-  productIngredients: [
-    { productId: 1, ingredientId: 1, quantity: 150 },
-    { productId: 1, ingredientId: 2, quantity: 50 },
-    { productId: 2, ingredientId: 3, quantity: 200 },
-    { productId: 2, ingredientId: 4, quantity: 100 },
-    { productId: 3, ingredientId: 1, quantity: 300 },
-    { productId: 3, ingredientId: 5, quantity: 50 }
-  ]
-};
+const seedData = [
+  { name: "Huevos unidad", unit: "unidad", price: 126.25, quantity: 100 },
+  { name: "Harina", unit: "kg", price: 506.55, quantity: 50 },
+  { name: "Queso muzarella", unit: "kg", price: 5689.50, quantity: 20 },
+  { name: "Jamón", unit: "kg", price: 6750.00, quantity: 30 },
+  { name: "Picada", unit: "kg", price: 5850.00, quantity: 25 },
+  { name: "Dulce de espalda", unit: "kg", price: 5060.00, quantity: 15 },
+  { name: "Blando de cerdo", unit: "kg", price: 3952.50, quantity: 18 },
+  { name: "Bondiola de cerdo", unit: "kg", price: 6450.00, quantity: 22 },
+  { name: "Entraña", unit: "kg", price: 7125.00, quantity: 10 },
+  { name: "Lomo", unit: "kg", price: 6750.00, quantity: 12 },
+  { name: "Ron", unit: "lt", price: 3200.00, quantity: 50 },
+  { name: "Cebolla", unit: "kg", price: 1100.00, quantity: 60 },
+  { name: "Pimiento", unit: "unidad", price: 933.33, quantity: 70 },
+  { name: "Zanahoria", unit: "kg", price: 1100.00, quantity: 40 },
+  { name: "Ajo", unit: "cabeza", price: 900.00, quantity: 80 },
+  { name: "Puerro / Verdeo", unit: "atado", price: 2500.00, quantity: 30 },
+  { name: "Envase plástico salsa", unit: "450cc", price: 106.70, quantity: 200 },
+  { name: "Bandeja 103", unit: "unidad", price: 44.23, quantity: 150 },
+  { name: "Aceite", unit: "lt", price: 5625.00, quantity: 35 },
+  { name: "Espinaca", unit: "kg", price: 333.33, quantity: 25 },
+  { name: "Papa deshidratada", unit: "kg", price: 950.00, quantity: 45 },
+  { name: "Puré de tomate", unit: "520gr", price: 525.00, quantity: 55 },
+  { name: "Vino Malbec", unit: "lt", price: 2930.00, quantity: 20 },
+  { name: "Leche Entera", unit: "lt", price: 899.50, quantity: 60 },
+  { name: "Queso Azul", unit: "kg", price: 5875.00, quantity: 15 },
+  { name: "Queso sardo", unit: "kg", price: 5250.00, quantity: 18 },
+  { name: "CERVEZA", unit: "lt", price: 1500.00, quantity: 100 },
+  { name: "SALSA BLANCA", unit: "kg", price: 500.00, quantity: 40 },
+  { name: "Crema de leche", unit: "lt", price: 24375.00, quantity: 5 }
+];
 
 async function main() {
-  await prisma.product.createMany({
-    data: seedData.products,
-    skipDuplicates: true,
-  });
-
   await prisma.ingredient.createMany({
-    data: seedData.ingredients,
-    skipDuplicates: true,
-  });
-
-  await prisma.productIngredient.createMany({
-    data: seedData.productIngredients,
+    data: seedData,
     skipDuplicates: true,
   });
 }
@@ -46,6 +45,55 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+// import { PrismaClient } from '@prisma/client';
+// const prisma = new PrismaClient();
+
+// const seedData = {
+//   products: [
+//     { id: 1, name: "Raviolones de Ricotta y Espinaca", portionSize: 200, portionsPerBatch: 10, margin: 25, tax: 10 },
+//     { id: 2, name: "Sorrentinos de Jamón y Queso", portionSize: 250, portionsPerBatch: 8, margin: 20, tax: 10 },
+//     { id: 3, name: "Ñoquis de Papa", portionSize: 300, portionsPerBatch: 15, margin: 22, tax: 8 }
+//   ],
+//   ingredients: [
+//     { id: 1, name: "Harina", price: 1.5, unit: "kg" },
+//     { id: 2, name: "Ricotta", price: 4.0, unit: "kg" },
+//     { id: 3, name: "Jamón", price: 3.5, unit: "kg" },
+//     { id: 4, name: "Queso Mozzarella", price: 5.0, unit: "kg" },
+//     { id: 5, name: "Papa", price: 2.0, unit: "kg" }
+//   ],
+//   productIngredients: [
+//     { productId: 1, ingredientId: 1, quantity: 150 },
+//     { productId: 1, ingredientId: 2, quantity: 50 },
+//     { productId: 2, ingredientId: 3, quantity: 200 },
+//     { productId: 2, ingredientId: 4, quantity: 100 },
+//     { productId: 3, ingredientId: 1, quantity: 300 },
+//     { productId: 3, ingredientId: 5, quantity: 50 }
+//   ]
+// };
+
+// async function main() {
+//   await prisma.product.createMany({
+//     data: seedData.products,
+//     skipDuplicates: true,
+//   });
+
+//   await prisma.ingredient.createMany({
+//     data: seedData.ingredients,
+//     skipDuplicates: true,
+//   });
+
+//   await prisma.productIngredient.createMany({
+//     data: seedData.productIngredients,
+//     skipDuplicates: true,
+//   });
+// }
+
+// main()
+//   .catch(e => console.error(e))
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });
 
 
 // import { PrismaClient } from '@prisma/client';
