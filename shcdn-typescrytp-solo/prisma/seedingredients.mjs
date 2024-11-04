@@ -32,7 +32,26 @@ const seedData = [
   { name: "SALSA BLANCA", unit: "kg", price: 500.00, quantity: 40 },
   { name: "Crema de leche", unit: "lt", price: 24375.00, quantity: 5 },
   { name: "packaging", unit: "unidad", price: 1000, quantity: 5 },
-  { name: "Personal", "unit": "unidad", "price": 1000, "quantity": 1000 }
+  { name: "Personal", unit: "unidad", price: 1000, quantity: 1000 },
+  { name: "JAMON", unit: "kg", price:1000, quantity: 1000},
+  { name: "Pure de tomate", unit: "kg", price:1000, quantity: 1000},
+  { name: "manteca", unit: "kg", price:1000 , quantity: 1000},
+  { name: "Bandeja", unit: "Unidad", price:1000, quantity: 1000},
+  { name: "QUESO MUZARELLA", unit: "Unidad", price:1000, quantity: 1000},
+  { name: "CEBOLLA", unit: "kg", price:1000, quantity: 1000},
+  { name: "Bisagra chico", unit: "kg", price:1000, quantity: 1000},
+  { name: "Leche", unit: "lt", price:1000, quantity: 1000},
+  { name: "personal", unit: "lt", price:1000, quantity: 1000},
+  { name: "MUZARELLA", unit: "kg", price:1000, quantity: 1000},
+  { name: "QUESO ROQUEFORT", unit: "kg", price:1000, quantity: 1000},
+  { name: "QUESO REGGINATO", unit: "kg", price:1000, quantity: 1000},
+  { name: "vs", unit: "kg", price:1000, quantity: 1000},
+  { name: "carne", unit: "kg", price:1000, quantity: 1000},
+  { name: "QUESO REGIANITO", unit: "kg", price:1000, quantity: 1000},
+
+
+  
+  
 
 
 

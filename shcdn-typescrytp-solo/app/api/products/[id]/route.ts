@@ -1,11 +1,11 @@
-// app/api/products/[productId]/route.ts
+// app/api/products/[id]/route.ts
 
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 
-export async function GET(req: Request, { params }: { params: { productId: string } }) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   const product = await prisma.product.findUnique({
-    where: { id: Number(params.productId) },
+    where: { id: Number(params.id) },
     include: {
       ingredients: {
         include: {
@@ -17,10 +17,10 @@ export async function GET(req: Request, { params }: { params: { productId: strin
   return NextResponse.json(product);
 }
 
-export async function PUT(req: Request, { params }: { params: { productId: string } }) {
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const data = await req.json();
   const updatedProduct = await prisma.product.update({
-    where: { id: Number(params.productId) },
+    where: { id: Number(params.id) },
     data: {
       name: data.name,
       portions: data.portions,
@@ -34,12 +34,55 @@ export async function PUT(req: Request, { params }: { params: { productId: strin
   return NextResponse.json(updatedProduct);
 }
 
-export async function DELETE(req: Request, { params }: { params: { productId: string } }) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const deletedProduct = await prisma.product.delete({
-    where: { id: Number(params.productId) },
+    where: { id: Number(params.id) },
   });
   return NextResponse.json(deletedProduct);
 }
+
+// // app/api/products/[productId]/route.ts
+
+// import { NextResponse } from 'next/server';
+// import prisma from '@/lib/db';
+
+// export async function GET(req: Request, { params }: { params: { productId: string } }) {
+//   const product = await prisma.product.findUnique({
+//     where: { id: Number(params.productId) },
+//     include: {
+//       ingredients: {
+//         include: {
+//           ingredient: true,
+//         },
+//       },
+//     },
+//   });
+//   return NextResponse.json(product);
+// }
+
+// export async function PUT(req: Request, { params }: { params: { productId: string } }) {
+//   const data = await req.json();
+//   const updatedProduct = await prisma.product.update({
+//     where: { id: Number(params.productId) },
+//     data: {
+//       name: data.name,
+//       portions: data.portions,
+//       costPerPortion: data.costPerPortion,
+//       priceWithoutTax: data.priceWithoutTax,
+//       tax: data.tax,
+//       finalPrice: data.finalPrice,
+//       roundedPrice: data.roundedPrice,
+//     },
+//   });
+//   return NextResponse.json(updatedProduct);
+// }
+
+// export async function DELETE(req: Request, { params }: { params: { productId: string } }) {
+//   const deletedProduct = await prisma.product.delete({
+//     where: { id: Number(params.productId) },
+//   });
+//   return NextResponse.json(deletedProduct);
+// }
 
 
 // // src/app/api/products/[id]/route.js
