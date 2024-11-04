@@ -23,9 +23,13 @@ export async function POST(req: Request) {
       name: data.name,
       portions: data.portions,
       costPerPortion: data.costPerPortion,
+      //priceWithoutTax: Precio sin impuestos.
       priceWithoutTax: data.priceWithoutTax,
+//      tax: Impuesto aplicado.
       tax: data.tax,
+      //finalPrice
       finalPrice: data.finalPrice,
+      //roundedPrice
       roundedPrice: data.roundedPrice,
       ingredients: {
         create: data.ingredients.map((ingredient) => ({
