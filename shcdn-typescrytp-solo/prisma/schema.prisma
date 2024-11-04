@@ -26,7 +26,7 @@ datasource db {
 
 model Ingredient {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String  @unique
   unit      String      // Unidad de medida (kg, litro, etc.)
   price     Float       // Precio unitario
   quantity  Float       // Cantidad en stock o cantidad base
@@ -35,7 +35,7 @@ model Ingredient {
 
 model Product {
   id                Int                 @id @default(autoincrement())
-  name              String              // Nombre del producto (ej. Raviolones)
+  name              String               // Nombre del producto (ej. Raviolones)
   portions          Int                 // Cantidad de porciones
   costPerPortion    Float               // Costo calculado por porción
   priceWithoutTax   Float               // Precio antes de impuestos

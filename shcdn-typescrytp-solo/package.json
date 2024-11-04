@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "seed": "node prisma/seed.js",
+    "seed": "node prisma/seedingredient.mjs",
+    "seed": "node prisma/seedproducts.mjs",
     "test": "node __test__/api.test.js",
     "dev": "next dev",
     "build": "prisma generate && next build",

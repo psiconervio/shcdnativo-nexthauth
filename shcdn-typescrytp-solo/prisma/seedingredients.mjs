@@ -30,7 +30,12 @@ const seedData = [
   { name: "Queso sardo", unit: "kg", price: 5250.00, quantity: 18 },
   { name: "CERVEZA", unit: "lt", price: 1500.00, quantity: 100 },
   { name: "SALSA BLANCA", unit: "kg", price: 500.00, quantity: 40 },
-  { name: "Crema de leche", unit: "lt", price: 24375.00, quantity: 5 }
+  { name: "Crema de leche", unit: "lt", price: 24375.00, quantity: 5 },
+  { name: "packaging", unit: "unidad", price: 1000, quantity: 5 },
+  { name: "Personal", "unit": "unidad", "price": 1000, "quantity": 1000 }
+
+
+
 ];
 
 async function main() {

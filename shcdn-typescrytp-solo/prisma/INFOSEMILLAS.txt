@@ -1,0 +1,313 @@
+SORRENTINOS
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const products = [
+    {
+      name: "Cuatro Quesos",
+      portions: 8,
+      costPerPortion: 1400.18,
+      priceWithoutTax: 700.09,
+      tax: 2100.27,
+      finalPrice: 2163.28,
+      roundedPrice: 2400,
+      ingredients: [
+        { name: "Harina", quantity: 2, pricePerUnit: 506.55 },
+        { name: "Aceite", quantity: 0.1, pricePerUnit: 5625 },
+        { name: "Huevo", quantity: 6, pricePerUnit: 126.25 },
+        { name: "QUESO MUZARELLA", quantity: 1, pricePerUnit: 5689.50 },
+        { name: "QUESO ROQUEFORT", quantity: 0.2, pricePerUnit: 5875 },
+        { name: "QUESO REGIANITO", quantity: 0.2, pricePerUnit: 5250 },
+        { name: "packaging", quantity: 8, pricePerUnit: 44.23 },
+        { name: "Personal", quantity: 2, pricePerUnit: 300 }
+      ],
+    },
+    {
+      name: "Cebolla Caramelizada con muzarella",
+      portions: 6,
+      costPerPortion: 1443.32,
+      priceWithoutTax: 721.66,
+      tax: 2164.98,
+      finalPrice: 2229.93,
+      roundedPrice: 2400,
+      ingredients: [
+        { name: "Harina", quantity: 2, pricePerUnit: 506.55 },
+        { name: "Aceite", quantity: 0.1, pricePerUnit: 44.23 },
+        { name: "Huevo", quantity: 6, pricePerUnit: 126.25 },
+        { name: "CEBOLLA", quantity: 0.3, pricePerUnit: 1100 },
+        { name: "MUZARELLA", quantity: 1, pricePerUnit: 5689.50 },
+        { name: "packaging", quantity: 6, pricePerUnit: 44.23 },
+        { name: "Personal", quantity: 2, pricePerUnit: 300 }
+      ],
+    },
+    {
+      name: "Jamon y Queso",
+      portions: 9,
+      costPerPortion: 1310.50,
+      priceWithoutTax: 655.25,
+      tax: null, // Aquí puedes calcularlo si es necesario.
+      finalPrice: null, // Aquí puedes calcularlo si es necesario.
+      roundedPrice: 2300,
+      ingredients:[
+        { name:"Harina", quantity :2 , pricePerUnit :506.55},
+        {name:"Aceite", quantity :0.1 , pricePerUnit :null}, // Si no hay precio definido
+        {name:"Huevo", quantity :6 , pricePerUnit :126.25},
+        {name:"JAMON", quantity :1 , pricePerUnit :6750},
+        {name:"QUESO MUZARELLA", quantity :0.4 , pricePerUnit :5689.50},
+        {name:"packaging", quantity :9 , pricePerUnit :44.23},
+        {name:"Personal", quantity :2 , pricePerUnit :300}
+      ]
+    }
+    // Agrega más productos aquí si es necesario...
+];
+
+for (const product of products) {
+    try {
+      const ingredients = await Promise.all(
+        product.ingredients.map(async (ingredient) => {
+          const foundIngredient = await prisma.ingredient.findUnique({
+            where:{name : ingredient.name}
+          });
+
+          if (!foundIngredient) {
+            throw new Error(`Ingredient not found:${ingredient.name}`);
+          }
+
+          return {
+            ingredientId : foundIngredient.id,
+            quantity : ingredient.quantity,
+            pricePerUnit : ingredient.pricePerUnit || foundIngredient.price,
+            finalPrice : (ingredient.pricePerUnit || foundIngredient.price) * ingredient.quantity 
+          };
+        })
+      );
+
+      await prisma.product.create({
+          data:{
+              name : product.name,
+              portions : product.portions,
+              costPerPortion : product.costPerPortion,
+              priceWithoutTax : product.priceWithoutTax,
+              tax : product.tax || (product.priceWithoutTax * .03), // Calcula el impuesto si no está definido.
+              finalPrice : product.finalPrice || (product.priceWithoutTax + (product.priceWithoutTax * .03)), // Calcula el precio final si no está definido.
+              roundedPrice : product.roundedPrice,
+              ingredients:{
+                  create : ingredients
+              }
+          }
+      });
+
+    } catch (error) {
+       console.error(`Error creating product ${product.name}:`, error.message);
+    }
+}
+
+console.log("Products created successfully!");
+}
+
+main()
+.catch((e) => {
+    console.error(e);
+})
+.finally(async () => {
+    await prisma.$disconnect();
+});
+
+salsas
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const products = [
+    {
+      name: "Bolognesa X 450cc",
+      portions: 9,
+      costPerPortion: 1512.40,
+      priceWithoutTax: 756.20,
+      tax: 2268.59,
+      finalPrice: 2336.65,
+      roundedPrice: 2200,
+      ingredients: [
+        { name: "Cebolla", quantity: 1, pricePerUnit: 1100 },
+        { name: "Pimiento", quantity: 0.5, pricePerUnit: 933.33 },
+        { name: "Zanahoria", quantity: 0.5, pricePerUnit: 1100 },
+        { name: "Ajo", quantity: 0.5, pricePerUnit: 900 },
+        { name: "Verdeo/Puerro", quantity: 0.3, pricePerUnit: 2500 },
+        { name: "Pure de tomate", quantity: 4, pricePerUnit: 525 },
+        { name: "Bisagra chico", quantity: 20, pricePerUnit: 44.23 },
+        { name: "packaging", quantity: 9, pricePerUnit: 106.70 },
+        { name: "Personal", quantity: 1, pricePerUnit: 500 },
+        { name: "carne", quantity: 1, pricePerUnit: 5850 }
+      ],
+    },
+    {
+      name: "Fileto X 450cc",
+      portions: 9,
+      costPerPortion: 726.14,
+      priceWithoutTax: 363.07,
+      tax: null, // Aquí puedes calcularlo si es necesario.
+      finalPrice: null, // Aquí puedes calcularlo si es necesario.
+      roundedPrice: 1500,
+      ingredients:[
+        { name:"Cebolla", quantity :1 , pricePerUnit :1500},
+        {name:"Pimiento", quantity :0.5 , pricePerUnit :500},
+        {name:"Zanahoria", quantity :0.5 , pricePerUnit :1100},
+        {name:"Ajo", quantity :0.5 , pricePerUnit :900},
+        {name:"Verdeo/Puerro", quantity :0.3 , pricePerUnit :2500},
+        {name:"Pure de tomate", quantity :3 , pricePerUnit :525},
+        {name:"packaging", quantity :9 , pricePerUnit :106.70},
+        {name:"Personal", quantity :1 , pricePerUnit :500}
+      ]
+    }
+    // Agrega más productos aquí si es necesario...
+];
+
+for (const product of products) {
+    try {
+      const ingredients = await Promise.all(
+        product.ingredients.map(async (ingredient) => {
+          const foundIngredient = await prisma.ingredient.findUnique({
+            where:{name : ingredient.name}
+          });
+
+          if (!foundIngredient) {
+            throw new Error(`Ingredient not found:${ingredient.name}`);
+          }
+
+          return {
+            ingredientId : foundIngredient.id,
+            quantity : ingredient.quantity,
+            pricePerUnit : ingredient.pricePerUnit || foundIngredient.price,
+            finalPrice : (ingredient.pricePerUnit || foundIngredient.price) * ingredient.quantity 
+          };
+        })
+      );
+
+      await prisma.product.create({
+          data:{
+              name : product.name,
+              portions : product.portions,
+              costPerPortion : product.costPerPortion,
+              priceWithoutTax : product.priceWithoutTax,
+              tax : product.tax || (product.priceWithoutTax * .03), // Calcula el impuesto si no está definido.
+              finalPrice : product.finalPrice || (product.priceWithoutTax + (product.priceWithoutTax * .03)), // Calcula el precio final si no está definido.
+              roundedPrice : product.roundedPrice,
+              ingredients:{
+                  create : ingredients
+              }
+          }
+      });
+
+    } catch (error) {
+       console.error(`Error creating product ${product.name}:`, error.message);
+    }
+}
+
+console.log("Products created successfully!");
+}
+
+main()
+.catch((e) => {
+    console.error(e);
+})
+.finally(async () => {
+    await prisma.$disconnect();
+});
+ultimos productos
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const products = [
+    {
+      name: "Ñoquis de papa",
+      portions: 4,
+      costPerPortion: 1985.79,
+      priceWithoutTax: 3000.00,
+      tax: 0.00, // No se especifica, puedes calcularlo si es necesario.
+      finalPrice: 3000.00,
+      roundedPrice: 2200,
+      ingredients: [
+        { name: "Puré de papas", quantity: 1, pricePerUnit: 950 },
+        { name: "manteca", quantity: 100, pricePerUnit: 1.50 },
+        { name: "Leche", quantity: 1, pricePerUnit: 899.50 },
+        { name: "Harina", quantity: 2, pricePerUnit: 506.55 },
+        { name: "Bandeja", quantity: 1, pricePerUnit: 44.23 },
+        { name: "vs", quantity: 2, pricePerUnit: null }, // Si no hay precio definido
+        { name: "personal", quantity: 2, pricePerUnit: 300 }
+      ],
+    },
+    {
+      name: "Tallarines al huevo",
+      portions: 9,
+      costPerPortion: 1145.85,
+      priceWithoutTax: 2000.00,
+      tax: 0.00, // No se especifica, puedes calcularlo si es necesario.
+      finalPrice: 2000.00,
+      roundedPrice: 1500,
+      ingredients:[
+        { name:"Harina", quantity :6 , pricePerUnit :506.55},
+        {name:"Huevos", quantity :20 , pricePerUnit :126.25},
+        {name:"Aceite", quantity :0.2 , pricePerUnit :5625},
+        {name:"Bandejas", quantity :9 , pricePerUnit :44.23},
+        {name:"personal", quantity :2 , pricePerUnit :300}
+      ]
+    }
+    // Agrega más productos aquí si es necesario...
+];
+
+for (const product of products) {
+    try {
+      const ingredients = await Promise.all(
+        product.ingredients.map(async (ingredient) => {
+          const foundIngredient = await prisma.ingredient.findUnique({
+            where:{name : ingredient.name}
+          });
+
+          if (!foundIngredient) {
+            throw new Error(`Ingredient not found:${ingredient.name}`);
+          }
+
+          return {
+            ingredientId : foundIngredient.id,
+            quantity : ingredient.quantity,
+            pricePerUnit : ingredient.pricePerUnit || foundIngredient.price,
+            finalPrice : (ingredient.pricePerUnit || foundIngredient.price) * ingredient.quantity 
+          };
+        })
+      );
+
+      await prisma.product.create({
+          data:{
+              name : product.name,
+              portions : product.portions,
+              costPerPortion : product.costPerPortion,
+              priceWithoutTax : product.priceWithoutTax,
+              tax : product.tax || (product.priceWithoutTax * .03), // Calcula el impuesto si no está definido.
+              finalPrice : product.finalPrice || (product.priceWithoutTax + (product.priceWithoutTax * .03)), // Calcula el precio final si no está definido.
+              roundedPrice : product.roundedPrice,
+              ingredients:{
+                  create : ingredients
+              }
+          }
+      });
+
+    } catch (error) {
+       console.error(`Error creating product ${product.name}:`, error.message);
+    }
+}
+
+console.log("Products created successfully!");
+}
+
+main()
+.catch((e) => {
+    console.error(e);
+})
+.finally(async () => {
+    await prisma.$disconnect();
+});
