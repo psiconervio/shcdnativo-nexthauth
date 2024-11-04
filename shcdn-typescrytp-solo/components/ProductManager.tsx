@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 export default function ProductManager() {
-  const [view, setView] = useState<'list' | 'form' | 'details'>('list');
+  const [view, setView] = useState<'list' | 'form'>('list');
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [formData, setFormData] = useState({
@@ -30,22 +30,36 @@ export default function ProductManager() {
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
-    setFormData({
-      name: product.name,
-      portions: product.portions,
-      costPerPortion: product.costPerPortion,
-      priceWithoutTax: product.priceWithoutTax,
-      tax: product.tax,
-      finalPrice: product.finalPrice,
-      roundedPrice: product.roundedPrice,
-      ingredients: product.ingredients.map((ing) => ({
-        id: ing.id,
-        quantity: ing.quantity,
-        pricePerUnit: ing.pricePerUnit,
-        finalPrice: ing.finalPrice,
-        ingredientId: ing.ingredient.id,
-      })),
-    });
+    if (product) {
+      setFormData({
+        name: product.name,
+        portions: product.portions,
+        costPerPortion: product.costPerPortion,
+        priceWithoutTax: product.priceWithoutTax,
+        tax: product.tax,
+        finalPrice: product.finalPrice,
+        roundedPrice: product.roundedPrice,
+        ingredients: product.ingredients.map((ing) => ({
+          id: ing.id,
+          quantity: ing.quantity,
+          pricePerUnit: ing.pricePerUnit,
+          finalPrice: ing.finalPrice,
+          ingredientId: ing.ingredient.id,
+        })),
+      });
+    } else {
+      // Reset form data for new product creation
+      setFormData({
+        name: '',
+        portions: 0,
+        costPerPortion: 0,
+        priceWithoutTax: 0,
+        tax: 0,
+        finalPrice: 0,
+        roundedPrice: 0,
+        ingredients: [],
+      });
+    }
     setView('form');
   };
 
@@ -59,16 +73,6 @@ export default function ProductManager() {
       body: JSON.stringify(formData),
     });
 
-    setFormData({
-      name: '',
-      portions: 0,
-      costPerPortion: 0,
-      priceWithoutTax: 0,
-      tax: 0,
-      finalPrice: 0,
-      roundedPrice: 0,
-      ingredients: [],
-    });
     setSelectedProduct(null);
     setView('list');
   };
@@ -125,7 +129,7 @@ export default function ProductManager() {
         <div>
           <h2 className="text-2xl font-bold mb-4">Productos</h2>
           <button
-            onClick={() => handleSelectProduct(null)}
+            onClick={() => handleSelectProduct(null)} // Pass null to create a new product
             className="bg-blue-500 text-white py-2 px-4 rounded mb-4 hover:bg-blue-600"
           >
             Agregar Producto
@@ -333,6 +337,342 @@ export default function ProductManager() {
     </div>
   );
 }
+
+// // app/components/ProductManager.tsx
+// import { useEffect, useState } from 'react';
+
+// export default function ProductManager() {
+//   const [view, setView] = useState<'list' | 'form' | 'details'>('list');
+//   const [products, setProducts] = useState([]);
+//   const [selectedProduct, setSelectedProduct] = useState(null);
+//   const [formData, setFormData] = useState({
+//     name: '',
+//     portions: 0,
+//     costPerPortion: 0,
+//     priceWithoutTax: 0,
+//     tax: 0,
+//     finalPrice: 0,
+//     roundedPrice: 0,
+//     ingredients: [],
+//   });
+//   const [ingredientName, setIngredientName] = useState('');
+//   const [ingredientQuantity, setIngredientQuantity] = useState(0);
+//   const [ingredientPricePerUnit, setIngredientPricePerUnit] = useState(0);
+//   const [ingredientFinalPrice, setIngredientFinalPrice] = useState(0);
+
+//   useEffect(() => {
+//     if (view === 'list') {
+//       fetch('/api/products')
+//         .then((res) => res.json())
+//         .then(setProducts);
+//     }
+//   }, [view]);
+
+//   const handleSelectProduct = (product) => {
+//     setSelectedProduct(product);
+//     setFormData({
+//       name: product.name,
+//       portions: product.portions,
+//       costPerPortion: product.costPerPortion,
+//       priceWithoutTax: product.priceWithoutTax,
+//       tax: product.tax,
+//       finalPrice: product.finalPrice,
+//       roundedPrice: product.roundedPrice,
+//       ingredients: product.ingredients.map((ing) => ({
+//         id: ing.id,
+//         quantity: ing.quantity,
+//         pricePerUnit: ing.pricePerUnit,
+//         finalPrice: ing.finalPrice,
+//         ingredientId: ing.ingredient.id,
+//       })),
+//     });
+//     setView('form');
+//   };
+
+//   const handleSaveProduct = async () => {
+//     const method = selectedProduct ? 'PUT' : 'POST';
+//     const url = selectedProduct ? `/api/products/${selectedProduct.id}` : '/api/products';
+
+//     await fetch(url, {
+//       method,
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(formData),
+//     });
+
+//     setFormData({
+//       name: '',
+//       portions: 0,
+//       costPerPortion: 0,
+//       priceWithoutTax: 0,
+//       tax: 0,
+//       finalPrice: 0,
+//       roundedPrice: 0,
+//       ingredients: [],
+//     });
+//     setSelectedProduct(null);
+//     setView('list');
+//   };
+
+//   const handleDeleteProduct = async () => {
+//     if (selectedProduct) {
+//       await fetch(`/api/products/${selectedProduct.id}`, { method: 'DELETE' });
+//       setSelectedProduct(null);
+//       setView('list');
+//     }
+//   };
+
+//   const handleCancel = () => {
+//     setFormData({
+//       name: '',
+//       portions: 0,
+//       costPerPortion: 0,
+//       priceWithoutTax: 0,
+//       tax: 0,
+//       finalPrice: 0,
+//       roundedPrice: 0,
+//       ingredients: [],
+//     });
+//     setIngredientName('');
+//     setIngredientQuantity(0);
+//     setIngredientPricePerUnit(0);
+//     setIngredientFinalPrice(0);
+//     setSelectedProduct(null);
+//     setView('list');
+//   };
+
+//   const handleAddIngredient = () => {
+//     if (ingredientName && ingredientQuantity > 0 && ingredientPricePerUnit > 0) {
+//       const newIngredient = {
+//         ingredientId: ingredientName, // Assume you get this from an ingredient selector or API
+//         quantity: ingredientQuantity,
+//         pricePerUnit: ingredientPricePerUnit,
+//         finalPrice: ingredientFinalPrice,
+//       };
+//       setFormData((prev) => ({
+//         ...prev,
+//         ingredients: [...prev.ingredients, newIngredient],
+//       }));
+//       setIngredientName('');
+//       setIngredientQuantity(0);
+//       setIngredientPricePerUnit(0);
+//       setIngredientFinalPrice(0);
+//     }
+//   };
+
+//   return (
+//     <div className="container mx-auto p-4">
+//       {view === 'list' && (
+//         <div>
+//           <h2 className="text-2xl font-bold mb-4">Productos</h2>
+//           <button
+//             onClick={() => handleSelectProduct(null)}
+//             className="bg-blue-500 text-white py-2 px-4 rounded mb-4 hover:bg-blue-600"
+//           >
+//             Agregar Producto
+//           </button>
+//           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+//             {products.map((product) => (
+//               <li
+//                 key={product.id}
+//                 className="bg-white p-4 rounded shadow-md border hover:shadow-lg transition"
+//               >
+//                 <h3 className="text-lg font-semibold">{product.name}</h3>
+//                 <p>Porciones: {product.portions}</p>
+//                 <div className="flex justify-between mt-2">
+//                   <button
+//                     onClick={() => handleSelectProduct(product)}
+//                     className="text-blue-500 hover:underline"
+//                   >
+//                     Ver detalles
+//                   </button>
+//                   <button
+//                     onClick={() => handleSelectProduct(product)}
+//                     className="text-yellow-500 hover:underline"
+//                   >
+//                     Editar
+//                   </button>
+//                 </div>
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       )}
+
+//       {view === 'form' && (
+//         <form
+//           onSubmit={(e) => {
+//             e.preventDefault();
+//             handleSaveProduct();
+//           }}
+//           className="bg-white p-6 rounded shadow-lg border max-w-lg mx-auto"
+//         >
+//           <h2 className="text-2xl font-bold mb-4">
+//             {selectedProduct ? 'Editar Producto' : 'Nuevo Producto'}
+//           </h2>
+//           <div className="mb-4">
+//             <label className="block font-medium mb-1">Nombre</label>
+//             <input
+//               name="name"
+//               value={formData.name}
+//               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+//               placeholder="Nombre"
+//               className="w-full p-2 border rounded"
+//               required
+//             />
+//           </div>
+//           <div className="grid grid-cols-2 gap-4 mb-4">
+//             <div>
+//               <label className="block font-medium mb-1">Porciones</label>
+//               <input
+//                 name="portions"
+//                 type="number"
+//                 value={formData.portions}
+//                 onChange={(e) => setFormData({ ...formData, portions: parseInt(e.target.value, 10) })}
+//                 placeholder="Porciones"
+//                 className="w-full p-2 border rounded"
+//                 required
+//               />
+//             </div>
+//             <div>
+//               <label className="block font-medium mb-1">Costo por porción</label>
+//               <input
+//                 name="costPerPortion"
+//                 type="number"
+//                 value={formData.costPerPortion}
+//                 onChange={(e) => setFormData({ ...formData, costPerPortion: parseFloat(e.target.value) })}
+//                 placeholder="Costo por porción"
+//                 className="w-full p-2 border rounded"
+//                 required
+//               />
+//             </div>
+//           </div>
+//           <div className="grid grid-cols-2 gap-4 mb-4">
+//             <div>
+//               <label className="block font-medium mb-1">Precio sin impuestos</label>
+//               <input
+//                 name="priceWithoutTax"
+//                 type="number"
+//                 value={formData.priceWithoutTax}
+//                 onChange={(e) => setFormData({ ...formData, priceWithoutTax: parseFloat(e.target.value) })}
+//                 placeholder="Precio sin impuestos"
+//                 className="w-full p-2 border rounded"
+//                 required
+//               />
+//             </div>
+//             <div>
+//               <label className="block font-medium mb-1">Impuesto (%)</label>
+//               <input
+//                 name="tax"
+//                 type="number"
+//                 value={formData.tax}
+//                 onChange={(e) => setFormData({ ...formData, tax: parseFloat(e.target.value) })}
+//                 placeholder="Impuesto"
+//                 className="w-full p-2 border rounded"
+//                 required
+//               />
+//             </div>
+//           </div>
+//           <div className="grid grid-cols-2 gap-4 mb-4">
+//             <div>
+//               <label className="block font-medium mb-1">Precio final</label>
+//               <input
+//                 name="finalPrice"
+//                 type="number"
+//                 value={formData.finalPrice}
+//                 onChange={(e) => setFormData({ ...formData, finalPrice: parseFloat(e.target.value) })}
+//                 placeholder="Precio final"
+//                 className="w-full p-2 border rounded"
+//                 required
+//               />
+//             </div>
+//             <div>
+//               <label className="block font-medium mb-1">Precio redondeado</label>
+//               <input
+//                 name="roundedPrice"
+//                 type="number"
+//                 value={formData.roundedPrice}
+//                 onChange={(e) => setFormData({ ...formData, roundedPrice: parseFloat(e.target.value) })}
+//                 placeholder="Precio redondeado"
+//                 className="w-full p-2 border rounded"
+//                 required
+//               />
+//             </div>
+//           </div>
+
+//           <div className="mb-4">
+//             <h3 className="font-bold">Ingredientes</h3>
+//             <div className="flex mb-2">
+//               <input
+//                 value={ingredientName}
+//                 onChange={(e) => setIngredientName(e.target.value)}
+//                 placeholder="Ingrediente"
+//                 className="w-1/2 p-2 border rounded"
+//                 required
+//               />
+//               <input
+//                 type="number"
+//                 value={ingredientQuantity}
+//                 onChange={(e) => setIngredientQuantity(parseFloat(e.target.value))}
+//                 placeholder="Cantidad"
+//                 className="w-1/4 p-2 border rounded ml-2"
+//                 required
+//               />
+//               <input
+//                 type="number"
+//                 value={ingredientPricePerUnit}
+//                 onChange={(e) => setIngredientPricePerUnit(parseFloat(e.target.value))}
+//                 placeholder="Precio unitario"
+//                 className="w-1/4 p-2 border rounded ml-2"
+//                 required
+//               />
+//               <button
+//                 type="button"
+//                 onClick={handleAddIngredient}
+//                 className="bg-green-500 text-white p-2 rounded ml-2"
+//               >
+//                 Agregar
+//               </button>
+//             </div>
+//             <ul>
+//               {formData.ingredients.map((ingredient, index) => (
+//                 <li key={index} className="flex justify-between border-b p-2">
+//                   <span>
+//                     {ingredient.ingredientId} - Cantidad: {ingredient.quantity} - Precio Unitario: ${ingredient.pricePerUnit.toFixed(2)}
+//                   </span>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+
+//           <div className="flex justify-between">
+//             <button
+//               type="submit"
+//               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+//             >
+//               {selectedProduct ? 'Actualizar Producto' : 'Crear Producto'}
+//             </button>
+//             <button
+//               type="button"
+//               onClick={handleCancel}
+//               className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+//             >
+//               Cancelar
+//             </button>
+//             {selectedProduct && (
+//               <button
+//                 type="button"
+//                 onClick={handleDeleteProduct}
+//                 className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+//               >
+//                 Eliminar
+//               </button>
+//             )}
+//           </div>
+//         </form>
+//       )}
+//     </div>
+//   );
+// }
 
 // // app/components/ProductManager.tsx
 // import { useEffect, useState } from 'react';
