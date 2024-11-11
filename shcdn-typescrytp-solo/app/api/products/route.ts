@@ -18,24 +18,28 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const data = await req.json();
+
+  // Calcular el precio sin impuestos (suma de finalPrice de cada ingrediente)
+  const priceWithoutTax = data.ingredients.reduce((total, ingredient) => {
+    const finalPrice = ingredient.quantity * ingredient.pricePerUnit;
+    return total + finalPrice;
+  }, 0);
+
+  // Crear el producto con el cálculo de `priceWithoutTax`
   const newProduct = await prisma.product.create({
     data: {
       name: data.name,
       portions: data.portions,
       costPerPortion: data.costPerPortion,
-      //priceWithoutTax: Precio sin impuestos.
-      priceWithoutTax: data.priceWithoutTax,
-//      tax: Impuesto aplicado.
+      priceWithoutTax: priceWithoutTax, // Utiliza el precio calculado
       tax: data.tax,
-      //finalPrice
-      finalPrice: data.finalPrice,
-      //roundedPrice
-      roundedPrice: data.roundedPrice,
+      finalPrice: priceWithoutTax * (1 + data.tax / 100), // Precio con impuestos
+      roundedPrice: Math.round(priceWithoutTax * (1 + data.tax / 100)), // Precio redondeado
       ingredients: {
         create: data.ingredients.map((ingredient) => ({
           quantity: ingredient.quantity,
           pricePerUnit: ingredient.pricePerUnit,
-          finalPrice: ingredient.finalPrice,
+          finalPrice: ingredient.quantity * ingredient.pricePerUnit,
           ingredient: {
             connect: { id: ingredient.ingredientId },
           },
@@ -43,8 +47,58 @@ export async function POST(req: Request) {
       },
     },
   });
+
   return NextResponse.json(newProduct);
 }
+
+// // app/api/products/route.ts
+// //codigo funcional andando legacy
+// import { NextResponse } from 'next/server';
+// import prisma from '@/lib/db';
+
+// export async function GET() {
+//   const products = await prisma.product.findMany({
+//     include: {
+//       ingredients: {
+//         include: {
+//           ingredient: true,
+//         },
+//       },
+//     },
+//   });
+//   return NextResponse.json(products);
+// }
+
+// export async function POST(req: Request) {
+//   const data = await req.json();
+//   const newProduct = await prisma.product.create({
+//     data: {
+//       name: data.name,
+//       portions: data.portions,
+//       costPerPortion: data.costPerPortion,
+//       //priceWithoutTax: Precio sin impuestos.
+//       priceWithoutTax: data.priceWithoutTax,
+//       // tax: Impuesto aplicado.
+//       tax: data.tax,
+//       //finalPrice
+//       // finalPrice: data.finalPrice,
+//       finalPrice: data.priceWithoutTax + data.tax,
+//       //roundedPrice
+//       roundedPrice: data.roundedPrice,
+//       ingredients: {
+//         create: data.ingredients.map((ingredient) => ({
+//           quantity: ingredient.quantity,
+//           pricePerUnit: ingredient.pricePerUnit,
+//           finalPrice: ingredient.finalPrice,
+//           ingredient: {
+//             connect: { id: ingredient.ingredientId },
+//           },
+//         })),
+//       },
+//     },
+//   });
+//   return NextResponse.json(newProduct);
+// }
 
 // // src/app/api/products/route.js
 // import { NextResponse } from 'next/server';
