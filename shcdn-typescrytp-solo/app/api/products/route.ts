@@ -19,18 +19,23 @@ export async function GET() {
 export async function POST(req: Request) {
   const data = await req.json();
   
-  // Calcula el precio sin impuestos sumando el costo total de cada ingrediente
-  const totalIngredientsCost = data.ingredients.reduce((acc: number, ingredient: any) => {
-    return acc + (ingredient.quantity * ingredient.pricePerUnit);
-  }, 0);
+  async function getPricePerUnit(ingredientId: number): Promise<number> {
+    const ingredient = await prisma.ingredient.findUnique({
+      where: { id: ingredientId },
+      select: { price: true }, // Usa el campo correcto
+    });
+    return ingredient?.price || 0;
+  }
 
-  // Calcula el precio final con impuestos
+  const totalIngredientsCost = await data.ingredients.reduce(async (accPromise: Promise<number>, ingredient: any) => {
+    const acc = await accPromise;
+    const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
+    return acc + (ingredient.quantity * pricePerUnit);
+  }, Promise.resolve(0));
+
   const finalPrice = totalIngredientsCost * (1 + data.tax / 100);
-
-  // Costo por porción basado en el precio sin impuestos y las porciones
   const costPerPortion = totalIngredientsCost / data.portions;
 
-  // Crea el producto en la base de datos
   const newProduct = await prisma.product.create({
     data: {
       name: data.name,
@@ -39,15 +44,18 @@ export async function POST(req: Request) {
       priceWithoutTax: totalIngredientsCost,
       tax: data.tax,
       finalPrice: finalPrice,
-      roundedPrice: Math.round(finalPrice), // Redondea el precio final
+      roundedPrice: Math.round(finalPrice),
       ingredients: {
-        create: data.ingredients.map((ingredient: any) => ({
-          quantity: ingredient.quantity,
-          pricePerUnit: ingredient.pricePerUnit,
-          finalPrice: ingredient.quantity * ingredient.pricePerUnit,
-          ingredient: {
-            connect: { id: ingredient.ingredientId },
-          },
+        create: await Promise.all(data.ingredients.map(async (ingredient: any) => {
+          const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
+          return {
+            quantity: ingredient.quantity,
+            pricePerUnit: pricePerUnit,
+            finalPrice: ingredient.quantity * pricePerUnit,
+            ingredient: {
+              connect: { id: ingredient.ingredientId },
+            },
+          };
         })),
       },
     },
@@ -55,6 +63,64 @@ export async function POST(req: Request) {
 
   return NextResponse.json(newProduct);
 }
+
+// // app/api/products/route.ts
+
+// import { NextResponse } from 'next/server';
+// import prisma from '@/lib/db';
+
+// export async function GET() {
+//   const products = await prisma.product.findMany({
+//     include: {
+//       ingredients: {
+//         include: {
+//           ingredient: true,
+//         },
+//       },
+//     },
+//   });
+//   return NextResponse.json(products);
+// }
+
+// export async function POST(req: Request) {
+//   const data = await req.json();
+  
+//   // Calcula el precio sin impuestos sumando el costo total de cada ingrediente
+//   const totalIngredientsCost = data.ingredients.reduce((acc: number, ingredient: any) => {
+//     return acc + (ingredient.quantity * ingredient.pricePerUnit);
+//   }, 0);
+
+//   // Calcula el precio final con impuestos
+//   const finalPrice = totalIngredientsCost * (1 + data.tax / 100);
+
+//   // Costo por porción basado en el precio sin impuestos y las porciones
+//   const costPerPortion = totalIngredientsCost / data.portions;
+
+//   // Crea el producto en la base de datos
+//   const newProduct = await prisma.product.create({
+//     data: {
+//       name: data.name,
+//       portions: data.portions,
+//       costPerPortion: costPerPortion,
+//       priceWithoutTax: totalIngredientsCost,
+//       tax: data.tax,
+//       finalPrice: finalPrice,
+//       roundedPrice: Math.round(finalPrice), // Redondea el precio final
+//       ingredients: {
+//         create: data.ingredients.map((ingredient: any) => ({
+//           quantity: ingredient.quantity,
+//           pricePerUnit: ingredient.pricePerUnit,
+//           finalPrice: ingredient.quantity * ingredient.pricePerUnit,
+//           ingredient: {
+//             connect: { id: ingredient.ingredientId },
+//           },
+//         })),
+//       },
+//     },
+//   });
+
+//   return NextResponse.json(newProduct);
+// }
 
 
 // // app/api/products/route.ts
