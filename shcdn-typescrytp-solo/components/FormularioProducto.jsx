@@ -141,6 +141,7 @@ function ProductEditor({ productId }) {
           >
             <span>{prodIngredient.ingredient.name}</span>
             <span>Cantidad: {prodIngredient.quantity}</span>
+            <span>precio: {prodIngredient.ingredient.price}</span>
           </li>
         ))}
       </ul>
