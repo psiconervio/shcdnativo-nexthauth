@@ -1,12 +1,14 @@
 // app/components/ProductManager.tsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function ProductManager() {
-  const [view, setView] = useState<'list' | 'form'>('list');
+  const [view, setView] = useState<"list" | "form">("list");
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [ingredientsList, setIngredientsList] = useState([]);
+
   const [formData, setFormData] = useState({
-    name: '',
+    name: "",
     portions: 0,
     costPerPortion: 0,
     priceWithoutTax: 0,
@@ -15,18 +17,25 @@ export default function ProductManager() {
     roundedPrice: 0,
     ingredients: [],
   });
-  const [ingredientName, setIngredientName] = useState('');
+  const [ingredientName, setIngredientName] = useState("");
   const [ingredientQuantity, setIngredientQuantity] = useState(0);
   const [ingredientPricePerUnit, setIngredientPricePerUnit] = useState(0);
   const [ingredientFinalPrice, setIngredientFinalPrice] = useState(0);
 
   useEffect(() => {
-    if (view === 'list') {
-      fetch('/api/products')
+    if (view === "list") {
+      fetch("/api/products")
         .then((res) => res.json())
         .then(setProducts);
     }
   }, [view]);
+
+  useEffect(() => {
+    // Load ingredients list
+    fetch("/api/ingredients")
+      .then((res) => res.json())
+      .then(setIngredientsList);
+  }, []);
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
@@ -50,7 +59,7 @@ export default function ProductManager() {
     } else {
       // Reset form data for new product creation
       setFormData({
-        name: '',
+        name: "",
         portions: 0,
         costPerPortion: 0,
         priceWithoutTax: 0,
@@ -60,34 +69,36 @@ export default function ProductManager() {
         ingredients: [],
       });
     }
-    setView('form');
+    setView("form");
   };
 
   const handleSaveProduct = async () => {
-    const method = selectedProduct ? 'PUT' : 'POST';
-    const url = selectedProduct ? `/api/products/${selectedProduct.id}` : '/api/products';
+    const method = selectedProduct ? "PUT" : "POST";
+    const url = selectedProduct
+      ? `/api/products/${selectedProduct.id}`
+      : "/api/products";
 
     await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
     setSelectedProduct(null);
-    setView('list');
+    setView("list");
   };
 
   const handleDeleteProduct = async () => {
     if (selectedProduct) {
-      await fetch(`/api/products/${selectedProduct.id}`, { method: 'DELETE' });
+      await fetch(`/api/products/${selectedProduct.id}`, { method: "DELETE" });
       setSelectedProduct(null);
-      setView('list');
+      setView("list");
     }
   };
 
   const handleCancel = () => {
     setFormData({
-      name: '',
+      name: "",
       portions: 0,
       costPerPortion: 0,
       priceWithoutTax: 0,
@@ -96,36 +107,48 @@ export default function ProductManager() {
       roundedPrice: 0,
       ingredients: [],
     });
-    setIngredientName('');
+    setIngredientName("");
     setIngredientQuantity(0);
     setIngredientPricePerUnit(0);
     setIngredientFinalPrice(0);
     setSelectedProduct(null);
-    setView('list');
+    setView("list");
   };
 
   const handleAddIngredient = () => {
-    if (ingredientName && ingredientQuantity > 0 && ingredientPricePerUnit > 0) {
+    if (
+      ingredientName &&
+      ingredientQuantity > 0 &&
+      ingredientPricePerUnit > 0
+    ) {
+      const selectedIngredient = ingredientsList.find(
+        (ing) => ing.id === ingredientName
+      );
       const newIngredient = {
-        ingredientId: ingredientName, // Assume you get this from an ingredient selector or API
+        ingredientId: ingredientName,
         quantity: ingredientQuantity,
         pricePerUnit: ingredientPricePerUnit,
         finalPrice: ingredientFinalPrice,
+        ingredientName: selectedIngredient?.name, // Guarda el nombre del ingrediente
+     
       };
+      console.log(ingredientName)
       setFormData((prev) => ({
         ...prev,
         ingredients: [...prev.ingredients, newIngredient],
       }));
-      setIngredientName('');
+      // Limpiar los campos después de agregar el ingrediente
+      setIngredientName("");
       setIngredientQuantity(0);
       setIngredientPricePerUnit(0);
       setIngredientFinalPrice(0);
     }
   };
+  // console.log(ingredientsList)
 
   return (
     <div className="container mx-auto p-4">
-      {view === 'list' && (
+      {view === "list" && (
         <div>
           <h2 className="text-2xl font-bold mb-4">Productos</h2>
           <button
@@ -162,7 +185,7 @@ export default function ProductManager() {
         </div>
       )}
 
-      {view === 'form' && (
+      {view === "form" && (
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -171,14 +194,16 @@ export default function ProductManager() {
           className="bg-white p-6 rounded shadow-lg border max-w-lg mx-auto"
         >
           <h2 className="text-2xl font-bold mb-4">
-            {selectedProduct ? 'Editar Producto' : 'Nuevo Producto'}
+            {selectedProduct ? "Editar Producto" : "Nuevo Producto"}
           </h2>
           <div className="mb-4">
             <label className="block font-medium mb-1">Nombre</label>
             <input
               name="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="Nombre"
               className="w-full p-2 border rounded"
               required
@@ -191,19 +216,31 @@ export default function ProductManager() {
                 name="portions"
                 type="number"
                 value={formData.portions}
-                onChange={(e) => setFormData({ ...formData, portions: parseInt(e.target.value, 10) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    portions: parseInt(e.target.value, 10),
+                  })
+                }
                 placeholder="Porciones"
                 className="w-full p-2 border rounded"
                 required
               />
             </div>
             <div>
-              <label className="block font-medium mb-1">Costo por porción</label>
+              <label className="block font-medium mb-1">
+                Costo por porción
+              </label>
               <input
                 name="costPerPortion"
                 type="number"
                 value={formData.costPerPortion}
-                onChange={(e) => setFormData({ ...formData, costPerPortion: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    costPerPortion: parseFloat(e.target.value),
+                  })
+                }
                 placeholder="Costo por porción"
                 className="w-full p-2 border rounded"
                 required
@@ -212,12 +249,19 @@ export default function ProductManager() {
           </div>
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block font-medium mb-1">Precio sin impuestos</label>
+              <label className="block font-medium mb-1">
+                Precio sin impuestos
+              </label>
               <input
                 name="priceWithoutTax"
                 type="number"
                 value={formData.priceWithoutTax}
-                onChange={(e) => setFormData({ ...formData, priceWithoutTax: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    priceWithoutTax: parseFloat(e.target.value),
+                  })
+                }
                 placeholder="Precio sin impuestos"
                 className="w-full p-2 border rounded"
                 required
@@ -229,7 +273,9 @@ export default function ProductManager() {
                 name="tax"
                 type="number"
                 value={formData.tax}
-                onChange={(e) => setFormData({ ...formData, tax: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({ ...formData, tax: parseFloat(e.target.value) })
+                }
                 placeholder="Impuesto"
                 className="w-full p-2 border rounded"
                 required
@@ -243,19 +289,31 @@ export default function ProductManager() {
                 name="finalPrice"
                 type="number"
                 value={formData.finalPrice}
-                onChange={(e) => setFormData({ ...formData, finalPrice: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    finalPrice: parseFloat(e.target.value),
+                  })
+                }
                 placeholder="Precio final"
                 className="w-full p-2 border rounded"
                 required
               />
             </div>
             <div>
-              <label className="block font-medium mb-1">Precio redondeado</label>
+              <label className="block font-medium mb-1">
+                Precio redondeado
+              </label>
               <input
                 name="roundedPrice"
                 type="number"
                 value={formData.roundedPrice}
-                onChange={(e) => setFormData({ ...formData, roundedPrice: parseFloat(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    roundedPrice: parseFloat(e.target.value),
+                  })
+                }
                 placeholder="Precio redondeado"
                 className="w-full p-2 border rounded"
                 required
@@ -266,25 +324,27 @@ export default function ProductManager() {
           <div className="mb-4">
             <h3 className="font-bold">Ingredientes</h3>
             <div className="flex mb-2">
-              <input
+              <select
                 value={ingredientName}
-                onChange={(e) => setIngredientName(e.target.value)}
-                placeholder="Ingrediente"
+                onChange={(e) =>
+                  setIngredientName(parseInt(e.target.value, 10))
+                }
                 className="w-1/2 p-2 border rounded"
                 required
-              />
-              <input
-                type="number"
-                value={ingredientQuantity}
-                onChange={(e) => setIngredientQuantity(parseFloat(e.target.value))}
-                placeholder="Cantidad"
-                className="w-1/4 p-2 border rounded ml-2"
-                required
-              />
+              >
+                <option value="">Seleccionar ingrediente</option>
+                {ingredientsList.map((ingredient) => (
+                  <option key={ingredient.id} value={ingredient.id}>
+                    {ingredient.name}
+                  </option>
+                ))}
+              </select>
               <input
                 type="number"
                 value={ingredientPricePerUnit}
-                onChange={(e) => setIngredientPricePerUnit(parseFloat(e.target.value))}
+                onChange={(e) =>
+                  setIngredientPricePerUnit(parseFloat(e.target.value))
+                }
                 placeholder="Precio unitario"
                 className="w-1/4 p-2 border rounded ml-2"
                 required
@@ -298,13 +358,18 @@ export default function ProductManager() {
               </button>
             </div>
             <ul>
-              {formData.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex justify-between border-b p-2">
-                  <span>
-                    {ingredient.ingredientId} - Cantidad: {ingredient.quantity} - Precio Unitario: ${ingredient.pricePerUnit.toFixed(2)}
-                  </span>
-                </li>
-              ))}
+              {formData.ingredients.map((ingredient, index) => {
+                console.log(ingredient); // Esto mostrará cada objeto ingredient en la consola
+                return (
+                  <li key={index} className="flex justify-between border-b p-2">
+                    <span>
+                      {ingredient.ingredientId} - Cantidad:{" "}
+                      {ingredient.quantity} - Precio Unitario: $
+                      {ingredient.pricePerUnit.toFixed(2)}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -313,7 +378,7 @@ export default function ProductManager() {
               type="submit"
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
             >
-              {selectedProduct ? 'Actualizar Producto' : 'Crear Producto'}
+              {selectedProduct ? "Actualizar Producto" : "Crear Producto"}
             </button>
             <button
               type="button"
@@ -914,7 +979,6 @@ export default function ProductManager() {
 //     </div>
 //   );
 // }
-
 
 // // app/components/ProductManager.tsx
 // import { useEffect, useState } from 'react';
