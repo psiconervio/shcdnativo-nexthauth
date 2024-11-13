@@ -72,6 +72,7 @@ export default function Dashboard() {
     name: "",
     portions: 1,
     tax: 19,
+    profitPercentage: 100,
     ingredients: [{ ingredientId: 0, quantity: 1 }],
   });
 
@@ -154,265 +155,307 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">Product Management</h1>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>
-                {editingProduct ? "Edit Product" : "Add New Product"}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Product Name</Label>
+<div className="container mx-auto py-10 px-4 sm:px-0">
+  <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
+    <h1 className="text-3xl sm:text-4xl font-bold">Product Management</h1>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button onClick={resetForm} className="w-full sm:w-auto">
+          <Plus className="mr-2 h-4 w-4" />
+          Add Product
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="w-full sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>
+            {editingProduct ? "Edit Product" : "Add New Product"}
+          </DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Product Name</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="portions">Portions</Label>
+                <Input
+                  id="portions"
+                  type="number"
+                  min="1"
+                  value={formData.portions}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      portions: parseInt(e.target.value),
+                    })
+                  }
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="tax">Impuesto (%)</Label>
+                <Input
+                  id="tax"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={formData.tax}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      tax: parseInt(e.target.value),
+                    })
+                  }
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="tax">GanaciaPorcentaje (%)</Label>
+                <Input
+                  id="tax"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={formData.profitPercentage}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      profitPercentage: parseInt(e.target.value),
+                    })
+                  }
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <Label>Ingredients</Label>
+              {formData.ingredients.map((ing, index) => (
+                <div key={index} className="flex flex-col sm:flex-row gap-4">
+                  <Select
+                    value={ing.ingredientId.toString()}
+                    onValueChange={(value) => {
+                      const newIngredients = [...formData.ingredients];
+                      newIngredients[index].ingredientId = parseInt(value);
+                      setFormData({ ...formData, ingredients: newIngredients });
+                    }}
+                    className="flex-grow"
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select ingredient" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ingredients.map((ingredient) => (
+                        <SelectItem
+                          key={ingredient.id}
+                          value={ingredient.id.toString()}
+                        >
+                          {ingredient.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+              <Label>Cantidad(grms/unidad)</Label>
                   <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="portions">Portions</Label>
-                    <Input
-                      id="portions"
-                      type="number"
-                      min="1"
-                      value={formData.portions}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          portions: parseInt(e.target.value),
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="tax">Tax (%)</Label>
-                    <Input
-                      id="tax"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={formData.tax}
-                      onChange={(e) =>
-                        setFormData({ ...formData, tax: parseInt(e.target.value) })
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <Label>Ingredients</Label>
-                  {formData.ingredients.map((ing, index) => (
-                    <div key={index} className="flex gap-4">
-                      <Select
-                        value={ing.ingredientId.toString()}
-                        onValueChange={(value) => {
-                          const newIngredients = [...formData.ingredients];
-                          newIngredients[index].ingredientId = parseInt(value);
-                          setFormData({ ...formData, ingredients: newIngredients });
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select ingredient" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ingredients.map((ingredient) => (
-                            <SelectItem
-                              key={ingredient.id}
-                              value={ingredient.id.toString()}
-                            >
-                              {ingredient.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        type="number"
-                        min="0.1"
-                        step="0.1"
-                        value={ing.quantity}
-                        onChange={(e) => {
-                          const newIngredients = [...formData.ingredients];
-                          newIngredients[index].quantity = parseFloat(
-                            e.target.value
-                          );
-                          setFormData({ ...formData, ingredients: newIngredients });
-                        }}
-                        placeholder="Quantity"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() => {
-                          const newIngredients = formData.ingredients.filter(
-                            (_, i) => i !== index
-                          );
-                          setFormData({
-                            ...formData,
-                            ingredients: newIngredients,
-                          });
-                        }}
-                      >
-                        <Trash2Icon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() =>
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    value={ing.quantity}
+                    onChange={(e) => {
+                      const newIngredients = [...formData.ingredients];
+                      newIngredients[index].quantity = parseFloat(
+                        e.target.value
+                      );
                       setFormData({
                         ...formData,
-                        ingredients: [
-                          ...formData.ingredients,
-                          { ingredientId: 0, quantity: 1 },
-                        ],
-                      })
-                    }
+                        ingredients: newIngredients,
+                      });
+                    }}
+                    placeholder="Quantity"
+                    className="flex-grow"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => {
+                      const newIngredients = formData.ingredients.filter(
+                        (_, i) => i !== index
+                      );
+                      setFormData({
+                        ...formData,
+                        ingredients: newIngredients,
+                      });
+                    }}
+                    className="w-full sm:w-auto"
                   >
-                    Add Ingredient
+                    <Trash2Icon className="h-4 w-4" />
                   </Button>
                 </div>
-              </div>
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">
-                  {editingProduct ? "Update" : "Create"} Product
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    ingredients: [
+                      ...formData.ingredients,
+                      { ingredientId: 0, quantity: 1 },
+                    ],
+                  })
+                }
+                className="w-full sm:w-auto"
+              >
+                Add Ingredient
+              </Button>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-end gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button type="submit" className="w-full sm:w-auto">
+              {editingProduct ? "Update" : "Create"} Product
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  </div>
 
-      <div className="grid gap-6">
-        {products.map((product) => (
-          <Card key={product.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-2xl font-bold">
-                {product.name}
-              </CardTitle>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    setEditingProduct(product);
-                    setFormData({
-                      name: product.name,
-                      portions: product.portions,
-                      tax: product.tax,
-                      profitPercentage: product.profit,
-                      profitAmount: product.profitAmount,
-                      ingredients: product.ingredients.map((ing) => ({
-                        ingredientId: ing.ingredient.id,
-                        quantity: ing.quantity,
-                      })),
-                    });
-                    setIsOpen(true);
-                  }}
-                >
-                  <PencilIcon className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => handleDelete(product.id)}
-                >
-                  <Trash2Icon className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 gap-4 mb-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Portions</p>
-                  <p className="text-2xl font-bold">{product.portions}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Cost/Portion</p>
-                  <p className="text-2xl font-bold">
-                    ${product.costPerPortion.toFixed(2)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Tax</p>
-                  <p className="text-2xl font-bold">{product.tax}%</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">GanaciaPorcentaje</p>
-                  <p className="text-2xl font-bold">
-                    %{product.profitPercentage}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Ganacia</p>
-                  <p className="text-2xl font-bold">
-                    ${product.profitAmount}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Final Price</p>
-                  <p className="text-2xl font-bold">
-                    ${product.roundedPrice.toFixed(2)}
-                  </p>
-                </div>
-              </div>
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center text-sm text-muted-foreground hover:text-foreground">
-                  <ChevronDown className="h-4 w-4 mr-1" />
-                  Ingredients
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Ingredient</TableHead>
-                        <TableHead>Quantity</TableHead>
-                        <TableHead>Price/Unit</TableHead>
-                        <TableHead>Total</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {product.ingredients.map((ing) => (
-                        <TableRow key={ing.ingredient.id}>
-                          <TableCell>{ing.ingredient.name}</TableCell>
-                          <TableCell>{ing.quantity}</TableCell>
-                          <TableCell>${ing.ingredient.price.toFixed(2)}</TableCell>
-                          <TableCell>
-                            ${(ing.quantity * ing.ingredient.price).toFixed(2)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CollapsibleContent>
-              </Collapsible>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+  <div className="grid gap-6">
+    {products.map((product) => (
+      <Card key={product.id}>
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 pb-2">
+          <CardTitle className="text-2xl font-bold">{product.name}</CardTitle>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setEditingProduct(product);
+                setFormData({
+                  name: product.name,
+                  portions: product.portions,
+                  tax: product.tax,
+                  profitPercentage: product.profit,
+                  profitAmount: product.profitAmount,
+                  ingredients: product.ingredients.map((ing) => ({
+                    ingredientId: ing.ingredient.id,
+                    quantity: ing.quantity,
+                  })),
+                });
+                setIsOpen(true);
+              }}
+              className="w-full sm:w-auto"
+            >
+              <PencilIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="destructive"
+              size="icon"
+              onClick={() => handleDelete(product.id)}
+              className="w-full sm:w-auto"
+            >
+              <Trash2Icon className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-7 gap-7 sm:gap-7 mb-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Portions</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                {product.portions}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Cost/Portion</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.costPerPortion.toFixed(1)}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Impuesto(%)</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                {product.tax} %
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Ganancia Esperada(%)</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                {product.profitPercentage} %
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Ganancia($)</p>
+              <p className="text-lg sm:text-2xl font-bold">
+              $ {product.profitAmount ? product.profitAmount.toFixed(1) : '0.0'}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Final Price</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.finalPrice.toFixed(1)}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Redondeo</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.roundedPrice.toFixed(1)}
+              </p>
+            </div>
+
+          </div>
+          <Collapsible>
+            <CollapsibleTrigger className="flex items-center text-sm text-muted-foreground hover:text-foreground">
+              <ChevronDown className="h-4 w-4 mr-1" />
+              Ingredients
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <Table className="w-full">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Ingredient</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Price/Unit</TableHead>
+                    <TableHead>Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {product.ingredients.map((ing) => (
+                    <TableRow key={ing.ingredient.id}>
+                      <TableCell>{ing.ingredient.name}</TableCell>
+                      <TableCell>{ing.quantity}</TableCell>
+                      <TableCell>${ing.ingredient.price.toFixed(1)}</TableCell>
+                      <TableCell>
+                        ${(ing.quantity * ing.ingredient.price).toFixed(1)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CollapsibleContent>
+          </Collapsible>
+        </CardContent>
+      </Card>
+    ))}
+  </div>
+</div>
+
   );
 }
