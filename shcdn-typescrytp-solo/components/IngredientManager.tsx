@@ -26,7 +26,7 @@
 //   const handleSaveIngredient = async () => {
 //     const method = selectedIngredient ? 'PUT' : 'POST';
 //     const url = selectedIngredient
-//       ? `/api/ingredients/${selectedIngredient.id}`
+    /*   ? `/api/ingredients/${selectedIngredient.id}` */
 //       : '/api/ingredients';
 
 //     await fetch(url, {
