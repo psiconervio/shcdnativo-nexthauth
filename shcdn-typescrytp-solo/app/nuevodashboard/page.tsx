@@ -392,7 +392,7 @@ export default function Dashboard() {
               }}
               className="w-full sm:w-auto"
             >
-              <PencilIcon className="h-4 w-4" />
+              <PencilIcon className="m-2 h-4 w-4" />
             </Button>
             <Button
               variant="destructive"
@@ -400,7 +400,7 @@ export default function Dashboard() {
               onClick={() => handleDelete(product.id)}
               className="w-full sm:w-auto"
             >
-              <Trash2Icon className="h-4 w-4" />
+              <Trash2Icon className=" m-2 h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
