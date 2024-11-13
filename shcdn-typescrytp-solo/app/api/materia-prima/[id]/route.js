@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import prisma from '@/lib/db';
 
 // Actualizar stock de materia prima (PATCH /api/materia-prima/[id])
 export async function PATCH(request, { params }) {
