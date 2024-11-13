@@ -73,6 +73,8 @@ export default function Dashboard() {
     portions: 1,
     tax: 19,
     profitPercentage: 100,
+    profitAmount: 0, // Agregar esta línea
+
     ingredients: [{ ingredientId: 0, quantity: 1 }],
   });
 
@@ -379,7 +381,7 @@ export default function Dashboard() {
                   name: product.name,
                   portions: product.portions,
                   tax: product.tax,
-                  profitPercentage: product.profit,
+                  profitPercentage: product.profitPercentage,
                   profitAmount: product.profitAmount,
                   ingredients: product.ingredients.map((ing) => ({
                     ingredientId: ing.ingredient.id,
