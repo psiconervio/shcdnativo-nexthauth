@@ -169,7 +169,7 @@ export default function Dashboard() {
           Add Product
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-full sm:max-w-[600px] p-4 sm:p-6 rounded-lg">
+      <DialogContent className="w-full sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>
             {editingProduct ? "Edit Product" : "Add New Product"}
@@ -223,9 +223,9 @@ export default function Dashboard() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="profit">Ganancia (%)</Label>
+                <Label htmlFor="tax">GanaciaPorcentaje (%)</Label>
                 <Input
-                  id="profit"
+                  id="tax"
                   type="number"
                   min="0"
                   max="100"
@@ -240,54 +240,89 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-
+            
             <div className="space-y-4">
               <Label>Ingredients</Label>
               {formData.ingredients.map((ing, index) => (
                 <div key={index} className="flex flex-col sm:flex-row gap-4">
                   <div className="flex-grow">
-                    <Select
-                      value={ing.ingredientId.toString()}
-                      onValueChange={(value) => {
-                        const newIngredients = [...formData.ingredients];
-                        newIngredients[index].ingredientId = parseInt(value);
-                        setFormData({ ...formData, ingredients: newIngredients });
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select ingredient" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {ingredients.map((ingredient) => (
-                          <SelectItem key={ingredient.id} value={ingredient.id.toString()}>
-                            {ingredient.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex flex-col">
-                    <Label>Cantidad (kg/unidad)</Label>
-                    <Input
-                      type="number"
-                      min="0.1"
-                      step="0.1"
-                      value={ing.quantity}
-                      onChange={(e) => {
-                        const newIngredients = [...formData.ingredients];
-                        newIngredients[index].quantity = parseFloat(e.target.value);
-                        setFormData({ ...formData, ingredients: newIngredients });
-                      }}
-                      placeholder="Quantity"
-                      className="flex-grow"
-                    />
-                  </div>
+  <Select
+    value={ing.ingredientId.toString()}
+    onValueChange={(value) => {
+      const newIngredients = [...formData.ingredients];
+      newIngredients[index].ingredientId = parseInt(value);
+      setFormData({ ...formData, ingredients: newIngredients });
+    }}
+  >
+    <SelectTrigger>
+      <SelectValue placeholder="Select ingredient" />
+    </SelectTrigger>
+    <SelectContent>
+      {ingredients.map((ingredient) => (
+        <SelectItem
+          key={ingredient.id}
+          value={ingredient.id.toString()}
+        >
+          {ingredient.name}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+{/*                 
+                  <Select se comento el select porque daba error
+                    value={ing.ingredientId.toString()}
+                    onValueChange={(value) => {
+                      const newIngredients = [...formData.ingredients];
+                      newIngredients[index].ingredientId = parseInt(value);
+                      setFormData({ ...formData, ingredients: newIngredients });
+                    }}
+                    className="flex-grow"
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select ingredient" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ingredients.map((ingredient) => (
+                        <SelectItem
+                          key={ingredient.id}
+                          value={ingredient.id.toString()}
+                        >
+                          {ingredient.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select> */}
+              <Label>Cantidad(kg/unidad)</Label>
+                  <Input
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    value={ing.quantity}
+                    onChange={(e) => {
+                      const newIngredients = [...formData.ingredients];
+                      newIngredients[index].quantity = parseFloat(
+                        e.target.value
+                      );
+                      setFormData({
+                        ...formData,
+                        ingredients: newIngredients,
+                      });
+                    }}
+                    placeholder="Quantity"
+                    className="flex-grow"
+                  />
                   <Button
                     type="button"
                     variant="destructive"
                     onClick={() => {
-                      const newIngredients = formData.ingredients.filter((_, i) => i !== index);
-                      setFormData({ ...formData, ingredients: newIngredients });
+                      const newIngredients = formData.ingredients.filter(
+                        (_, i) => i !== index
+                      );
+                      setFormData({
+                        ...formData,
+                        ingredients: newIngredients,
+                      });
                     }}
                     className="w-full sm:w-auto"
                   >
@@ -301,7 +336,10 @@ export default function Dashboard() {
                 onClick={() =>
                   setFormData({
                     ...formData,
-                    ingredients: [...formData.ingredients, { ingredientId: 0, quantity: 1 }],
+                    ingredients: [
+                      ...formData.ingredients,
+                      { ingredientId: 0, quantity: 1 },
+                    ],
                   })
                 }
                 className="w-full sm:w-auto"
@@ -311,7 +349,12 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row justify-end gap-4">
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)} className="w-full sm:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
             <Button type="submit" className="w-full sm:w-auto">
@@ -338,9 +381,8 @@ export default function Dashboard() {
                   name: product.name,
                   portions: product.portions,
                   tax: product.tax,
-                  profitAmount: product.profitAmount || 0,  // Añade un valor predeterminado si es necesario
-
                   profitPercentage: product.profitPercentage,
+                  profitAmount: product.profitAmount,
                   ingredients: product.ingredients.map((ing) => ({
                     ingredientId: ing.ingredient.id,
                     quantity: ing.quantity,
@@ -352,8 +394,13 @@ export default function Dashboard() {
             >
               <PencilIcon className="m-2 h-4 w-4" />
             </Button>
-            <Button variant="destructive" size="icon" onClick={() => handleDelete(product.id)} className="w-full sm:w-auto">
-              <Trash2Icon className="m-2 h-4 w-4" />
+            <Button
+              variant="destructive"
+              size="icon"
+              onClick={() => handleDelete(product.id)}
+              className="w-full sm:w-auto"
+            >
+              <Trash2Icon className=" m-2 h-4 w-4" />
             </Button>
           </div>
         </CardHeader>
@@ -361,28 +408,56 @@ export default function Dashboard() {
           <div className="grid grid-cols-2 sm:grid-cols-7 gap-7 sm:gap-7 mb-4">
             <div>
               <p className="text-sm text-muted-foreground">Portions</p>
-              <p className="text-lg sm:text-2xl font-bold">{product.portions}</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                {product.portions}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Cost/Portion</p>
-              <p className="text-lg sm:text-2xl font-bold">${product.costPerPortion.toFixed(1)}</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.costPerPortion.toFixed(1)}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Impuesto(%)</p>
-              <p className="text-lg sm:text-2xl font-bold">{product.tax} %</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                {product.tax} %
+              </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Ganancia (%)</p>
-              <p className="text-lg sm:text-2xl font-bold">{product.profitPercentage} %</p>
+              <p className="text-sm text-muted-foreground">Ganancia Esperada(%)</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                {product.profitPercentage} %
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Ganancia($)</p>
+              <p className="text-lg sm:text-2xl font-bold relative group">
+  $ {product.profitAmount ? product.profitAmount.toFixed(1) : '0.0'}
+  <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+    Más información sobre la ganancia
+  </span>
+</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Final Price</p>
-              <p className="text-lg sm:text-2xl font-bold">${product.finalPrice.toFixed(1)}</p>
+              <p className="text-lg sm:text-2xl font-bold relative group">
+  $ {product.finalPrice ? product.finalPrice.toFixed(1) : '0.0'}
+  <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+    Impuesto+Precio sin impuesto
+  </span>
+</p>
+              {/* <p className="text-lg sm:text-2xl font-bold">
+                ${product.finalPrice.toFixed(1)}
+              </p> */}
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Redondeo</p>
-              <p className="text-lg sm:text-2xl font-bold">${product.roundedPrice.toFixed(1)}</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.roundedPrice.toFixed(1)}
+              </p>
             </div>
+
           </div>
           <Collapsible>
             <CollapsibleTrigger className="flex items-center text-sm text-muted-foreground hover:text-foreground">
@@ -404,8 +479,10 @@ export default function Dashboard() {
                     <TableRow key={ing.ingredient.id}>
                       <TableCell>{ing.ingredient.name}</TableCell>
                       <TableCell>{ing.quantity}</TableCell>
-                      <TableCell>${ing.pricePerUnit.toFixed(1)}</TableCell>
-                      <TableCell>${ing.finalPrice.toFixed(1)}</TableCell>
+                      <TableCell>${ing.ingredient.price.toFixed(1)}</TableCell>
+                      <TableCell>
+                        ${(ing.quantity * ing.ingredient.price).toFixed(1)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -417,7 +494,6 @@ export default function Dashboard() {
     ))}
   </div>
 </div>
-
 
   );
 }
