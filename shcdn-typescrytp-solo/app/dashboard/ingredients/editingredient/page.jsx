@@ -86,7 +86,7 @@
 //   price: '',
 //   category: '',
 //   status: '',
-  
+
 // });
 // useEffect(() => {
 //   const ingredientId = 'papa'; // Cambia esto según cómo obtengas el ID del ingrediente (ej. de la URL)
