@@ -45,7 +45,7 @@
 // } from "@/components/ui/tabs"
 // import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-// export default function Ingredients() {
+ function Ingredients() {
 //   const [ingredients, setIngredients] = useState([]);
 //   const [selectedIngredient, setSelectedIngredient] = useState(null);
 //   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -230,7 +230,7 @@
 //       )}
 //     </div>
 //   )
-// }
+}
 // //CODIGO MODULADO
 // // 'use client'
 // // import { useEffect, useState } from 'react';
@@ -542,3 +542,4 @@
 // //     </div>
 // //   )
 // // }
+export default Ingredients
