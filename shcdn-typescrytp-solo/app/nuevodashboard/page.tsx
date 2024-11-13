@@ -338,6 +338,8 @@ export default function Dashboard() {
                   name: product.name,
                   portions: product.portions,
                   tax: product.tax,
+                  profitAmount: product.profitAmount || 0,  // Añade un valor predeterminado si es necesario
+
                   profitPercentage: product.profitPercentage,
                   ingredients: product.ingredients.map((ing) => ({
                     ingredientId: ing.ingredient.id,
