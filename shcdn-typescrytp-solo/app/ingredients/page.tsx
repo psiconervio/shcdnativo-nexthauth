@@ -15,6 +15,6 @@ export default function IngredientsPage() {
   {/* <IngredientManager className="mb-10" /> */}
   <br></br>
   {/* <ProductManager/> */}
-  <FormularioProducto productId={8}  />
+  {/* <FormularioProducto productId={8}  /> */}
   </>
 }
