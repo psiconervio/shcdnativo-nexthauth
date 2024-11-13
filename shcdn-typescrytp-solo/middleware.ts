@@ -2,6 +2,7 @@ export { default } from "next-auth/middleware";
 
 export const config = {
   matcher: [
+    //Poner RUTAS PROTEGIDAS
     "/dashboard/:path*",
     "/cursos/:path*",
   ],
