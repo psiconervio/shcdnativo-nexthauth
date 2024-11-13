@@ -129,7 +129,7 @@ export default function Dashboard() {
       portions: 1,
       tax: 19,
       profitPercentage: 0, // Agrega un valor inicial para profitPercentage
-
+      profitAmount: 0, // Agrega un valor inicial para profitAmount
       ingredients: [{ ingredientId: 0, quantity: 1 }],
     });
     setEditingProduct(null);
