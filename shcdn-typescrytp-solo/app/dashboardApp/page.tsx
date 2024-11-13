@@ -22,7 +22,13 @@
 //   name: string;
 //   ingredients: ProductIngredient[];
 // }
-
+interface FormData {
+  name: string;
+  portions: number;
+  tax: number;
+  profitPercentage: number; // Asegúrate de que esta propiedad esté presente
+  ingredients: { ingredientId: number; quantity: number }[];
+}
  function CrudPage() {
 //   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 //   const [products, setProducts] = useState<Product[]>([]);
