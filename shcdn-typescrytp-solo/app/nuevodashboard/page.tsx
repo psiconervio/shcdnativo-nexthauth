@@ -1,5 +1,5 @@
 "use client";
-
+import * as Tooltip from '@radix-ui/react-tooltip';
 import { useEffect, useState } from "react";
 import { Plus, PencilIcon, Trash2Icon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -403,15 +403,24 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Ganancia($)</p>
-              <p className="text-lg sm:text-2xl font-bold">
-              $ {product.profitAmount ? product.profitAmount.toFixed(1) : '0.0'}
-              </p>
+              <p className="text-lg sm:text-2xl font-bold relative group">
+  $ {product.profitAmount ? product.profitAmount.toFixed(1) : '0.0'}
+  <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+    Más información sobre la ganancia
+  </span>
+</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Final Price</p>
-              <p className="text-lg sm:text-2xl font-bold">
+              <p className="text-lg sm:text-2xl font-bold relative group">
+  $ {product.finalPrice ? product.finalPrice.toFixed(1) : '0.0'}
+  <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+    Impuesto+Precio sin impuesto
+  </span>
+</p>
+              {/* <p className="text-lg sm:text-2xl font-bold">
                 ${product.finalPrice.toFixed(1)}
-              </p>
+              </p> */}
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Redondeo</p>
