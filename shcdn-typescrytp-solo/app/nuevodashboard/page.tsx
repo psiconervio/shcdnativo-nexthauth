@@ -243,7 +243,32 @@ export default function Dashboard() {
               <Label>Ingredients</Label>
               {formData.ingredients.map((ing, index) => (
                 <div key={index} className="flex flex-col sm:flex-row gap-4">
-                  <Select
+                  <div className="flex-grow">
+  <Select
+    value={ing.ingredientId.toString()}
+    onValueChange={(value) => {
+      const newIngredients = [...formData.ingredients];
+      newIngredients[index].ingredientId = parseInt(value);
+      setFormData({ ...formData, ingredients: newIngredients });
+    }}
+  >
+    <SelectTrigger>
+      <SelectValue placeholder="Select ingredient" />
+    </SelectTrigger>
+    <SelectContent>
+      {ingredients.map((ingredient) => (
+        <SelectItem
+          key={ingredient.id}
+          value={ingredient.id.toString()}
+        >
+          {ingredient.name}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+{/*                 
+                  <Select se comento el select porque daba error
                     value={ing.ingredientId.toString()}
                     onValueChange={(value) => {
                       const newIngredients = [...formData.ingredients];
@@ -265,7 +290,7 @@ export default function Dashboard() {
                         </SelectItem>
                       ))}
                     </SelectContent>
-                  </Select>
+                  </Select> */}
               <Label>Cantidad(kg/unidad)</Label>
                   <Input
                     type="number"
