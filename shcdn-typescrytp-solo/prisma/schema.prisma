@@ -40,8 +40,11 @@ model Product {
   costPerPortion    Float               // Costo calculado por porción
   priceWithoutTax   Float               // Precio antes de impuestos
   tax               Float               // Impuesto
+  //El finalPrice de cada ingrediente representa el costo total de ese ingrediente en el producto.
   finalPrice        Float               // Precio final con impuestos
   roundedPrice      Float               // Precio redondeado
+  profitPercentage  Float?             // Porcentaje de ganancia
+  profitAmount      Float?              // Resultado de ganancia calculado (opcional)
   ingredients       ProductIngredient[]  // Relación con ingredientes
 }
 

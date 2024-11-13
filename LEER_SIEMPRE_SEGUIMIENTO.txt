@@ -15,3 +15,9 @@ modificar handle para modificar el producto
 poder modificar forumlar iode producto
 
 18569
+pruebaapi
+
+nuevoproducto 
+queso =11378
+4.557
+15935

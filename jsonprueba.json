@@ -1,0 +1,44 @@
+{
+  "id": 31,
+  "name": "UltimoProductoApi",
+  "portions": 2,
+  "costPerPortion": 631.55,
+  "priceWithoutTax": 1263.1,
+  "tax": 10,
+  "finalPrice": 1389.41,
+  "roundedPrice": 1389,
+  "profitPercentage": 50,
+  "profitAmount": 315.775,
+  "ingredients": [
+    {
+      "id": 186,
+      "productId": 31,
+      "ingredientId": 2,
+      "quantity": 2,
+      "pricePerUnit": 506.55,
+      "finalPrice": 1013.1,
+      "ingredient": {
+        "id": 2,
+        "name": "Harina",
+        "unit": "kg",
+        "price": 506.55,
+        "quantity": 50
+      }
+    },
+    {
+      "id": 187,
+      "productId": 31,
+      "ingredientId": 1,
+      "quantity": 2,
+      "pricePerUnit": 125,
+      "finalPrice": 250,
+      "ingredient": {
+        "id": 1,
+        "name": "Huevos unidad",
+        "unit": "unidad",
+        "price": 125,
+        "quantity": 100
+      }
+    }
+  ]
+}
