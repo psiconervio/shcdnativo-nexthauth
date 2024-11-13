@@ -264,7 +264,7 @@ export default function Dashboard() {
                       ))}
                     </SelectContent>
                   </Select>
-              <Label>Cantidad(grms/unidad)</Label>
+              <Label>Cantidad(kg/unidad)</Label>
                   <Input
                     type="number"
                     min="0.1"
