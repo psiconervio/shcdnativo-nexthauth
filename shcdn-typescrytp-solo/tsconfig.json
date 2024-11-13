@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
      "baseUrl": ".",
+     "noImplicitAny": false,
     "incremental": true,
     "plugins": [
       {
