@@ -1,4 +1,5 @@
 // app/api/products/route.ts
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
