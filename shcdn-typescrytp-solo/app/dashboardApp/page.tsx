@@ -23,7 +23,7 @@
 //   ingredients: ProductIngredient[];
 // }
 
-// export default function CrudPage() {
+ function CrudPage() {
 //   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 //   const [products, setProducts] = useState<Product[]>([]);
 //   const [ingredientForm, setIngredientForm] = useState<Partial<Ingredient>>({});
@@ -260,7 +260,8 @@
 //       </section>
 //     </div>
 //   );
-// }
+}
+export default CrudPage
 
 
 
