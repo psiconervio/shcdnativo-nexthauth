@@ -69,6 +69,7 @@ export default function Dashboard() {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
+    id: 0,
     name: "",
     portions: 1,
     tax: 19,
@@ -95,22 +96,26 @@ export default function Dashboard() {
     setIngredients(data);
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/products", {
-        method: editingProduct ? "PUT" : "POST",
+      const url = editingProduct ? `/api/products/${formData.id}` : "/api/products";
+      const method = editingProduct ? "PUT" : "POST";
+  
+      const response = await fetch(url, {
+        method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+  
       if (!response.ok) throw new Error("Failed to save product");
-
+  
       toast({
         title: `Product ${editingProduct ? "updated" : "created"} successfully`,
         variant: "default",
       });
-
+  
       setIsOpen(false);
       resetForm();
       fetchProducts();
@@ -122,9 +127,37 @@ export default function Dashboard() {
       });
     }
   };
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch("/api/products/", {
+  //       method: editingProduct ? "PUT" : "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     if (!response.ok) throw new Error("Failed to save product");
+
+  //     toast({
+  //       title: `Product ${editingProduct ? "updated" : "created"} successfully`,
+  //       variant: "default",
+  //     });
+
+  //     setIsOpen(false);
+  //     resetForm();
+  //     fetchProducts();
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to save product",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
   const resetForm = () => {
     setFormData({
+      id:0,
       name: "",
       portions: 1,
       tax: 19,
@@ -135,6 +168,7 @@ export default function Dashboard() {
     setEditingProduct(null);
   };
 
+  
   const handleDelete = async (id: number) => {
     try {
       const response = await fetch(`/api/products/${id}`, {
@@ -378,6 +412,7 @@ export default function Dashboard() {
               onClick={() => {
                 setEditingProduct(product);
                 setFormData({
+                  id:product.id,
                   name: product.name,
                   portions: product.portions,
                   tax: product.tax,

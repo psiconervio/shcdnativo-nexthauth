@@ -17,22 +17,81 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   return NextResponse.json(product);
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const data = await req.json();
-  const updatedProduct = await prisma.product.update({
-    where: { id: Number(params.id) },
-    data: {
-      name: data.name,
-      portions: data.portions,
-      costPerPortion: data.costPerPortion,
-      priceWithoutTax: data.priceWithoutTax,
-      tax: data.tax,
-      finalPrice: data.finalPrice,
-      roundedPrice: data.roundedPrice,
-    },
-  });
-  return NextResponse.json(updatedProduct);
+interface IngredientData {
+  ingredientId: number;
+  quantity: number;
 }
+
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const productId = parseInt(params.id);
+
+    if (isNaN(productId)) {
+      return NextResponse.json({ error: 'Invalid product ID.' }, { status: 400 });
+    }
+
+    const data: { ingredients: IngredientData[] } = await req.json();
+
+    if (!data.ingredients) {
+      return NextResponse.json({ error: 'Missing ingredients data.' }, { status: 400 });
+    }
+
+    const ingredientData = await Promise.all(
+      data.ingredients.map(async (ingredient) => {
+        const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
+        const finalPrice = ingredient.quantity * pricePerUnit;
+        return {
+          quantity: ingredient.quantity,
+          pricePerUnit: pricePerUnit,
+          finalPrice: finalPrice,
+          ingredient: {
+            connect: { id: ingredient.ingredientId },
+          },
+        };
+      })
+    );
+
+    // Update the product's ingredients
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        ingredients: {
+          deleteMany: {}, // Remove existing ingredients
+          create: ingredientData,
+        },
+      },
+    });
+
+    return NextResponse.json(updatedProduct);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'An error occurred while updating the product.' }, { status: 500 });
+  }
+}
+
+async function getPricePerUnit(ingredientId: number): Promise<number> {
+  const ingredient = await prisma.ingredient.findUnique({
+    where: { id: ingredientId },
+    select: { price: true },
+  });
+  return ingredient?.price || 0;
+}
+// export async function PUT(req: Request, { params }: { params: { id: string } }) {
+//   const data = await req.json();
+//   const updatedProduct = await prisma.product.update({
+//     where: { id: Number(params.id) },
+//     data: {
+//       name: data.name,
+//       portions: data.portions,
+//       costPerPortion: data.costPerPortion,
+//       priceWithoutTax: data.priceWithoutTax,
+//       tax: data.tax,
+//       finalPrice: data.finalPrice,
+//       roundedPrice: data.roundedPrice,
+//     },
+//   });
+//   return NextResponse.json(updatedProduct);
+// }
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const deletedProduct = await prisma.product.delete({

@@ -15,13 +15,7 @@ interface ProductData {
   ingredients: IngredientData[];
 }
 
-async function getPricePerUnit(ingredientId: number): Promise<number> {
-  const ingredient = await prisma.ingredient.findUnique({
-    where: { id: ingredientId },
-    select: { price: true },
-  });
-  return ingredient?.price || 0;
-}
+
 
 export async function GET() {
   try {
@@ -39,6 +33,14 @@ export async function GET() {
     console.error(error);
     return NextResponse.json({ error: 'Error al obtener los productos.' }, { status: 500 });
   }
+}
+
+async function getPricePerUnit(ingredientId: number): Promise<number> {
+  const ingredient = await prisma.ingredient.findUnique({
+    where: { id: ingredientId },
+    select: { price: true },
+  });
+  return ingredient?.price || 0;
 }
 
 export async function POST(req: Request) {
