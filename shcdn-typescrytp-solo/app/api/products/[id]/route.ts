@@ -36,10 +36,13 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       return NextResponse.json({ error: 'Missing ingredients data.' }, { status: 400 });
     }
 
+    let totalIngredientsCost = 0;
+
     const ingredientData = await Promise.all(
       data.ingredients.map(async (ingredient) => {
         const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
         const finalPrice = ingredient.quantity * pricePerUnit;
+        totalIngredientsCost += finalPrice;
         return {
           quantity: ingredient.quantity,
           pricePerUnit: pricePerUnit,
@@ -51,7 +54,22 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       })
     );
 
-    // Update the product's ingredients
+    // Calculate new prices
+    const existingProduct = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { portions: true, tax: true, profitPercentage: true },
+    });
+
+    if (!existingProduct) {
+      return NextResponse.json({ error: 'Product not found.' }, { status: 404 });
+    }
+
+    const { portions, tax, profitPercentage } = existingProduct;
+    const finalPrice = totalIngredientsCost * (1 + tax / 100);
+    const costPerPortion = totalIngredientsCost / portions;
+    const profitAmount = costPerPortion * (profitPercentage / 100);
+
+    // Update the product's ingredients and prices
     const updatedProduct = await prisma.product.update({
       where: { id: productId },
       data: {
@@ -59,6 +77,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
           deleteMany: {}, // Remove existing ingredients
           create: ingredientData,
         },
+        costPerPortion: costPerPortion,
+        priceWithoutTax: totalIngredientsCost,
+        finalPrice: finalPrice,
+        roundedPrice: Math.round(finalPrice),
+        profitAmount: profitAmount,
       },
     });
 

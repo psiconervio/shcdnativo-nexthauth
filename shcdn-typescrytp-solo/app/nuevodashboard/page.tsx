@@ -71,7 +71,7 @@ export default function Dashboard() {
   const [formData, setFormData] = useState({
     id: 0,
     name: "",
-    portions: 1,
+    portions: 0,
     tax: 19,
     profitPercentage: 100,
     profitAmount: 0, // Agregar esta línea
@@ -97,36 +97,40 @@ export default function Dashboard() {
   };
 
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const url = editingProduct ? `/api/products/${formData.id}` : "/api/products";
-      const method = editingProduct ? "PUT" : "POST";
-  
-      const response = await fetch(url, {
-        method: method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-  
-      if (!response.ok) throw new Error("Failed to save product");
-  
-      toast({
-        title: `Product ${editingProduct ? "updated" : "created"} successfully`,
-        variant: "default",
-      });
-  
-      setIsOpen(false);
-      resetForm();
-      fetchProducts();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save product",
-        variant: "destructive",
-      });
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    // Imprime el estado antes de enviarlo para ver su contenido
+    console.log("Submitting formData:", formData);
+    
+    const url = editingProduct ? `/api/products/${formData.id}` : "/api/products";
+    const method = editingProduct ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) throw new Error("Failed to save product");
+
+    toast({
+      title: `Product ${editingProduct ? "updated" : "created"} successfully`,
+      variant: "default",
+    });
+
+    setIsOpen(false);
+    fetchProducts();
+    resetForm();
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: "Failed to save product",
+      variant: "destructive",
+    });
+  }
+};
+
   // const handleSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
   //   try {
@@ -159,7 +163,7 @@ export default function Dashboard() {
     setFormData({
       id:0,
       name: "",
-      portions: 1,
+      portions: 0,
       tax: 19,
       profitPercentage: 0, // Agrega un valor inicial para profitPercentage
       profitAmount: 0, // Agrega un valor inicial para profitAmount
@@ -529,6 +533,5 @@ export default function Dashboard() {
     ))}
   </div>
 </div>
-
   );
 }
