@@ -200,12 +200,12 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
 <div className="container mx-auto py-10 px-4 sm:px-0">
   <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
-    <h1 className="text-3xl sm:text-4xl font-bold">Product Management</h1>
+    <h1 className="text-3xl sm:text-4xl font-bold">Gestion de Productos</h1>
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button onClick={resetForm} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
-          Add Product
+          Añadir Producto
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full sm:max-w-[600px]">
@@ -499,10 +499,14 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">PreciofinalPorcion</p>
-              <p className="text-lg sm:text-2xl font-bold">
-                ${product.pricePerPortion}
-              </p>
+              <p className="text-sm text-muted-foreground">PreciofinalPorcionC/U</p>
+              <p className="text-lg sm:text-2xl font-bold relative group">
+  $ {product.pricePerPortion ? product.pricePerPortion.toFixed(1) : '0.0'}
+  <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+    PrecioFinal por porcion
+  </span>
+</p>
+              
             </div>
 
           </div>
