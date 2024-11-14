@@ -45,6 +45,7 @@ model Product {
   roundedPrice      Float               // Precio redondeado
   profitPercentage  Float?             // Porcentaje de ganancia
   profitAmount      Float?              // Resultado de ganancia calculado (opcional)
+  pricePerPortion   Float?               // Nuevo campo: Precio por porción final con ganancia e impuestos
   ingredients       ProductIngredient[]  // Relación con ingredientes
 }
 

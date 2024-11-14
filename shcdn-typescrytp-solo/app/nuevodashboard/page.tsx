@@ -1,5 +1,4 @@
 "use client";
-import * as Tooltip from '@radix-ui/react-tooltip';
 import { useEffect, useState } from "react";
 import { Plus, PencilIcon, Trash2Icon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,6 +57,7 @@ interface Product {
   roundedPrice: number;
   profitPercentage : number;
   profitAmount: number;
+  pricePerPortion: number,
   ingredients: ProductIngredient[];
 }
 
@@ -75,7 +75,7 @@ export default function Dashboard() {
     tax: 19,
     profitPercentage: 100,
     profitAmount: 0, // Agregar esta línea
-
+    pricePerPortion: 0,
     ingredients: [{ ingredientId: 0, quantity: 1 }],
   });
 
@@ -164,9 +164,10 @@ const handleSubmit = async (e: React.FormEvent) => {
       id:0,
       name: "",
       portions: 0,
-      tax: 19,
+      tax: 10,
       profitPercentage: 0, // Agrega un valor inicial para profitPercentage
       profitAmount: 0, // Agrega un valor inicial para profitAmount
+      pricePerPortion: 0,
       ingredients: [{ ingredientId: 0, quantity: 1 }],
     });
     setEditingProduct(null);
@@ -422,6 +423,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   tax: product.tax,
                   profitPercentage: product.profitPercentage,
                   profitAmount: product.profitAmount,
+                  pricePerPortion: product.pricePerPortion,
                   ingredients: product.ingredients.map((ing) => ({
                     ingredientId: ing.ingredient.id,
                     quantity: ing.quantity,
@@ -452,7 +454,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Cost/Portion</p>
+              <p className="text-sm text-muted-foreground">Cost/Elab/Porcion</p>
               <p className="text-lg sm:text-2xl font-bold">
                 ${product.costPerPortion.toFixed(1)}
               </p>
@@ -479,11 +481,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Final Price</p>
+              <p className="text-sm text-muted-foreground">Precio Final</p>
               <p className="text-lg sm:text-2xl font-bold relative group">
   $ {product.finalPrice ? product.finalPrice.toFixed(1) : '0.0'}
   <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-    Impuesto+Precio sin impuesto
+    PrecioProducto=Impuesto+Ganacia
   </span>
 </p>
               {/* <p className="text-lg sm:text-2xl font-bold">
@@ -494,6 +496,12 @@ const handleSubmit = async (e: React.FormEvent) => {
               <p className="text-sm text-muted-foreground">Redondeo</p>
               <p className="text-lg sm:text-2xl font-bold">
                 ${product.roundedPrice.toFixed(1)}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">PreciofinalPorcion</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.pricePerPortion}
               </p>
             </div>
 
