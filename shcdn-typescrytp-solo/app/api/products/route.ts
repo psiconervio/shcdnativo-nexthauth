@@ -69,13 +69,17 @@ export async function POST(req: Request) {
     // Calcular pricePerPortion (precio por porción final con ganancia e impuestos incluidos)
     const pricePerPortion = finalPrice / data.portions;
 
+    //precio unidad sin impuestos 
+    const preciosImpuestos = totalIngredientsCost
+
     // Crear el nuevo producto
     const newProduct = await prisma.product.create({
       data: {
         name: data.name,
         portions: data.portions,
         costPerPortion: costPerPortion,
-        priceWithoutTax: totalIngredientsCost,
+        //precio unidad sin impuestos
+        priceWithoutTax: preciosImpuestos,
         tax: data.tax,
         finalPrice: finalPrice,
         roundedPrice: Math.round(finalPrice),

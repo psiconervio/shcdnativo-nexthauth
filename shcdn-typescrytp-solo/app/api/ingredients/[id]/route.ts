@@ -23,11 +23,34 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   return NextResponse.json(updatedIngredient);
 }
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const deletedIngredient = await prisma.ingredient.delete({
-    where: { id: Number(params.id) },
-  });
-  return NextResponse.json(deletedIngredient);
+  const ingredientId = Number(params.id);
+
+  try {
+    // Eliminar relaciones en la tabla intermedia
+    await prisma.productIngredient.deleteMany({
+      where: { ingredientId },
+    });
+
+    // Eliminar el ingrediente
+    const deletedIngredient = await prisma.ingredient.delete({
+      where: { id: ingredientId },
+    });
+
+    return NextResponse.json(deletedIngredient);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: 'No se pudo eliminar el ingrediente.' },
+      { status: 500 }
+    );
+  }
 }
+// export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+//   const deletedIngredient = await prisma.ingredient.delete({
+//     where: { id: Number(params.id) },
+//   });
+//   return NextResponse.json(deletedIngredient);
+// }
 
 
 // // app/api/ingredients/route.ts

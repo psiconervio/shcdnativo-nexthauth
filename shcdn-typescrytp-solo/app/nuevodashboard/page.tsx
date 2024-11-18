@@ -72,7 +72,7 @@ export default function Dashboard() {
     id: 0,
     name: "",
     portions: 0,
-    tax: 19,
+    tax: 10,
     profitPercentage: 100,
     profitAmount: 0, // Agregar esta línea
     pricePerPortion: 0,
@@ -245,7 +245,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tax">Impuesto (%)</Label>
+                <Label htmlFor="tax">ImpuestoPorPorcion(%)</Label>
                 <Input
                   id="tax"
                   type="number"
@@ -417,13 +417,13 @@ const handleSubmit = async (e: React.FormEvent) => {
               onClick={() => {
                 setEditingProduct(product);
                 setFormData({
-                  id:product.id,
+                  // id:product.id,
                   name: product.name,
                   portions: product.portions,
                   tax: product.tax,
                   profitPercentage: product.profitPercentage,
-                  profitAmount: product.profitAmount,
-                  pricePerPortion: product.pricePerPortion,
+                  // profitAmount: product.profitAmount,
+                  // pricePerPortion: product.pricePerPortion,
                   ingredients: product.ingredients.map((ing) => ({
                     ingredientId: ing.ingredient.id,
                     quantity: ing.quantity,
@@ -448,9 +448,15 @@ const handleSubmit = async (e: React.FormEvent) => {
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-7 gap-7 sm:gap-7 mb-4">
             <div>
-              <p className="text-sm text-muted-foreground">Portions</p>
+              <p className="text-sm text-muted-foreground">Porciones</p>
               <p className="text-lg sm:text-2xl font-bold">
                 {product.portions}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Cost/Elab/totalPor</p>
+              <p className="text-lg sm:text-2xl font-bold">
+                ${product.priceWithoutTax.toFixed(1)}
               </p>
             </div>
             <div>
@@ -460,7 +466,19 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Impuesto(%)</p>
+              <p className="text-sm text-muted-foreground">PrecioPorcionS/I</p>
+              <p className="text-lg sm:text-2xl font-bold relative group">
+  {/* $ {product.priceWithoutTax ? product.priceWithoutTax.toFixed(1) : '0.0'} */}
+  <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+    con ganacias e impuestos
+  </span>
+</p>
+              {/* <p className="text-lg sm:text-2xl font-bold">
+                ${product.finalPrice.toFixed(1)}
+              </p> */}
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">ImpuestosPorPorcion(%)</p>
               <p className="text-lg sm:text-2xl font-bold">
                 {product.tax} %
               </p>
@@ -472,7 +490,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Ganancia($)</p>
+              <p className="text-sm text-muted-foreground">GananciaPorPorcionC/IYG</p>
               <p className="text-lg sm:text-2xl font-bold relative group">
   $ {product.profitAmount ? product.profitAmount.toFixed(1) : '0.0'}
   <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
@@ -481,17 +499,16 @@ const handleSubmit = async (e: React.FormEvent) => {
 </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Precio Final</p>
+              <p className="text-sm text-muted-foreground">PrecioVentaPorcionC/IYG</p>
               <p className="text-lg sm:text-2xl font-bold relative group">
-  $ {product.finalPrice ? product.finalPrice.toFixed(1) : '0.0'}
+  $ {product.pricePerPortion ? product.pricePerPortion.toFixed(1) : '0.0'}
   <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-    PrecioProducto=Impuesto+Ganacia
+    Con ganacias e impuestos
   </span>
 </p>
-              {/* <p className="text-lg sm:text-2xl font-bold">
-                ${product.finalPrice.toFixed(1)}
-              </p> */}
+              
             </div>
+
             <div>
               <p className="text-sm text-muted-foreground">Redondeo</p>
               <p className="text-lg sm:text-2xl font-bold">
@@ -499,15 +516,18 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">PreciofinalPorcionC/U</p>
+              <p className="text-sm text-muted-foreground">PrecioTodasPorcionC/IYG</p>
               <p className="text-lg sm:text-2xl font-bold relative group">
-  $ {product.pricePerPortion ? product.pricePerPortion.toFixed(1) : '0.0'}
+  $ {product.finalPrice ? product.finalPrice.toFixed(1) : '0.0'}
   <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-    PrecioFinal por porcion
+    con ganacias e impuestos
   </span>
 </p>
-              
+              {/* <p className="text-lg sm:text-2xl font-bold">
+                ${product.finalPrice.toFixed(1)}
+              </p> */}
             </div>
+
 
           </div>
           <Collapsible>
