@@ -40,7 +40,6 @@ async function getPricePerUnit(ingredientId: number): Promise<number> {
   });
   return ingredient?.price || 0;
 }
-
 export async function POST(req: Request) {
   try {
     // Validar datos de entrada
@@ -63,14 +62,17 @@ export async function POST(req: Request) {
     // Calcular profitAmount como el porcentaje de profitPercentage aplicado a costPerPortion
     const profitAmount = costPerPortion * (data.profitPercentage / 100);
 
-    // Agregar profitAmount al precio final
-    const finalPrice = (totalIngredientsCost * (1 + data.tax / 100)) + (profitAmount * data.portions);
+    // Calcular el precio base sumando totalIngredientsCost con el beneficio total
+    const basePrice = totalIngredientsCost + (profitAmount * data.portions);
+
+    // Agregar el porcentaje de impuesto al precio base
+    const finalPrice = basePrice * (1 + data.tax / 100);
 
     // Calcular pricePerPortion (precio por porción final con ganancia e impuestos incluidos)
     const pricePerPortion = finalPrice / data.portions;
 
-    //precio unidad sin impuestos 
-    const preciosImpuestos = totalIngredientsCost
+    // Precio sin impuestos (solo el costo de los ingredientes)
+    const priceWithoutTax = totalIngredientsCost;
 
     // Crear el nuevo producto
     const newProduct = await prisma.product.create({
@@ -78,14 +80,13 @@ export async function POST(req: Request) {
         name: data.name,
         portions: data.portions,
         costPerPortion: costPerPortion,
-        //precio unidad sin impuestos
-        priceWithoutTax: preciosImpuestos,
+        priceWithoutTax: priceWithoutTax,
         tax: data.tax,
         finalPrice: finalPrice,
         roundedPrice: Math.round(finalPrice),
         profitPercentage: data.profitPercentage,
         profitAmount: profitAmount,
-        pricePerPortion: pricePerPortion,  // Nuevo campo añadido
+        pricePerPortion: pricePerPortion, // Nuevo campo añadido
         ingredients: {
           create: await Promise.all(data.ingredients.map(async (ingredient) => {
             const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
@@ -108,6 +109,73 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Ocurrió un error procesando los datos.' }, { status: 500 });
   }
 }
+// export async function POST(req: Request) {
+//   try {
+//     // Validar datos de entrada
+//     const data: ProductData = await req.json();
+
+//     if (!data.name || !data.portions || !data.tax || !data.profitPercentage || !data.ingredients) {
+//       return NextResponse.json({ error: 'Faltan datos requeridos.' }, { status: 400 });
+//     }
+
+//     let totalIngredientsCost = 0;
+
+//     // Usa un ciclo for...of para manejar las promesas de forma más sencilla
+//     for (const ingredient of data.ingredients) {
+//       const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
+//       totalIngredientsCost += ingredient.quantity * pricePerUnit;
+//     }
+
+//     const costPerPortion = totalIngredientsCost / data.portions;
+
+//     // Calcular profitAmount como el porcentaje de profitPercentage aplicado a costPerPortion
+//     const profitAmount = costPerPortion * (data.profitPercentage / 100);
+
+//     // Agregar profitAmount al precio final
+//     const finalPrice = (totalIngredientsCost * (1 + data.tax / 100)) + (profitAmount * data.portions);
+
+//     // Calcular pricePerPortion (precio por porción final con ganancia e impuestos incluidos)
+//     const pricePerPortion = finalPrice / data.portions;
+
+//     //precio unidad sin impuestos 
+//     const preciosImpuestos = totalIngredientsCost
+
+//     // Crear el nuevo producto
+//     const newProduct = await prisma.product.create({
+//       data: {
+//         name: data.name,
+//         portions: data.portions,
+//         costPerPortion: costPerPortion,
+//         //precio unidad sin impuestos
+//         priceWithoutTax: preciosImpuestos,
+//         tax: data.tax,
+//         finalPrice: finalPrice,
+//         roundedPrice: Math.round(finalPrice),
+//         profitPercentage: data.profitPercentage,
+//         profitAmount: profitAmount,
+//         pricePerPortion: pricePerPortion,  // Nuevo campo añadido
+//         ingredients: {
+//           create: await Promise.all(data.ingredients.map(async (ingredient) => {
+//             const pricePerUnit = await getPricePerUnit(ingredient.ingredientId);
+//             return {
+//               quantity: ingredient.quantity,
+//               pricePerUnit: pricePerUnit,
+//               finalPrice: ingredient.quantity * pricePerUnit,
+//               ingredient: {
+//                 connect: { id: ingredient.ingredientId },
+//               },
+//             };
+//           })),
+//         },
+//       },
+//     });
+
+//     return NextResponse.json(newProduct);
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ error: 'Ocurrió un error procesando los datos.' }, { status: 500 });
+//   }
+// }
 
 // import { NextResponse } from 'next/server';
 // import prisma from '@/lib/db';
