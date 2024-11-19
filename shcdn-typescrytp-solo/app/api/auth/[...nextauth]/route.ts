@@ -44,7 +44,7 @@ const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-
+export default authOptions
 // //original
 // import NextAuth from "next-auth";
 // import CredentialsProvider from "next-auth/providers/credentials";
