@@ -4,7 +4,7 @@ export const config = {
   matcher: [
     //Poner RUTAS PROTEGIDAS
     // "/dashboard/:path*",
-    // "/cursos/:path*",
+    "/cursos/:path*",
   ],
 };
 
