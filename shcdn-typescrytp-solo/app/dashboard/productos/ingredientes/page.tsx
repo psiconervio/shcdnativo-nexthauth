@@ -32,7 +32,7 @@ interface Ingredient {
   quantity: number;
 }
 
-export default function IngredientsPage() {
+ function IngredientsPage() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -142,7 +142,7 @@ export default function IngredientsPage() {
   return (
     <div className="container mx-auto py-10 px-4 sm:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-0">Ingredients Management</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-0">Gestion de Ingredientes  </h1>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button onClick={resetForm}>
@@ -293,7 +293,7 @@ export default function IngredientsPage() {
     </div>
   );
 }
-
+export default IngredientsPage
 // "use client";
 
 // import { useState, useEffect } from "react";

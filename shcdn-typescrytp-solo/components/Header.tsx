@@ -93,14 +93,14 @@ export default function HeaderUno() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/dashboard/product/editproducts"
+                  href="/dashboard/productos/ingredientes"
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Orders</span>
+                  <span className="sr-only">Ingredientes</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent side="right">Ingredientes</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -178,25 +178,25 @@ export default function HeaderUno() {
                 <ModeToggle />
 
                 <Link
-                  href="#"
+                  href="/dashboard"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Home className="h-5 w-5" />
                   Dashboard
                 </Link>
                 <Link
-                  href="#"
+                  href="/dashboard/productos/ingredientes"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  Orders
+                  Ingredientes
                 </Link>
                 <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-foreground"
+                  href="/dashboard/productos"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground"
                 >
                   <Package className="h-5 w-5" />
-                  Products
+                  Productos
                 </Link>
                 <Link
                   href="/dashboard/ingredients"
@@ -225,7 +225,7 @@ export default function HeaderUno() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">Products</Link>
+                  <Link href="/dashboard/productos">Products</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
