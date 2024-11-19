@@ -1,9 +1,9 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import db from '@/lib/db';
 import bcrypt from 'bcrypt';
 
-const authOptions: AuthOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -39,14 +39,14 @@ const authOptions: AuthOptions = {
   pages: {
     signIn: "/auth/login",
   },
-  secret: process.env.NEXTAUTH_SECRET, // Asegúrate de tener esta variable definida en tu .env
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
-export const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
 
-// //original
+export { handler as GET, handler as POST };
+
+// //original andando de 10 error con el deploy al usarlo en header
 // import NextAuth from "next-auth";
 // import CredentialsProvider from "next-auth/providers/credentials";
 // import db from '@/lib/db'
