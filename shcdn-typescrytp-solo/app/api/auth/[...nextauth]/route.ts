@@ -42,9 +42,10 @@ const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET, // Asegúrate de tener esta variable definida en tu .env
 };
 
-const handler = NextAuth(authOptions);
+export const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-export { authOptions } 
+export default NextAuth(authOptions);
+
 // //original
 // import NextAuth from "next-auth";
 // import CredentialsProvider from "next-auth/providers/credentials";
