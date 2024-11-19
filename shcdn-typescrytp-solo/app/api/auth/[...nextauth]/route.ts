@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import db from '@/lib/db';
 import bcrypt from 'bcrypt';
 
-export const authOptions = {
+const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -17,9 +17,7 @@ export const authOptions = {
         }
 
         const userFound = await db.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
+          where: { email: credentials.email },
         });
 
         if (!userFound) throw new Error("No user found");
