@@ -454,13 +454,13 @@ const handleSubmit = async (e: React.FormEvent) => {
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Cost/Elab/totalPor</p>
+              <p className="text-sm text-muted-foreground">Cost/Elab/total</p>
               <p className="text-lg sm:text-2xl font-bold">
                 ${product.priceWithoutTax.toFixed(1)}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Cost/Elab/Porcion</p>
+              <p className="text-sm text-muted-foreground">Cost/Elab/porcion</p>
               <p className="text-lg sm:text-2xl font-bold">
                 ${product.costPerPortion.toFixed(1)}
               </p>
@@ -492,7 +492,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <div>
               <p className="text-sm text-muted-foreground">GananciaPorPorcionC/IYG</p>
               <p className="text-lg sm:text-2xl font-bold relative group">
-  $ {product.profitAmount ? product.profitAmount.toFixed(1) : '0.0'}
+  $ {product.profitAmount ? product.profitAmount.toFixed(0) : '0.0'}
   <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
     Más información sobre la ganancia
   </span>
