@@ -29,7 +29,7 @@ function LoginPage() {
 
   return (
     <div className="h-[calc(100vh-7rem)] flex justify-center items-center">
-      <form onSubmit={onSubmit} className="w-1/4">
+      <form onSubmit={onSubmit} className="w-1/2">
         {error && (
           <p className="bg-red-500 text-lg text-white p-3 rounded mb-2">{error}</p>
         )}

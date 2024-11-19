@@ -164,8 +164,8 @@ const handleSubmit = async (e: React.FormEvent) => {
       id:0,
       name: "",
       portions: 0,
-      tax: 10,
-      profitPercentage: 0, // Agrega un valor inicial para profitPercentage
+      tax: 3,
+      profitPercentage: 80, // Agrega un valor inicial para profitPercentage
       profitAmount: 0, // Agrega un valor inicial para profitAmount
       pricePerPortion: 0,
       ingredients: [{ ingredientId: 0, quantity: 1 }],
