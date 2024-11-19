@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 // import  {authOptions } from "@/app/api/auth/[...nextauth]/route";
-import  {authOptions } from "../app/api/auth/[...nextauth]/route";
+// import  {authOptions } from "../app/api/auth/[...nextauth]/route";
 import {
   File,
   Home,
@@ -65,7 +65,7 @@ import {
 import { ModeToggle } from "@/components/ModeToggle";
 
 export default async function HeaderUno() {
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
 
   return (
     <div>
@@ -265,13 +265,13 @@ export default async function HeaderUno() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {session?.user ? (
+              {/* {session?.user ? ( */}
                 <>
                   <DropdownMenuItem>
                     <Link href="/api/auth/signout">Logout</Link>
                   </DropdownMenuItem>
                 </>
-              ) : (
+              {/* ) : ( */}
                 <>
                   <DropdownMenuItem>
                     <Link href="/auth/login">Login</Link>
@@ -280,7 +280,7 @@ export default async function HeaderUno() {
                     <Link href="/auth/register">Register</Link>
                   </DropdownMenuItem>
                 </>
-              )}
+              {/* )} */}
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
