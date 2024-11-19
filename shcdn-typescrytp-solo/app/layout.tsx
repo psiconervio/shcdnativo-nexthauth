@@ -68,16 +68,16 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+// const geistSans = localFont({
+//   src: "./fonts/GeistVF.woff",
+//   variable: "--font-geist-sans",
+//   weight: "100 900",
+// });
+// const geistMono = localFont({
+//   src: "./fonts/GeistMonoVF.woff",
+//   variable: "--font-geist-mono",
+//   weight: "100 900",
+// });
 
 export const metadata: Metadata = {
   title: "Sicilian Pastas",
@@ -93,18 +93,18 @@ export default function RootLayout({
     <html lang="en" className="flex min-h-screen w-full flex-col bg-muted/40">
       <body
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          {/* <ThemeProvider
+          <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          > */}
+          >
         {/* <Header/> */}
 
         {children}
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -446,7 +446,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-7 gap-7 sm:gap-7 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-7 mb-4">
             <div>
               <p className="text-sm text-muted-foreground">Porciones</p>
               <p className="text-lg sm:text-2xl font-bold">
