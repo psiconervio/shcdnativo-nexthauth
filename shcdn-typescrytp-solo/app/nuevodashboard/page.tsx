@@ -417,13 +417,13 @@ const handleSubmit = async (e: React.FormEvent) => {
               onClick={() => {
                 setEditingProduct(product);
                 setFormData({
-                  // id:product.id,
+                  id:product.id,
                   name: product.name,
                   portions: product.portions,
                   tax: product.tax,
                   profitPercentage: product.profitPercentage,
-                  // profitAmount: product.profitAmount,
-                  // pricePerPortion: product.pricePerPortion,
+                  profitAmount: product.profitAmount,
+                  pricePerPortion: product.pricePerPortion,
                   ingredients: product.ingredients.map((ing) => ({
                     ingredientId: ing.ingredient.id,
                     quantity: ing.quantity,
