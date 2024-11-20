@@ -150,6 +150,7 @@ interface Ingredient {
               Add Ingredient
             </Button>
           </DialogTrigger>
+          <p className="mt-5 text-center justify-center items-center ">Al actualiza un ingrediente, se actualizan los productos relacionados con el ingrediente.</p>
           <DialogContent className="sm:max-w-[425px] w-full">
             <DialogHeader>
               <DialogTitle>
@@ -159,7 +160,7 @@ interface Ingredient {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">Nombre</Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -170,7 +171,7 @@ interface Ingredient {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="unit">Unit</Label>
+                  <Label htmlFor="unit">Unidad</Label>
                   <Input
                     id="unit"
                     value={formData.unit}
@@ -181,7 +182,7 @@ interface Ingredient {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="price">Price per Unit</Label>
+                  <Label htmlFor="price">Precio por Unidad</Label>
                   <Input
                     id="price"
                     type="number"
@@ -195,7 +196,7 @@ interface Ingredient {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="quantity">Quantity</Label>
+                  <Label htmlFor="quantity">Cantidad</Label>
                   <Input
                     id="quantity"
                     type="number"
@@ -231,7 +232,7 @@ interface Ingredient {
 
       <Card>
         <CardHeader>
-          <CardTitle>Ingredients List</CardTitle>
+          <CardTitle>Lista de Ingredientes</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -241,10 +242,10 @@ interface Ingredient {
               <Table className="min-w-full">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Unit</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Quantity</TableHead>
+                    <TableHead>Nombre</TableHead>
+                    <TableHead>Unidad</TableHead>
+                    <TableHead>Precio</TableHead>
+                    <TableHead>Cantidad</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>

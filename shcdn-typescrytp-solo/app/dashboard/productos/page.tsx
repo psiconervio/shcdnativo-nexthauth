@@ -533,15 +533,15 @@ const handleSubmit = async (e: React.FormEvent) => {
           <Collapsible>
             <CollapsibleTrigger className="flex items-center text-sm text-muted-foreground hover:text-foreground">
               <ChevronDown className="h-4 w-4 mr-1" />
-              Ingredients
+              Lista Ingredientes
             </CollapsibleTrigger>
             <CollapsibleContent>
               <Table className="w-full">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Ingredient</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Price/Unit</TableHead>
+                    <TableHead>Ingredientes</TableHead>
+                    <TableHead>Cantidad</TableHead>
+                    <TableHead>Precio/Unidad</TableHead>
                     <TableHead>Total</TableHead>
                   </TableRow>
                 </TableHeader>
