@@ -1,0 +1,54 @@
+Documentacion backend
+2da implementacion
+Estas son mis tablas, necesito agregar nuevas funcionalidades a mi app que solo tiene un modulo
+de produccion de productos, quiero que este nuevo modulo tenga otras tablas,
+pero puedan obtener los datos de estas tablas para futuras operaciones
+model Ingredient {
+  id        Int      @id @default(autoincrement())
+  name      String  @unique
+  unit      String      // Unidad de medida (kg, litro, etc.)
+  price     Float       // Precio unitario
+  quantity  Float       // Cantidad en stock o cantidad base
+  products  ProductIngredient[]
+}
+
+model Product {
+  id                Int                 @id @default(autoincrement())
+  name              String               // Nombre del producto (ej. Raviolones)
+  portions          Int                 // Cantidad de porciones
+  costPerPortion    Float               // Costo calculado por porción
+  priceWithoutTax   Float               // Precio antes de impuestos
+  tax               Float               // Impuesto
+  //El finalPrice de cada ingrediente representa el costo total de ese ingrediente en el producto.
+  finalPrice        Float               // Precio final con impuestos
+  roundedPrice      Float               // Precio redondeado
+  profitPercentage  Float?             // Porcentaje de ganancia
+  profitAmount      Float?              // Resultado de ganancia calculado (opcional)
+  pricePerPortion   Float?               // Nuevo campo: Precio por porción final con ganancia e impuestos
+  ingredients       ProductIngredient[]  // Relación con ingredientes
+}
+
+model ProductIngredient {
+  id            Int         @id @default(autoincrement())
+  //ondelete, cascade elimina las relaciones para que el producto se pueda eleminar
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId     Int
+  ingredient    Ingredient  @relation(fields: [ingredientId], references: [id])
+  ingredientId  Int
+  quantity      Float       // Cantidad de este ingrediente en el producto
+  pricePerUnit  Float       // Precio unitario del ingrediente en el contexto del producto
+  finalPrice    Float       // Precio final (quantity * pricePerUnit)
+}
+
+-modulo stock diario(ingreso y egresos, separado de la tabla products)
+nueva tabla diaria de productoStock(con celda de desperdicio), con relacion de nombre de la tabla products
+ tabla clientes,
+ tabla ventas,
+
+ingreso: ingresar cantidades producidas(que se sumen en un stock de 
+cada producto y permita ingresar la cantidad de productos producidos no aptos paraventa)
+
+
+egreso: cargar pedido del cliente realizado(se descuente de productoStock) y ingresar metodo de pago:
+ efectivo, transferencia, posnet,posnet cuotas
+estoy usando next con prisma y app router

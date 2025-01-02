@@ -45,6 +45,9 @@ model Product {
   profitAmount      Float?              // Resultado de ganancia calculado (opcional)
   pricePerPortion   Float?               // Nuevo campo: Precio por porción final con ganancia e impuestos
   ingredients       ProductIngredient[]  // Relación con ingredientes
+  //NUEVAS RELACIONES 2DA IMPLEMENTACION 
+   stock             ProductStock[]   // Relación con ProductStock (corrección)
+  orderProducts     OrderProduct[]   // Relación con OrderProduct (corrección)
 }
 
 model ProductIngredient {
@@ -57,6 +60,50 @@ model ProductIngredient {
   quantity      Float       // Cantidad de este ingrediente en el producto
   pricePerUnit  Float       // Precio unitario del ingrediente en el contexto del producto
   finalPrice    Float       // Precio final (quantity * pricePerUnit)
+}
+model ProductStock {
+  id                 Int       @id @default(autoincrement())
+  productId          Int
+  product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  date               DateTime  @default(now()) // Fecha del registro
+  quantityProduced   Int       // Cantidad de productos producidos
+  quantityDefective  Int       // Cantidad de productos no aptos para venta
+  quantityAvailable  Int       // Cantidad disponible para venta (calculado como stock acumulado)
+  waste              Int       // Cantidad de desperdicio
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  name      String   // Nombre del cliente
+  email     String?  @unique // Correo del cliente (opcional)
+  phone     String?  // Teléfono del cliente (opcional)
+  orders    Order[]  // Relación con los pedidos
+}
+
+model OrderProduct {
+  id            Int      @id @default(autoincrement())
+  orderId       Int
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     Int
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity      Int      // Cantidad del producto en el pedido
+  totalPrice    Float    // Precio total para este producto en el pedido
+}
+model Order {
+  id            Int       @id @default(autoincrement())
+  clientId      Int
+  client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  date          DateTime  @default(now()) // Fecha del pedido
+  totalAmount   Float     // Monto total del pedido
+  paymentMethod PaymentMethod
+  products      OrderProduct[]
+}
+
+enum PaymentMethod {
+  CASH          // Efectivo
+  TRANSFER      // Transferencia
+  POSNET        // POSNET
+  POSNET_INSTALLMENTS // POSNET en cuotas
 }
 
 // model Ingredient {
