@@ -33,7 +33,7 @@ model Ingredient {
 
 model Product {
   id                Int                 @id @default(autoincrement())
-  name              String               // Nombre del producto (ej. Raviolones)
+  name              String              @unique // Nombre del producto (ej. Raviolones)
   portions          Int                 // Cantidad de porciones
   costPerPortion    Float               // Costo calculado por porción
   priceWithoutTax   Float               // Precio antes de impuestos
