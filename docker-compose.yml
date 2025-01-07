@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres-db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    networks:
+      - my-network
+    volumes:
+      - my-db-data:/var/lib/postgresql/data  # Persistir los datos
+    ports:
+      - "5432:5432"
+  
+  app:
+    build:
+      context: .  # Asume que tu Dockerfile está en el directorio actual
+    container_name: my-app
+    networks:
+      - my-network
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres  # Asegura que la DB esté lista antes de iniciar la app
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  my-db-data:  # Volumen persistente para PostgreSQL
