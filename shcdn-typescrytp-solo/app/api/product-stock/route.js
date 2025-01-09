@@ -1,42 +1,31 @@
-import { NextResponse } from "next/server";
-import  prisma  from "@/lib/db"; // Asegúrate de que este sea el path correcto de tu instancia de Prisma
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/db';
 
-export async function POST(request: Request) {
+export async function POST(request) {
+  const { productId, quantityProduced, quantityDefective } = await request.json();
+
+  if (!productId || quantityProduced == null || quantityDefective == null) {
+    return NextResponse.json({ error: 'Faltan parámetros requeridos' }, { status: 400 });
+  }
+
   try {
-    const { productName, quantityProduced, quantityDefective, waste } = await request.json();
-
-    // Buscamos el producto por nombre
-    const product = await prisma.product.findUnique({
-      where: { name: productName },
-    });
-
-    if (!product) {
-      return NextResponse.json(
-        { error: "Product not found" },
-        { status: 404 }
-      );
-    }
-
-    // Creamos el registro de stock
-    const newStock = await prisma.productStock.create({
+    const stock = await prisma.productStock.create({
       data: {
-        productId: product.id,
+        productId,
         quantityProduced,
         quantityDefective,
-        waste,
       },
     });
 
-    return NextResponse.json(newStock, { status: 201 });
+    return NextResponse.json(stock, { status: 201 });
   } catch (error) {
-    console.error("Error creating product stock:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function GET() {
   try {
-    const stocks = await prisma.productStock.findMany({
+    const stockEntries = await prisma.productStock.findMany({
       include: {
         product: {
           select: { name: true },
@@ -44,12 +33,64 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(stocks);
+    return NextResponse.json(stockEntries);
   } catch (error) {
-    console.error("Error fetching product stocks:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+// import { NextResponse } from "next/server";
+// import  prisma  from "@/lib/db"; // Asegúrate de que este sea el path correcto de tu instancia de Prisma
+
+// export async function POST(request: Request) {
+//   try {
+//     const { productName, quantityProduced, quantityDefective, waste } = await request.json();
+
+//     // Buscamos el producto por nombre
+//     const product = await prisma.product.findUnique({
+//       where: { name: productName },
+//     });
+
+//     if (!product) {
+//       return NextResponse.json(
+//         { error: "Product not found" },
+//         { status: 404 }
+//       );
+//     }
+
+//     // Creamos el registro de stock
+//     const newStock = await prisma.productStock.create({
+//       data: {
+//         productId: product.id,
+//         quantityProduced,
+//         quantityDefective,
+//         waste,
+//       },
+//     });
+
+//     return NextResponse.json(newStock, { status: 201 });
+//   } catch (error) {
+//     console.error("Error creating product stock:", error);
+//     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+//   }
+// }
+
+// export async function GET() {
+//   try {
+//     const stocks = await prisma.productStock.findMany({
+//       include: {
+//         product: {
+//           select: { name: true },
+//         },
+//       },
+//     });
+
+//     return NextResponse.json(stocks);
+//   } catch (error) {
+//     console.error("Error fetching product stocks:", error);
+//     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+//   }
+// }
 
 // import { NextResponse } from "next/server";
 // import  prisma  from "@/lib/db";
