@@ -48,8 +48,27 @@ model Product {
   //NUEVAS RELACIONES 2DA IMPLEMENTACION 
    stock             ProductStock[]   // Relación con ProductStock (corrección)
   orderProducts     OrderProduct[]   // Relación con OrderProduct (corrección)
+    logs            ProductStockLog[]   // Historial de movimientos de stock
+
+}
+model ProductStockLog {
+  id            Int        @id @default(autoincrement())
+  productId     Int
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type          StockType   // Tipo de movimiento: PRODUCED, DEFECTIVE, SALE, ADJUSTMENT
+  quantity      Int         // Cantidad que afecta al stock (positivo o negativo)
+  comment       String?     // Comentario opcional (ej. "Producción del turno mañana")
+  createdAt     DateTime    @default(now())
+
+  @@index([productId, createdAt])
 }
 
+enum StockType {
+  PRODUCED    // Porciones producidas
+  DEFECTIVE   // Porciones defectuosas
+  SALE        // Porciones vendidas
+  ADJUSTMENT  // Ajustes manuales
+}
 model ProductIngredient {
   id            Int         @id @default(autoincrement())
   //ondelete, cascade elimina las relaciones para que el producto se pueda eleminar
@@ -62,13 +81,21 @@ model ProductIngredient {
   finalPrice    Float       // Precio final (quantity * pricePerUnit)
 }
 model ProductStock {
-  id                 Int       @id @default(autoincrement())
-  productId          Int
-  product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  date               DateTime  @default(now()) // Fecha del registro
-  quantityProduced   Int       // Cantidad de productos producidos
-  quantityDefective  Int       // Cantidad de productos no aptos para venta
+  id            Int     @id @default(autoincrement())
+  productId     Int     @unique
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  stock         Int@default(0)     // Cantidad total de porciones disponibles
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
+// model ProductStock {
+//   id                 Int       @id @default(autoincrement())
+//   productId          Int
+//   product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+//   date               DateTime  @default(now()) // Fecha del registro
+//   quantityProduced   Int       // Cantidad de productos producidos
+//   quantityDefective  Int       // Cantidad de productos no aptos para venta
+// }
 
 model Client {
   id        Int       @id @default(autoincrement())

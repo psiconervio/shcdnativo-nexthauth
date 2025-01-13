@@ -1,60 +1,68 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
-export async function GET(_, { params }) {
+// Obtener un pedido por ID
+export async function GET(request, { params }) {
   const { id } = params;
 
   try {
     const order = await prisma.order.findUnique({
       where: { id: parseInt(id) },
       include: {
-        client: {
-          select: { name: true },
-        },
+        client: true,
         products: {
           include: {
-            product: { select: { name: true } },
+            product: true,
           },
         },
       },
     });
 
     if (!order) {
-      return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
+      return NextResponse.json({ error: "Pedido no encontrado." }, { status: 404 });
     }
 
-    return NextResponse.json(order);
+    return NextResponse.json(order, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Error al obtener el pedido." }, { status: 500 });
   }
 }
 
-export async function DELETE(_, { params }) {
+// Eliminar un pedido por ID
+export async function DELETE(request, { params }) {
   const { id } = params;
 
   try {
-    await prisma.order.delete({
+    const order = await prisma.order.delete({
       where: { id: parseInt(id) },
     });
 
-    return NextResponse.json({ message: 'Pedido eliminado' });
+    return NextResponse.json(order, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Error al eliminar el pedido." }, { status: 500 });
   }
 }
 
 // import { NextResponse } from 'next/server';
 // import prisma from '@/lib/db';
 
-// // Obtener un pedido por ID
-// export async function GET(request, { params }) {
+// export async function GET(_, { params }) {
 //   const { id } = params;
 
 //   try {
 //     const order = await prisma.order.findUnique({
 //       where: { id: parseInt(id) },
 //       include: {
-//         products: true,
+//         client: {
+//           select: { name: true },
+//         },
+//         products: {
+//           include: {
+//             product: { select: { name: true } },
+//           },
+//         },
 //       },
 //     });
 
@@ -62,15 +70,13 @@ export async function DELETE(_, { params }) {
 //       return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
 //     }
 
-//     return NextResponse.json(order, { status: 200 });
+//     return NextResponse.json(order);
 //   } catch (error) {
-//     console.error(error);
-//     return NextResponse.json({ error: 'Error al obtener el pedido' }, { status: 500 });
+//     return NextResponse.json({ error: error.message }, { status: 500 });
 //   }
 // }
 
-// // Eliminar un pedido por ID
-// export async function DELETE(request, { params }) {
+// export async function DELETE(_, { params }) {
 //   const { id } = params;
 
 //   try {
@@ -78,9 +84,50 @@ export async function DELETE(_, { params }) {
 //       where: { id: parseInt(id) },
 //     });
 
-//     return NextResponse.json({ message: 'Pedido eliminado con éxito' }, { status: 200 });
+//     return NextResponse.json({ message: 'Pedido eliminado' });
 //   } catch (error) {
-//     console.error(error);
-//     return NextResponse.json({ error: 'Error al eliminar el pedido' }, { status: 500 });
+//     return NextResponse.json({ error: error.message }, { status: 500 });
 //   }
 // }
+
+// // import { NextResponse } from 'next/server';
+// // import prisma from '@/lib/db';
+
+// // // Obtener un pedido por ID
+// // export async function GET(request, { params }) {
+// //   const { id } = params;
+
+// //   try {
+// //     const order = await prisma.order.findUnique({
+// //       where: { id: parseInt(id) },
+// //       include: {
+// //         products: true,
+// //       },
+// //     });
+
+// //     if (!order) {
+// //       return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
+// //     }
+
+// //     return NextResponse.json(order, { status: 200 });
+// //   } catch (error) {
+// //     console.error(error);
+// //     return NextResponse.json({ error: 'Error al obtener el pedido' }, { status: 500 });
+// //   }
+// // }
+
+// // // Eliminar un pedido por ID
+// // export async function DELETE(request, { params }) {
+// //   const { id } = params;
+
+// //   try {
+// //     await prisma.order.delete({
+// //       where: { id: parseInt(id) },
+// //     });
+
+// //     return NextResponse.json({ message: 'Pedido eliminado con éxito' }, { status: 200 });
+// //   } catch (error) {
+// //     console.error(error);
+// //     return NextResponse.json({ error: 'Error al eliminar el pedido' }, { status: 500 });
+// //   }
+// // }
