@@ -1,31 +1,15 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
-
-export async function POST(request) {
-  const { name, email, phone } = await request.json();
-
-  if (!name) {
-    return NextResponse.json({ error: 'El nombre es obligatorio' }, { status: 400 });
-  }
-
-  try {
-    const client = await prisma.client.create({
-      data: { name, email, phone },
-    });
-
-    return NextResponse.json(client, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
+import { NextResponse } from "next/server";
+import prisma from "@/lib/db";
 
 export async function GET() {
-  try {
-    const clients = await prisma.client.findMany();
-    return NextResponse.json(clients);
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  const clients = await prisma.client.findMany();
+  return NextResponse.json(clients);
+}
+
+export async function POST(request: Request) {
+  const data = await request.json();
+  const client = await prisma.client.create({ data });
+  return NextResponse.json(client);
 }
 
 // import { NextResponse } from "next/server";

@@ -1,3 +1,5 @@
+import prisma from "@/lib/db";
+import { NextResponse } from "next/server";
 /**
  * Obtener detalles de un movimiento de stock por su ID.
  */

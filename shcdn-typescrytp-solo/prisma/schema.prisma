@@ -21,13 +21,13 @@ datasource db {
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
-// Modelo para Ingredientes
+//MODELOS NUEVOS
 model Ingredient {
   id        Int      @id @default(autoincrement())
-  name      String  @unique
-  unit      String      // Unidad de medida (kg, litro, etc.)
-  price     Float       // Precio unitario
-  quantity  Float       // Cantidad en stock o cantidad base
+  name      String   @unique
+  unit      String       // Unidad de medida (kg, litro, etc.)
+  price     Float        // Precio unitario
+  quantity  Float        // Cantidad en stock o cantidad base
   products  ProductIngredient[]
 }
 
@@ -38,19 +38,37 @@ model Product {
   costPerPortion    Float               // Costo calculado por porción
   priceWithoutTax   Float               // Precio antes de impuestos
   tax               Float               // Impuesto
-  //El finalPrice de cada ingrediente representa el costo total de ese ingrediente en el producto.
   finalPrice        Float               // Precio final con impuestos
   roundedPrice      Float               // Precio redondeado
-  profitPercentage  Float?             // Porcentaje de ganancia
+  profitPercentage  Float?              // Porcentaje de ganancia
   profitAmount      Float?              // Resultado de ganancia calculado (opcional)
-  pricePerPortion   Float?               // Nuevo campo: Precio por porción final con ganancia e impuestos
-  ingredients       ProductIngredient[]  // Relación con ingredientes
-  //NUEVAS RELACIONES 2DA IMPLEMENTACION 
-   stock             ProductStock[]   // Relación con ProductStock (corrección)
-  orderProducts     OrderProduct[]   // Relación con OrderProduct (corrección)
-    logs            ProductStockLog[]   // Historial de movimientos de stock
-
+  pricePerPortion   Float?              // Precio por porción final con ganancia e impuestos
+  ingredients       ProductIngredient[] // Relación con ingredientes
+  stock             ProductStock?       // Relación uno a uno con el stock
+  logs              ProductStockLog[]   // Historial de movimientos de stock
+  sales             SaleProduct[]       // Relación con ventas
 }
+
+model ProductIngredient {
+  id            Int         @id @default(autoincrement())
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId     Int
+  ingredient    Ingredient  @relation(fields: [ingredientId], references: [id])
+  ingredientId  Int
+  quantity      Float       // Cantidad de este ingrediente en el producto
+  pricePerUnit  Float       // Precio unitario del ingrediente en el contexto del producto
+  finalPrice    Float       // Precio final (quantity * pricePerUnit)
+}
+
+model ProductStock {
+  id            Int        @id @default(autoincrement())
+  productId     Int        @unique
+  product       Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  stock         Int        @default(0) // Cantidad total de porciones disponibles
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
 model ProductStockLog {
   id            Int        @id @default(autoincrement())
   productId     Int
@@ -69,60 +87,33 @@ enum StockType {
   SALE        // Porciones vendidas
   ADJUSTMENT  // Ajustes manuales
 }
-model ProductIngredient {
-  id            Int         @id @default(autoincrement())
-  //ondelete, cascade elimina las relaciones para que el producto se pueda eleminar
-  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId     Int
-  ingredient    Ingredient  @relation(fields: [ingredientId], references: [id])
-  ingredientId  Int
-  quantity      Float       // Cantidad de este ingrediente en el producto
-  pricePerUnit  Float       // Precio unitario del ingrediente en el contexto del producto
-  finalPrice    Float       // Precio final (quantity * pricePerUnit)
-}
-model ProductStock {
-  id            Int     @id @default(autoincrement())
-  productId     Int     @unique
-  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  stock         Int@default(0)     // Cantidad total de porciones disponibles
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-// model ProductStock {
-//   id                 Int       @id @default(autoincrement())
-//   productId          Int
-//   product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-//   date               DateTime  @default(now()) // Fecha del registro
-//   quantityProduced   Int       // Cantidad de productos producidos
-//   quantityDefective  Int       // Cantidad de productos no aptos para venta
-// }
 
 model Client {
   id        Int       @id @default(autoincrement())
   name      String    // Nombre del cliente
   email     String?   @unique // Correo del cliente (opcional)
   phone     String?   // Teléfono del cliente (opcional)
-  orders    Order[]   // Relación con los pedidos
+  sales     Sale[]    // Relación con las ventas realizadas por este cliente
 }
 
-model Order {
-  id            Int            @id @default(autoincrement())
-  clientId      Int
-  client        Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  date          DateTime       @default(now()) // Fecha del pedido
-  totalAmount   Float          // Monto total del pedido
-  paymentMethod PaymentMethod  // Método de pago
-  products      OrderProduct[] // Relación con los productos del pedido
+model Sale {
+  id              Int           @id @default(autoincrement())
+  clientId        Int
+  client          Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  date            DateTime      @default(now()) // Fecha de la venta
+  totalAmount     Float         // Monto total de la venta (calculado)
+  products        SaleProduct[] // Relación con los productos vendidos
+  paymentMethod   PaymentMethod // Método de pago
 }
 
-model OrderProduct {
-  id            Int      @id @default(autoincrement())
-  orderId       Int
-  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId     Int
-  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity      Int      // Cantidad del producto en el pedido
-  totalPrice    Float    // Precio total para este producto en el pedido
+model SaleProduct {
+  id          Int      @id @default(autoincrement())
+  saleId      Int
+  sale        Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity    Int      // Cantidad vendida de este producto
+  totalPrice  Float    // Precio total (quantity * pricePerPortion)
 }
 
 enum PaymentMethod {
@@ -131,6 +122,109 @@ enum PaymentMethod {
   POSNET              // POSNET
   POSNET_INSTALLMENTS // POSNET en cuotas
 }
+
+//MODELOS ORIGINALES 
+// model Ingredient {
+//   id        Int      @id @default(autoincrement())
+//   name      String  @unique
+//   unit      String      // Unidad de medida (kg, litro, etc.)
+//   price     Float       // Precio unitario
+//   quantity  Float       // Cantidad en stock o cantidad base
+//   products  ProductIngredient[]
+// }
+
+// model Product {
+//   id                Int                 @id @default(autoincrement())
+//   name              String              @unique // Nombre del producto (ej. Raviolones)
+//   portions          Int                 // Cantidad de porciones
+//   costPerPortion    Float               // Costo calculado por porción
+//   priceWithoutTax   Float               // Precio antes de impuestos
+//   tax               Float               // Impuesto
+//   //El finalPrice de cada ingrediente representa el costo total de ese ingrediente en el producto.
+//   finalPrice        Float               // Precio final con impuestos
+//   roundedPrice      Float               // Precio redondeado
+//   profitPercentage  Float?             // Porcentaje de ganancia
+//   profitAmount      Float?              // Resultado de ganancia calculado (opcional)
+//   pricePerPortion   Float?               // Nuevo campo: Precio por porción final con ganancia e impuestos
+//   ingredients       ProductIngredient[]  // Relación con ingredientes
+//   //NUEVAS RELACIONES 2DA IMPLEMENTACION 
+//    stock             ProductStock[]   // Relación con ProductStock (corrección)
+//   orderProducts     OrderProduct[]   // Relación con OrderProduct (corrección)
+//     logs            ProductStockLog[]   // Historial de movimientos de stock
+
+// }
+// model ProductStockLog {
+//   id            Int        @id @default(autoincrement())
+//   productId     Int
+//   product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+//   type          StockType   // Tipo de movimiento: PRODUCED, DEFECTIVE, SALE, ADJUSTMENT
+//   quantity      Int         // Cantidad que afecta al stock (positivo o negativo)
+//   comment       String?     // Comentario opcional (ej. "Producción del turno mañana")
+//   createdAt     DateTime    @default(now())
+
+//   @@index([productId, createdAt])
+// }
+
+// enum StockType {
+//   PRODUCED    // Porciones producidas
+//   DEFECTIVE   // Porciones defectuosas
+//   SALE        // Porciones vendidas
+//   ADJUSTMENT  // Ajustes manuales
+// }
+// model ProductIngredient {
+//   id            Int         @id @default(autoincrement())
+//   //ondelete, cascade elimina las relaciones para que el producto se pueda eleminar
+//   product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+//   productId     Int
+//   ingredient    Ingredient  @relation(fields: [ingredientId], references: [id])
+//   ingredientId  Int
+//   quantity      Float       // Cantidad de este ingrediente en el producto
+//   pricePerUnit  Float       // Precio unitario del ingrediente en el contexto del producto
+//   finalPrice    Float       // Precio final (quantity * pricePerUnit)
+// }
+// model ProductStock {
+//   id            Int     @id @default(autoincrement())
+//   productId     Int     @unique
+//   product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+//   stock         Int@default(0)     // Cantidad total de porciones disponibles
+//   createdAt     DateTime @default(now())
+//   updatedAt     DateTime @updatedAt
+// }
+
+// model Client {
+//   id        Int       @id @default(autoincrement())
+//   name      String    // Nombre del cliente
+//   email     String?   @unique // Correo del cliente (opcional)
+//   phone     String?   // Teléfono del cliente (opcional)
+//   orders    Order[]   // Relación con los pedidos
+// }
+
+// model Order {
+//   id            Int            @id @default(autoincrement())
+//   clientId      Int
+//   client        Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+//   date          DateTime       @default(now()) // Fecha del pedido
+//   totalAmount   Float          // Monto total del pedido
+//   paymentMethod PaymentMethod  // Método de pago
+//   products      OrderProduct[] // Relación con los productos del pedido
+// }
+
+// model OrderProduct {
+//   id            Int      @id @default(autoincrement())
+//   orderId       Int
+//   order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+//   productId     Int
+//   product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+//   quantity      Int      // Cantidad del producto en el pedido
+//   totalPrice    Float    // Precio total para este producto en el pedido
+// }
+
+// enum PaymentMethod {
+//   CASH                // Efectivo
+//   TRANSFER            // Transferencia
+//   POSNET              // POSNET
+//   POSNET_INSTALLMENTS // POSNET en cuotas
+// }
 
 // model ProductStock {
 //   id                 Int       @id @default(autoincrement())
