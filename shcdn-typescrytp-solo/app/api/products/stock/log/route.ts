@@ -1,20 +1,45 @@
-import prisma from "@/lib/db";
-import { NextResponse } from "next/server";
 
 /**
  * Registrar un movimiento de stock.
  */
+import { NextResponse } from "next/server";
+import prisma from "@/lib/db";
+
 export async function GET() {
   try {
-    const logs = await prisma.productStockLog.findMany({
-      include: { product: true },
-      orderBy: { createdAt: "desc" },
+    // Obtener todos los registros de movimientos de stock
+    const stockLogs = await prisma.productStockLog.findMany({
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc", // Ordenar por fecha de creación (más reciente primero)
+      },
     });
-    return NextResponse.json(logs);
+
+    return NextResponse.json(stockLogs);
   } catch (error) {
-    return NextResponse.json({ error: "Error al obtener el historial" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Error al obtener los logs de stock" }, { status: 500 });
   }
 }
+
+// export async function GET() {
+//   try {
+//     const logs = await prisma.productStockLog.findMany({
+//       include: { product: true },
+//       orderBy: { createdAt: "desc" },
+//     });
+//     return NextResponse.json(logs);
+//   } catch (error) {
+//     return NextResponse.json({ error: "Error al obtener el historial" }, { status: 500 });
+//   }
+// }
 
 // export async function POST(request) {
 //   try {

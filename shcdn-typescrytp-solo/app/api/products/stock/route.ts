@@ -7,34 +7,37 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  try {
-    const { productId, stock } = await request.json();
+  const { productId, quantity, type, comment } = await request.json();
 
-    // Verificar si ya existe un registro de stock para este producto
-    const existingStock = await prisma.productStock.findUnique({
-      where: { productId },
-    });
+  // Validar que el producto exista
+  const productStock = await prisma.productStock.findUnique({
+    where: { productId },
+  });
 
-    let updatedStock;
-
-    if (existingStock) {
-      // Si existe, actualizamos el stock
-      updatedStock = await prisma.productStock.update({
-        where: { productId },
-        data: { stock },
-      });
-    } else {
-      // Si no existe, creamos un nuevo registro
-      updatedStock = await prisma.productStock.create({
-        data: { productId, stock },
-      });
-    }
-
-    return NextResponse.json(updatedStock);
-  } catch (error) {
-    console.error("Error en POST /api/products/stock", error);
-    return NextResponse.json({ error: "Error al procesar la solicitud" }, { status: 500 });
+  if (!productStock) {
+    return NextResponse.json({ error: "Producto no encontrado en stock." }, { status: 404 });
   }
+
+  // Registrar el movimiento en el historial (ProductStockLog)
+  await prisma.productStockLog.create({
+    data: {
+      productId,
+      type,
+      quantity,
+      comment,
+    },
+  });
+
+  // Calcular el nuevo stock total
+  const updatedStock = productStock.stock + quantity;
+
+  // Actualizar el stock total en la tabla ProductStock
+  const updatedProductStock = await prisma.productStock.update({
+    where: { productId },
+    data: { stock: updatedStock },
+  });
+
+  return NextResponse.json(updatedProductStock);
 }
 
 // import prisma from "@/lib/db";
