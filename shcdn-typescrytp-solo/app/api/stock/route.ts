@@ -1,9 +1,28 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 
+// export async function GET() {
+//   const stock = await prisma.productStock.findMany();
+//   return NextResponse.json(stock);
+// }
 export async function GET() {
-  const stock = await prisma.productStock.findMany();
-  return NextResponse.json(stock);
+  try {
+    const stock = await prisma.productStock.findMany({
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(stock);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Error al obtener el stock" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

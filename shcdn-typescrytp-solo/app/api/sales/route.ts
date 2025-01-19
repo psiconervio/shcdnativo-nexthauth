@@ -4,81 +4,169 @@ import { NextResponse } from "next/server";
 /**
  * Registrar una venta (POST /api/sales)
  */
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const clientId = searchParams.get("clientId");
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+
   try {
     const sales = await prisma.sale.findMany({
+      where: {
+        ...(clientId ? { clientId: Number(clientId) } : {}),
+        ...(startDate && endDate
+          ? {
+              date: {
+                gte: new Date(startDate),
+                lte: new Date(endDate),
+              },
+            }
+          : {}),
+      },
       include: {
         client: true,
-        products: { include: { product: true } },
+        products: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
-      orderBy: { date: "desc" },
+      orderBy: {
+        date: "desc",
+      },
     });
+
     return NextResponse.json(sales);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Error al obtener las ventas" }, { status: 500 });
   }
 }
+
 export async function POST(request: Request) {
+  const { clientId, products } = await request.json();
+
   try {
-    const { clientId, products, paymentMethod } = await request.json();
-
     // Calcular el monto total de la venta
-    const totalAmount = products.reduce(
-      (sum: number, product: { quantity: number; pricePerPortion: number }) =>
-        sum + product.quantity * product.pricePerPortion,
-      0
-    );
+    let totalAmount = 0;
 
-    // Crear la venta
+    for (const product of products) {
+      const productData = await prisma.product.findUnique({ where: { id: product.productId } });
+      if (!productData) throw new Error("Producto no encontrado");
+
+      totalAmount += product.quantity * productData.pricePerPortion;
+    }
+
+    // Registrar la venta
     const sale = await prisma.sale.create({
       data: {
         clientId,
         totalAmount,
-        paymentMethod,
         products: {
-          create: products.map((product: { productId: number; quantity: number; totalPrice: number }) => ({
+          create: products.map((product) => ({
             productId: product.productId,
             quantity: product.quantity,
-            totalPrice: product.totalPrice,
+            totalPrice: product.quantity * product.pricePerPortion,
           })),
         },
       },
     });
 
-    // Actualizar el stock de cada producto vendido
+    // Reducir el stock de los productos vendidos
     for (const product of products) {
-      const stock = await prisma.productStock.findUnique({
-        where: { productId: product.productId },
-      });
-
-      if (!stock || stock.stock < product.quantity) {
-        return NextResponse.json(
-          { error: `Stock insuficiente para el producto con ID ${product.productId}` },
-          { status: 400 }
-        );
-      }
-
       await prisma.productStock.update({
         where: { productId: product.productId },
-        data: { stock: stock.stock - product.quantity },
-      });
-
-      // Registrar en el historial de movimientos
-      await prisma.productStockLog.create({
-        data: {
-          productId: product.productId,
-          type: "SALE",
-          quantity: -product.quantity,
-          comment: `Venta ID: ${sale.id}`,
-        },
+        data: { stock: { decrement: product.quantity } },
       });
     }
 
     return NextResponse.json(sale);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Error al registrar la venta" }, { status: 500 });
   }
 }
+
+// export async function GET() {
+//   try {
+//     const sales = await prisma.sale.findMany({
+//       include: {
+//         client: true,
+//         products: { include: { product: true } },
+//       },
+//       orderBy: { date: "desc" },
+//     });
+//     return NextResponse.json(sales);
+//   } catch (error) {
+//     return NextResponse.json({ error: "Error al obtener las ventas" }, { status: 500 });
+//   }
+// }
+// export async function POST(request: Request) {
+//   try {
+//     const { clientId, products, paymentMethod } = await request.json();
+
+//     // Calcular el monto total de la venta
+//     const totalAmount = products.reduce(
+//       (sum: number, product: { quantity: number; pricePerPortion: number }) =>
+//         sum + product.quantity * product.pricePerPortion,
+//       0
+//     );
+
+//     // Crear la venta
+//     const sale = await prisma.sale.create({
+//       data: {
+//         clientId,
+//         totalAmount,
+//         paymentMethod,
+//         products: {
+//           create: products.map((product: { productId: number; quantity: number; totalPrice: number }) => ({
+//             productId: product.productId,
+//             quantity: product.quantity,
+//             totalPrice: product.totalPrice,
+//           })),
+//         },
+//       },
+//     });
+
+//     // Actualizar el stock de cada producto vendido
+//     for (const product of products) {
+//       const stock = await prisma.productStock.findUnique({
+//         where: { productId: product.productId },
+//       });
+
+//       if (!stock || stock.stock < product.quantity) {
+//         return NextResponse.json(
+//           { error: `Stock insuficiente para el producto con ID ${product.productId}` },
+//           { status: 400 }
+//         );
+//       }
+
+//       await prisma.productStock.update({
+//         where: { productId: product.productId },
+//         data: { stock: stock.stock - product.quantity },
+//       });
+
+//       // Registrar en el historial de movimientos
+//       await prisma.productStockLog.create({
+//         data: {
+//           productId: product.productId,
+//           type: "SALE",
+//           quantity: -product.quantity,
+//           comment: `Venta ID: ${sale.id}`,
+//         },
+//       });
+//     }
+
+//     return NextResponse.json(sale);
+//   } catch (error) {
+//     return NextResponse.json({ error: "Error al registrar la venta" }, { status: 500 });
+//   }
+// }
 
 // export async function POST(request) {
 //   try {

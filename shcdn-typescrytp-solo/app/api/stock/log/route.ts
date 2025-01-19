@@ -4,11 +4,17 @@
  */
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const productId = searchParams.get("productId");
+  const type = searchParams.get("type");
 
-export async function GET() {
   try {
-    // Obtener todos los registros de movimientos de stock
-    const stockLogs = await prisma.productStockLog.findMany({
+    const logs = await prisma.productStockLog.findMany({
+      where: {
+        ...(productId ? { productId: Number(productId) } : {}),
+        ...(type ? { type } : {}),
+      },
       include: {
         product: {
           select: {
@@ -18,16 +24,75 @@ export async function GET() {
         },
       },
       orderBy: {
-        createdAt: "desc", // Ordenar por fecha de creación (más reciente primero)
+        createdAt: "desc",
       },
     });
 
-    return NextResponse.json(stockLogs);
+    return NextResponse.json(logs);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Error al obtener los logs de stock" }, { status: 500 });
   }
 }
+export async function POST(request: Request) {
+  const { productId, quantity, type, comment } = await request.json();
+
+  try {
+    const productStock = await prisma.productStock.findUnique({ where: { productId } });
+
+    if (!productStock) {
+      return NextResponse.json({ error: "El producto no existe en el stock" }, { status: 404 });
+    }
+
+    const newStock = productStock.stock + quantity;
+    if (newStock < 0) {
+      return NextResponse.json({ error: "Stock insuficiente" }, { status: 400 });
+    }
+
+    const log = await prisma.productStockLog.create({
+      data: {
+        productId,
+        type,
+        quantity,
+        comment,
+      },
+    });
+
+    await prisma.productStock.update({
+      where: { productId },
+      data: { stock: newStock },
+    });
+
+    return NextResponse.json(log);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Error al registrar el movimiento" }, { status: 500 });
+  }
+}
+
+// export async function GET() {
+//   try {
+//     // Obtener todos los registros de movimientos de stock
+//     const stockLogs = await prisma.productStockLog.findMany({
+//       include: {
+//         product: {
+//           select: {
+//             id: true,
+//             name: true,
+//           },
+//         },
+//       },
+//       orderBy: {
+//         createdAt: "desc", // Ordenar por fecha de creación (más reciente primero)
+//       },
+//     });
+
+//     return NextResponse.json(stockLogs);
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ error: "Error al obtener los logs de stock" }, { status: 500 });
+//   }
+// }
 
 // export async function GET() {
 //   try {
