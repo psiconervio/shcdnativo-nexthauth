@@ -7,12 +7,34 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { productId, stock } = await request.json();
-  const updatedStock = await prisma.productStock.update({
-    where: { productId },
-    data: { stock },
-  });
-  return NextResponse.json(updatedStock);
+  try {
+    const { productId, stock } = await request.json();
+
+    // Verificar si ya existe un registro de stock para este producto
+    const existingStock = await prisma.productStock.findUnique({
+      where: { productId },
+    });
+
+    let updatedStock;
+
+    if (existingStock) {
+      // Si existe, actualizamos el stock
+      updatedStock = await prisma.productStock.update({
+        where: { productId },
+        data: { stock },
+      });
+    } else {
+      // Si no existe, creamos un nuevo registro
+      updatedStock = await prisma.productStock.create({
+        data: { productId, stock },
+      });
+    }
+
+    return NextResponse.json(updatedStock);
+  } catch (error) {
+    console.error("Error en POST /api/products/stock", error);
+    return NextResponse.json({ error: "Error al procesar la solicitud" }, { status: 500 });
+  }
 }
 
 // import prisma from "@/lib/db";
