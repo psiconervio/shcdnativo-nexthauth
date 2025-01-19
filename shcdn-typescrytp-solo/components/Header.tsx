@@ -253,13 +253,13 @@ export default async function HeaderUno() {
                 size="icon"
                 className="overflow-hidden rounded-full"
               >
-                <Image
+                {/* <Image
                   src="/placeholder-user.jpg"
                   width={36}
                   height={36}
                   alt="Avatar"
                   className="overflow-hidden rounded-full"
-                />
+                /> */}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
