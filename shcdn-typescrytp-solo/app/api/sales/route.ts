@@ -47,50 +47,265 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Error al obtener las ventas" }, { status: 500 });
   }
 }
-
-export async function POST(request: Request) {
-  const { clientId, products } = await request.json();
-
+export async function POST(request) {
   try {
-    // Calcular el monto total de la venta
-    let totalAmount = 0;
+    const body = await request.json();
+    const { clientId, products, paymentMethod } = body;
 
-    for (const product of products) {
-      const productData = await prisma.product.findUnique({ where: { id: product.productId } });
-      if (!productData) throw new Error("Producto no encontrado");
-
-      totalAmount += product.quantity * productData.pricePerPortion;
+    if (!clientId || !products || products.length === 0 || !paymentMethod) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Registrar la venta
+    // Calcular el monto total de la venta
+    const totalAmount = products.reduce((sum, product) => sum + product.totalPrice, 0);
+
+    // Crear la venta y las relaciones con los productos
     const sale = await prisma.sale.create({
       data: {
         clientId,
         totalAmount,
+        paymentMethod,
         products: {
           create: products.map((product) => ({
             productId: product.productId,
             quantity: product.quantity,
-            totalPrice: product.quantity * product.pricePerPortion,
+            totalPrice: product.totalPrice,
           })),
         },
       },
     });
 
-    // Reducir el stock de los productos vendidos
+    // Actualizar el stock de los productos en la tabla ProductStock
     for (const product of products) {
+      const productStock = await prisma.productStock.findUnique({
+        where: { productId: product.productId },
+      });
+
+      if (!productStock || productStock.stock < product.quantity) {
+        return NextResponse.json({
+          error: `Insufficient stock for productId ${product.productId}`,
+        }, { status: 400 });
+      }
+
       await prisma.productStock.update({
         where: { productId: product.productId },
-        data: { stock: { decrement: product.quantity } },
+        data: { stock: productStock.stock - product.quantity },
       });
     }
 
-    return NextResponse.json(sale);
+    return NextResponse.json(sale, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Error al registrar la venta" }, { status: 500 });
+    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }
+
+// export async function POST(req: Request) {
+//   try {
+//     const body = await req.json();
+//     const { clientId, paymentMethod, products } = body;
+
+//     // Validación de campos requeridos
+//     if (!clientId || !paymentMethod || !products || products.length === 0) {
+//       return new Response(
+//         JSON.stringify({ error: "Missing required fields: clientId, paymentMethod, or products" }),
+//         { status: 400 }
+//       );
+//     }
+
+//     // Validar que el cliente exista
+//     const client = await prisma.client.findUnique({ where: { id: clientId } });
+//     if (!client) {
+//       return new Response(JSON.stringify({ error: "Client not found" }), { status: 404 });
+//     }
+
+//     // Calcular el totalAmount y validar productos
+//     let totalAmount = 0;
+
+//     const productData = await Promise.all(
+//       products.map(async (product) => {
+//         const { productId, quantity } = product;
+
+//         // Buscar información del producto
+//         const productInfo = await prisma.product.findUnique({
+//           where: { id: productId },
+//           include: {
+//             ingredients: {
+//               include: { ingredient: true },
+//             },
+//           },
+//         });
+
+//         if (!productInfo) {
+//           throw new Error(`Product with ID ${productId} not found`);
+//         }
+
+//         // Calcular el precio total del producto
+//         const totalPrice = productInfo.priceWithoutTax * quantity;
+//         if (isNaN(totalPrice)) {
+//           throw new Error("Invalid totalPrice calculation");
+//         }
+
+//         totalAmount += totalPrice;
+
+//         // Reducir el stock de los ingredientes del producto
+//         for (const productIngredient of productInfo.ingredients) {
+//           const requiredQuantity = productIngredient.quantity * quantity;
+
+//           // Validar si hay suficiente stock
+//           if (productIngredient.ingredient.quantity < requiredQuantity) {
+//             throw new Error(
+//               `Insufficient stock for ingredient ${productIngredient.ingredient.name}`
+//             );
+//           }
+
+//           // Actualizar el stock del ingrediente
+//           await prisma.ingredient.update({
+//             where: { id: productIngredient.ingredientId },
+//             data: {
+//               quantity: {
+//                 decrement: requiredQuantity,
+//               },
+//             },
+//           });
+//         }
+
+//         return {
+//           productId,
+//           quantity,
+//           totalPrice,
+//         };
+//       })
+//     );
+
+//     // Crear la venta
+//     const sale = await prisma.sale.create({
+//       data: {
+//         clientId,
+//         paymentMethod,
+//         totalAmount,
+//         products: {
+//           create: productData, // Relación con los productos vendidos
+//         },
+//       },
+//     });
+
+//     return new Response(JSON.stringify(sale), { status: 201 });
+//   } catch (error) {
+//     console.error(error);
+//     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+//   }
+// }
+// export async function POST(req: Request) {
+//   try {
+//     const body = await req.json();
+//     const { clientId, paymentMethod, products } = body;
+
+//     // Validación de campos requeridos
+//     if (!clientId || !paymentMethod || !products || products.length === 0) {
+//       return new Response(
+//         JSON.stringify({ error: "Missing required fields: clientId, paymentMethod, or products" }),
+//         { status: 400 }
+//       );
+//     }
+
+//     // Validar que el cliente exista
+//     const client = await prisma.client.findUnique({ where: { id: clientId } });
+//     if (!client) {
+//       return new Response(JSON.stringify({ error: "Client not found" }), { status: 404 });
+//     }
+
+//     // Calcular el totalAmount y validar productos
+//     let totalAmount = 0;
+
+//     const productData = await Promise.all(
+//       products.map(async (product) => {
+//         const { productId, quantity } = product;
+
+//         // Buscar información del producto
+//         const productInfo = await prisma.product.findUnique({ where: { id: productId } });
+//         if (!productInfo) {
+//           throw new Error(`Product with ID ${productId} not found`);
+//         }
+
+//         // Calcular el precio total del producto
+//         const totalPrice = productInfo.pricePerPortion * quantity;
+//         if (isNaN(totalPrice)) {
+//           throw new Error("Invalid totalPrice calculation");
+//         }
+
+//         totalAmount += totalPrice;
+
+//         return {
+//           productId,
+//           quantity,
+//           totalPrice,
+//         };
+//       })
+//     );
+
+//     // Crear la venta
+//     const sale = await prisma.sale.create({
+//       data: {
+//         clientId,
+//         paymentMethod,
+//         totalAmount,
+//         products: {
+//           create: productData, // Relación con los productos vendidos
+//         },
+//       },
+//     });
+
+//     return new Response(JSON.stringify(sale), { status: 201 });
+//   } catch (error) {
+//     console.error(error);
+//     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+//   }
+// }
+
+// export async function POST(request: Request) {
+//   const { clientId, products } = await request.json();
+
+//   try {
+//     // Calcular el monto total de la venta
+//     let totalAmount = 0;
+
+//     for (const product of products) {
+//       const productData = await prisma.product.findUnique({ where: { id: product.productId } });
+//       if (!productData) throw new Error("Producto no encontrado");
+
+//       totalAmount += product.quantity * productData.pricePerPortion;
+//     }
+
+//     // Registrar la venta
+//     const sale = await prisma.sale.create({
+//       data: {
+//         clientId,
+//         totalAmount,
+//         products: {
+//           create: products.map((product) => ({
+//             productId: product.productId,
+//             quantity: product.quantity,
+//             totalPrice: product.quantity * product.pricePerPortion,
+//           })),
+//         },
+//       },
+//     });
+
+//     // Reducir el stock de los productos vendidos
+//     for (const product of products) {
+//       await prisma.productStock.update({
+//         where: { productId: product.productId },
+//         data: { stock: { decrement: product.quantity } },
+//       });
+//     }
+
+//     return NextResponse.json(sale);
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ error: "Error al registrar la venta" }, { status: 500 });
+//   }
+// }
 
 // export async function GET() {
 //   try {
