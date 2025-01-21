@@ -1,0 +1,18 @@
+
+VER STOCK DISPONIBLE DE LOS PRODUCTOS
+http://localhost:3000/api/stock/
+
+ver hisotrial de ingresos
+http://localhost:3000/api/stock/log
+
+POST registrar venta
+http://localhost:3000/api/SALES/
+
+GET OBTENER REGISTRO VENTAS
+http://localhost:3000/api/SALES/
+
+VER STOCK DE PRODUCTOS DEFECTUOSOS
+http://localhost:3000/api/stock/log?type=DEFECTIVE
+
+VER CLIENTES
+http://localhost:3000/api/clients
