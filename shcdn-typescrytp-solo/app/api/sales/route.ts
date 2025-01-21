@@ -47,58 +47,137 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Error al obtener las ventas" }, { status: 500 });
   }
 }
-export async function POST(request) {
-  try {
-    const body = await request.json();
-    const { clientId, products, paymentMethod } = body;
 
-    if (!clientId || !products || products.length === 0 || !paymentMethod) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+
+export async function POST(req: Request) {
+  try {
+    const { clientId, paymentMethod, products } = await req.json();
+
+    if (!clientId || !paymentMethod || !products || products.length === 0) {
+      return NextResponse.json(
+        { error: "Missing required fields or products" },
+        { status: 400 }
+      );
     }
 
-    // Calcular el monto total de la venta
-    const totalAmount = products.reduce((sum, product) => sum + product.totalPrice, 0);
+    // Validate stock and calculate totals
+    let totalAmount = 0;
 
-    // Crear la venta y las relaciones con los productos
+    const saleProducts = await Promise.all(
+      products.map(async ({ productId, quantity }) => {
+        const product = await prisma.product.findUnique({
+          where: { id: productId },
+        });
+
+        if (!product) {
+          throw new Error(`Product with ID: ${productId} not found`);
+        }
+
+        // Check stock availability
+        const productStock = await prisma.productStock.findUnique({
+          where: { productId },
+        });
+
+        if (!productStock || productStock.stock < quantity) {
+          throw new Error(
+            `Insufficient stock for product with ID: ${productId}`
+          );
+        }
+
+        // Calculate total price for the product
+        const totalPrice = product.priceWithoutTax * quantity;
+        totalAmount += totalPrice;
+
+        // Reduce stock
+        await prisma.productStock.update({
+          where: { productId },
+          data: { stock: productStock.stock - quantity },
+        });
+
+        return {
+          productId,
+          quantity,
+          totalPrice,
+        };
+      })
+    );
+
+    // Create the sale
     const sale = await prisma.sale.create({
       data: {
         clientId,
-        totalAmount,
         paymentMethod,
+        totalAmount,
         products: {
-          create: products.map((product) => ({
-            productId: product.productId,
-            quantity: product.quantity,
-            totalPrice: product.totalPrice,
-          })),
+          create: saleProducts,
         },
+      },
+      include: {
+        products: true,
       },
     });
 
-    // Actualizar el stock de los productos en la tabla ProductStock
-    for (const product of products) {
-      const productStock = await prisma.productStock.findUnique({
-        where: { productId: product.productId },
-      });
-
-      if (!productStock || productStock.stock < product.quantity) {
-        return NextResponse.json({
-          error: `Insufficient stock for productId ${product.productId}`,
-        }, { status: 400 });
-      }
-
-      await prisma.productStock.update({
-        where: { productId: product.productId },
-        data: { stock: productStock.stock - product.quantity },
-      });
-    }
-
     return NextResponse.json(sale, { status: 201 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || "An error occurred" },
+      { status: 500 }
+    );
   }
 }
+
+// export async function POST(request) {
+//   try {
+//     const body = await request.json();
+//     const { clientId, products, paymentMethod } = body;
+
+//     if (!clientId || !products || products.length === 0 || !paymentMethod) {
+//       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+//     }
+
+//     // Calcular el monto total de la venta
+//     const totalAmount = products.reduce((sum, product) => sum + product.totalPrice, 0);
+
+//     // Crear la venta y las relaciones con los productos
+//     const sale = await prisma.sale.create({
+//       data: {
+//         clientId,
+//         totalAmount,
+//         paymentMethod,
+//         products: {
+//           create: products.map((product) => ({
+//             productId: product.productId,
+//             quantity: product.quantity,
+//             totalPrice: product.totalPrice,
+//           })),
+//         },
+//       },
+//     });
+
+//     // Actualizar el stock de los productos en la tabla ProductStock
+//     for (const product of products) {
+//       const productStock = await prisma.productStock.findUnique({
+//         where: { productId: product.productId },
+//       });
+
+//       if (!productStock || productStock.stock < product.quantity) {
+//         return NextResponse.json({
+//           error: `Insufficient stock for productId ${product.productId}`,
+//         }, { status: 400 });
+//       }
+
+//       await prisma.productStock.update({
+//         where: { productId: product.productId },
+//         data: { stock: productStock.stock - product.quantity },
+//       });
+//     }
+
+//     return NextResponse.json(sale, { status: 201 });
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+//   }
+// }
 
 // export async function POST(req: Request) {
 //   try {
