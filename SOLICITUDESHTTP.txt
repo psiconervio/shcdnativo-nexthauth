@@ -17,4 +17,6 @@ http://localhost:3000/api/stock/log?type=PRODUCED
 http://localhost:3000/api/stock/log?type=SALES
 
 VER CLIENTES
-http://localhost:3000/api/clients
+http://localhost:3000/api/client
+
+asd
