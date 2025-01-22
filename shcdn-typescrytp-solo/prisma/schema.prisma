@@ -82,10 +82,10 @@ model ProductStockLog {
 }
 
 enum StockType {
-  PRODUCED    // Porciones producidas
-  DEFECTIVE   // Porciones defectuosas
-  SALE        // Porciones vendidas
-  ADJUSTMENT  // Ajustes manuales
+  PRODUCIDO    // Porciones producidas
+  DEFECTUOSO   // Porciones defectuosas
+  VENDIDO        // Porciones vendidas
+  AJUSTE  // Ajustes manuales
 }
 
 model Client {
@@ -117,10 +117,10 @@ model SaleProduct {
 }
 
 enum PaymentMethod {
-  CASH                // Efectivo
-  TRANSFER            // Transferencia
+  EFECTIVO                // Efectivo
+  TRANSFERENCIA            // Transferencia
   POSNET              // POSNET
-  POSNET_INSTALLMENTS // POSNET en cuotas
+  POSNET_CUOTAS // POSNET en cuotas
 }
 //EXPENSAS
 model Expense {
@@ -136,16 +136,16 @@ model Expense {
 
 // Enum para tipos de gastos
 enum ExpenseType {
-  ONE_TIME  // Gasto único
-  RECURRING // Gasto recurrente
+  GASTOUNICO  // Gasto único
+  GASTOMENSUAL // Gasto recurrente
 }
 
 // Enum para frecuencia de gastos recurrentes
 enum Recurrence {
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
+  DIARIO
+  SEMANAL
+  MENSUAL
+  ANUAL
 }
 
 
@@ -339,6 +339,45 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// model Product {
+//   id          Int      @id @default(autoincrement())
+//   name        String
+//   description String?
+//   price       Float
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+
+// model Product {
+//   id          Int      @id @default(autoincrement())
+//   name        String
+//   description String?
+//   price       Float
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+
+// model Product {
+//   id          Int      @id @default(autoincrement())
+//   name        String
+//   description String?
+//   price       Float
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
+
+
+// model Product {
+//   id          Int      @id @default(autoincrement())
+//   name        String
+//   description String?
+//   price       Float
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }
 
 // model Product {
 //   id          Int      @id @default(autoincrement())
