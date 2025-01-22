@@ -1,0 +1,144 @@
+{
+    "models": [
+      {
+        "name": "Ingredient",
+        "fields": ["id", "name", "unit", "price", "quantity"],
+        "relationships": [
+          {
+            "type": "one-to-many",
+            "relatedModel": "ProductIngredient",
+            "foreignKey": "ingredientId"
+          }
+        ]
+      },
+      {
+        "name": "Product",
+        "fields": [
+          "id",
+          "name",
+          "portions",
+          "costPerPortion",
+          "priceWithoutTax",
+          "tax",
+          "finalPrice",
+          "roundedPrice",
+          "profitPercentage",
+          "profitAmount",
+          "pricePerPortion"
+        ],
+        "relationships": [
+          {
+            "type": "one-to-many",
+            "relatedModel": "ProductIngredient",
+            "foreignKey": "productId"
+          },
+          {
+            "type": "one-to-one",
+            "relatedModel": "ProductStock",
+            "foreignKey": "productId"
+          },
+          {
+            "type": "one-to-many",
+            "relatedModel": "ProductStockLog",
+            "foreignKey": "productId"
+          },
+          {
+            "type": "one-to-many",
+            "relatedModel": "SaleProduct",
+            "foreignKey": "productId"
+          }
+        ]
+      },
+      {
+        "name": "ProductIngredient",
+        "fields": ["id", "productId", "ingredientId", "quantity", "pricePerUnit", "finalPrice"],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "relatedModel": "Product",
+            "foreignKey": "productId"
+          },
+          {
+            "type": "many-to-one",
+            "relatedModel": "Ingredient",
+            "foreignKey": "ingredientId"
+          }
+        ]
+      },
+      {
+        "name": "ProductStock",
+        "fields": ["id", "productId", "stock", "createdAt", "updatedAt"],
+        "relationships": [
+          {
+            "type": "one-to-one",
+            "relatedModel": "Product",
+            "foreignKey": "productId"
+          },
+          {
+            "type": "one-to-many",
+            "relatedModel": "ProductStockLog",
+            "foreignKey": "productId"
+          }
+        ]
+      },
+      {
+        "name": "ProductStockLog",
+        "fields": ["id", "productId", "type", "quantity", "comment", "createdAt"],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "relatedModel": "Product",
+            "foreignKey": "productId"
+          }
+        ]
+      },
+      {
+        "name": "Client",
+        "fields": ["id", "name", "email", "phone"],
+        "relationships": [
+          {
+            "type": "one-to-many",
+            "relatedModel": "Sale",
+            "foreignKey": "clientId"
+          }
+        ]
+      },
+      {
+        "name": "Sale",
+        "fields": ["id", "clientId", "date", "totalAmount", "paymentMethod"],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "relatedModel": "Client",
+            "foreignKey": "clientId"
+          },
+          {
+            "type": "one-to-many",
+            "relatedModel": "SaleProduct",
+            "foreignKey": "saleId"
+          }
+        ]
+      },
+      {
+        "name": "SaleProduct",
+        "fields": ["id", "saleId", "productId", "quantity", "totalPrice"],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "relatedModel": "Sale",
+            "foreignKey": "saleId"
+          },
+          {
+            "type": "many-to-one",
+            "relatedModel": "Product",
+            "foreignKey": "productId"
+          }
+        ]
+      }
+    ],
+    "enums": {
+      "StockType": ["PRODUCED", "DEFECTIVE", "SALE", "ADJUSTMENT"],
+      "PaymentMethod": ["CASH", "TRANSFER", "POSNET", "POSNET_INSTALLMENTS"]
+    }
+  }
+  

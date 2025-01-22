@@ -122,6 +122,32 @@ enum PaymentMethod {
   POSNET              // POSNET
   POSNET_INSTALLMENTS // POSNET en cuotas
 }
+//EXPENSAS
+model Expense {
+  id            Int       @id @default(autoincrement())
+  name          String    // Nombre del gasto (Ej: "Alquiler", "Compra de maquinaria")
+  amount        Float     // Monto del gasto
+  date          DateTime  // Fecha del gasto
+  type          ExpenseType // Tipo de gasto (único o recurrente)
+  recurrence    Recurrence? // Opcional, solo si es recurrente
+  createdAt     DateTime  @default(now()) // Fecha de creación
+  updatedAt     DateTime  @updatedAt // Fecha de última actualización
+}
+
+// Enum para tipos de gastos
+enum ExpenseType {
+  ONE_TIME  // Gasto único
+  RECURRING // Gasto recurrente
+}
+
+// Enum para frecuencia de gastos recurrentes
+enum Recurrence {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
 
 //MODELOS ORIGINALES 
 // model Ingredient {
