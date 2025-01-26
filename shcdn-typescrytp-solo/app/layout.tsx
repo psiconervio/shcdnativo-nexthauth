@@ -90,7 +90,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="flex min-h-screen w-full flex-col bg-muted/40">
+    <html lang="en" >
       <body
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
