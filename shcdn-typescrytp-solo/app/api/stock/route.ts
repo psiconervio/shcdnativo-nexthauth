@@ -24,17 +24,22 @@ export async function GET() {
     return NextResponse.json({ error: "Error al obtener el stock" }, { status: 500 });
   }
 }
-
 export async function POST(request: Request) {
   const { productId, quantity, type, comment } = await request.json();
 
-  // Validar que el producto exista
-  const productStock = await prisma.productStock.findUnique({
+  // Buscar el registro de stock del producto
+  let productStock = await prisma.productStock.findUnique({
     where: { productId },
   });
 
+  // Si no existe, crearlo con stock inicial 0
   if (!productStock) {
-    return NextResponse.json({ error: "Producto no encontrado en stock." }, { status: 404 });
+    productStock = await prisma.productStock.create({
+      data: {
+        productId,
+        stock: 0, // Inicializar con 0 si no existe
+      },
+    });
   }
 
   // Registrar el movimiento en el historial (ProductStockLog)
@@ -58,6 +63,41 @@ export async function POST(request: Request) {
 
   return NextResponse.json(updatedProductStock);
 }
+
+//codigo orginal no funciona
+// export async function POST(request: Request) {
+//   const { productId, quantity, type, comment } = await request.json();
+
+//   // Validar que el producto exista
+//   const productStock = await prisma.productStock.findUnique({
+//     where: { productId },
+//   });
+
+//   if (!productStock) {
+//     return NextResponse.json({ error: "Producto no encontrado en stock." }, { status: 404 });
+//   }
+
+//   // Registrar el movimiento en el historial (ProductStockLog)
+//   await prisma.productStockLog.create({
+//     data: {
+//       productId,
+//       type,
+//       quantity,
+//       comment,
+//     },
+//   });
+
+//   // Calcular el nuevo stock total
+//   const updatedStock = productStock.stock + quantity;
+
+//   // Actualizar el stock total en la tabla ProductStock
+//   const updatedProductStock = await prisma.productStock.update({
+//     where: { productId },
+//     data: { stock: updatedStock },
+//   });
+
+//   return NextResponse.json(updatedProductStock);
+// }
 
 // import prisma from "@/lib/db";
 // import { NextResponse } from "next/server";

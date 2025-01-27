@@ -1,5 +1,12 @@
+PRODUCCION INGREDIENTES 
+http://localhost:3000/api/ingredients/
+PRODUCCION PRODUCTOS 
+http://localhost:3000/api/products/
 
-VER STOCK DISPONIBLE DE LOS PRODUCTOS
+
+GET VER STOCK DISPONIBLE DE LOS PRODUCTOS
+http://localhost:3000/api/stock/
+POST PARA REGISTRAR STOCK NUEVO 
 http://localhost:3000/api/stock/
 
 ver hisotrial de ingresos
