@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 
 export function Botonesventa() {
       const [isOpen, setIsOpen] = useState(false);
-      const [products, setProducts] = useState([]);
+      const [products, setProducts] = useState<{ id: string; name: string }[]>([]);
       const [formData, setFormData] = useState({
         productId: "",
         quantity: "",
@@ -55,10 +55,9 @@ export function Botonesventa() {
     
       const resetForm = () => {
         setFormData({
-          name: "",
-          unit: "",
-          price: 0,
-          quantity: 0,
+          productId: "",
+          quantity: "",
+          unitPrice: "",
         });
       };
   return (

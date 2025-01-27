@@ -19,7 +19,7 @@ export async function POST(request) {
 
     return NextResponse.json(stock, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -35,7 +35,7 @@ export async function GET() {
 
     return NextResponse.json(stockEntries);
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }
 

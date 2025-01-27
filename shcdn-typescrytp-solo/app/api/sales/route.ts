@@ -120,7 +120,7 @@ export async function POST(req: Request) {
     return NextResponse.json(sale, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: error.message || "An error occurred" },
+      { error: (error as any).message || "An error occurred" },
       { status: 500 }
     );
   }
