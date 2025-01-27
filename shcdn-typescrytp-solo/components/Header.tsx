@@ -20,7 +20,7 @@ import {
   Users2,
   Wheat 
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -30,14 +30,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -49,15 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import {
   Tooltip,
   TooltipContent,
@@ -100,7 +85,7 @@ export default async function HeaderUno() {
               <TooltipTrigger asChild>
                 <Link
                   href="/ventas"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg hover:text-foreground md:h-8 md:w-8"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
                   <span className="sr-only">Ventas</span>
