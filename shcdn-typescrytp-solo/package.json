@@ -7,7 +7,7 @@
     "seed": "node prisma/seedproducts.mjs",
     "test": "node __test__/api.test.js",
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate & next build",
     "start": "next start",
     "lint": "next lint"
   },
