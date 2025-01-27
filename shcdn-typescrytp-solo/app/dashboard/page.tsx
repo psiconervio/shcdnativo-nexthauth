@@ -2,74 +2,26 @@
 import React from "react";
 import useSWR from 'swr';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
-import {
   CalendarIcon,
   DownloadIcon,
-  SearchIcon,
-  ChevronDownIcon,
 } from "lucide-react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-const data = [
-  { name: "Jan", value: 2500 },
-  { name: "Feb", value: 2400 },
-  { name: "Mar", value: 1000 },
-  { name: "Apr", value: 1500 },
-  { name: "May", value: 900 },
-  { name: "Jun", value: 3500 },
-  { name: "Jul", value: 4800 },
-  { name: "Aug", value: 2000 },
-  { name: "Sep", value: 4700 },
-  { name: "Oct", value: 3200 },
-  { name: "Nov", value: 3300 },
-  { name: "Dec", value: 4000 },
-];
-const stockData = [
-  { id: "PROD001", disponible: 95, defectuosos: 5, fecha: "Invalid Date" },
-  { id: "PROD002", disponible: 142, defectuosos: 8, fecha: "Invalid Date" },
-  { id: "PROD003", disponible: 77, defectuosos: 3, fecha: "Invalid Date" },
-];
-const recentSales = [
-  {
-    name: "Olivia Martin",
-    email: "olivia.martin@email.com",
-    amount: "+$1,999.00",
-  },
-  { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+$39.00" },
-  {
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    amount: "+$299.00",
-  },
-  { name: "William Kim", email: "will@email.com", amount: "+$99.00" },
-  { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+$39.00" },
-];
+import { RecentSales } from "@/components/ventas-recientes";
+import { Resumenstock } from "@/components/resumen-stock";
+import { Grafico } from "@/components/grafico";
+import { RecentSaleslegacy } from "@/components/ventas-recientes-legacy";
+import { Produccionstock } from "@/components/produccion-stock";
+import { ItemsDashboard } from "@/components/items-dashboard";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Dashboard() {
-  const { data: stockDataa, error: stockError } = useSWR('/api/stock', fetcher);
+  // const { data: stockDataa, error: stockError } = useSWR('/api/stock', fetcher);
+  // const { data: stockall, error: stockErrorall } = useSWR('/api/all', fetcher);
   // const { data: salesData, error: salesError } = useSWR('/api/sales', fetcher);
   // const { data: defectiveData, error: defectiveError } = useSWR('/api/defective-products', fetcher);
-  console.log(stockDataa)
+  // console.log(stockall)
 
   // if (stockError || salesError || defectiveError) return <div>Error al cargar los datos</div>;
   // if (!stockData || !salesData || !defectiveData) return <div>Cargando...</div>;
@@ -95,7 +47,8 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
+            <ItemsDashboard />
+            {/* <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Productos Disponibles
@@ -159,117 +112,17 @@ export default function Dashboard() {
                   +201 since last hour
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mb-8">
-            <Card className="col-span-full lg:col-span-4">
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-2">
-                <ResponsiveContainer width="100%" height={270}>
-                  <BarChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Bar dataKey="value" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-            <Card className="col-span-full lg:col-span-3">
-              <CardHeader>
-                <CardTitle>Resumen de Stock</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Producto</TableHead>
-                      <TableHead>Disponible</TableHead>
-                      <TableHead>Defectuosos</TableHead>
-                      <TableHead>Fecha Produccion</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {stockData.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.id}</TableCell>
-                        <TableCell>{item.disponible}</TableCell>
-                        <TableCell>{item.defectuosos}</TableCell>
-                        <TableCell>{item.fecha}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+            <Grafico />
+            <Resumenstock />
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mb-8">
-            <Card className="col-span-full lg:col-span-4">
-              <CardHeader>
-                <CardTitle>Ventas Recientes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Cliente</TableHead>
-                      <TableHead>Productos</TableHead>
-                      <TableHead>Saldo</TableHead>
-                      <TableHead>Fecha</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {recentSales.map((item) => (
-                      <TableRow key={item.name}>
-                        <TableCell className="flex items-center">
-                          <Avatar>
-                            <AvatarFallback>{item.name[0]}</AvatarFallback>
-                            <AvatarImage
-                              src={`https://randomuser.me/api/portraits/men/${item.id}.jpg`}
-                              alt={item.name}
-                            />
-                          </Avatar>
-                          <span className="ml-2">{item.name}</span>
-                        </TableCell>
-                        <TableCell>{item.email}</TableCell>
-                        <TableCell>{item.amount}</TableCell>
-                        <TableCell>{item.amount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-            <Card className="col-span-full lg:col-span-3">
-              <CardHeader>
-                <CardTitle>Resumen de Stock</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Producto</TableHead>
-                      <TableHead>Disponible</TableHead>
-                      <TableHead>Defectuosos</TableHead>
-                      <TableHead>Fecha Produccion</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {stockData.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.id}</TableCell>
-                        <TableCell>{item.disponible}</TableCell>
-                        <TableCell>{item.defectuosos}</TableCell>
-                        <TableCell>{item.fecha}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+            <RecentSales />
+            <Produccionstock/>
+            <RecentSaleslegacy />
           </div>
         </div>
       </main>
