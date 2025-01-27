@@ -1,5 +1,8 @@
 "use client";
+import { useState, useEffect } from "react";
+import { Plus, PencilIcon, Trash2Icon } from "lucide-react";
 import React from "react";
+import { Label } from "@/components/ui/label";
 import {
   BarChart,
   Bar,
@@ -14,7 +17,14 @@ import {
   SearchIcon,
   ChevronDownIcon,
 } from "lucide-react";
-
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,6 +75,61 @@ const recentSales = [
 ];
 
 export default function Dashboard() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [formData, setFormData] = useState({
+    productId: "",
+    quantity: "",
+    unitPrice: "",
+  });
+
+    // Fetch products from the backend
+    useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          const response = await fetch("/api/products");
+          const data = await response.json();
+          setProducts(data);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+      };
+      fetchProducts();
+    }, []);
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const response = await fetch("/api/sales", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Failed to create sale");
+        }
+  
+        alert("Sale created successfully!");
+        setIsOpen(false);
+        setFormData({ productId: "", quantity: "", unitPrice: "" });
+      } catch (error) {
+        console.error("Error creating sale:", error);
+        alert("Error creating sale");
+      }
+    };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      unit: "",
+      price: 0,
+      quantity: 0,
+    });
+    setEditingIngredient(null);
+  };
+
   return (
     <div className="">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -77,10 +142,78 @@ export default function Dashboard() {
                 <DownloadIcon className="mr-2 h-4 w-4" />
                 <span className="hidden sm:inline">Download</span>
               </Button>
-              <Button>
-                <DownloadIcon className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Nueva Venta</span>
-              </Button>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button onClick={() => setFormData({ productId: "", quantity: 1, unitPrice: 0 })}>
+          Nueva Venta
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] w-full">
+        <DialogHeader>
+          <DialogTitle>Nueva Venta</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid gap-4">
+            {/* Product Select */}
+            <div className="grid gap-2">
+              <Label htmlFor="product">Producto</Label>
+              <Select
+                value={formData.productId}
+                onValueChange={(value) => setFormData({ ...formData, productId: value })}
+              >
+                <SelectTrigger id="product">Selecciona un producto</SelectTrigger>
+                <SelectContent>
+                  {products.map((product) => (
+                    <SelectItem key={product.id} value={product.id}>
+                      {product.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Quantity Input */}
+            <div className="grid gap-2">
+              <Label htmlFor="quantity">Cantidad</Label>
+              <Input
+                id="quantity"
+                type="number"
+                step="1"
+                min="1"
+                value={formData.quantity}
+                onChange={(e) =>
+                  setFormData({ ...formData, quantity: parseInt(e.target.value, 10) || 1 })
+                }
+                required
+              />
+            </div>
+
+            {/* Unit Price Input */}
+            <div className="grid gap-2">
+              <Label htmlFor="unitPrice">Precio por Unidad</Label>
+              <Input
+                id="unitPrice"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.unitPrice}
+                onChange={(e) =>
+                  setFormData({ ...formData, unitPrice: parseFloat(e.target.value) || 0 })
+                }
+                required
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4">
+            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit">Crear Venta</Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
             </div>
           </div>
 
