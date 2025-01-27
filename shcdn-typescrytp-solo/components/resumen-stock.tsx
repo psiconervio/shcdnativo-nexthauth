@@ -36,11 +36,12 @@ export function Resumenstock(){
             </TableHeader>
             <TableBody>
               {stockData.map((item: StockItem) => (
+
                 <TableRow key={item.id}>
                   <TableCell>{item.product.name}</TableCell>
                   <TableCell>{item.stock}</TableCell>
                   <TableCell className="font-medium">{item.id}</TableCell>
-                  <TableCell>{item.createdAt}</TableCell>
+                  <TableCell>{new Date(item.createdAt).toISOString().replace('T', ' ').substring(0, 16)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
