@@ -1,5 +1,6 @@
-import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/db";
+
 
 /**
  * Registrar una venta (POST /api/sales)
