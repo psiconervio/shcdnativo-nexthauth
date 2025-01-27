@@ -18,41 +18,41 @@ export default function Dashboard() {
   });
 
   // Fetch products from the backend
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/products");
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await fetch("/api/products");
+  //       const data = await response.json();
+  //       setProducts(data);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      const response = await fetch("/api/sales", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+  //   try {
+  //     const response = await fetch("/api/sales", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Failed to create sale");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to create sale");
+  //     }
 
-      alert("Sale created successfully!");
-      setIsOpen(false);
-      setFormData({ productId: "", quantity: "", unitPrice: "" });
-    } catch (error) {
-      console.error("Error creating sale:", error);
-      alert("Error creating sale");
-    }
-  };
+  //     alert("Sale created successfully!");
+  //     setIsOpen(false);
+  //     setFormData({ productId: "", quantity: "", unitPrice: "" });
+  //   } catch (error) {
+  //     console.error("Error creating sale:", error);
+  //     alert("Error creating sale");
+  //   }
+  // };
 
 
   return (
