@@ -17,6 +17,7 @@ import {
   Settings,
   ShoppingCart,
   Users2,
+  Wheat 
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -97,14 +98,14 @@ export default async function HeaderUno() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="/dashboard/productos/ingredientes"
+                  href="/ventas"
                   className="flex h-9 w-9 items-center justify-center rounded-lg hover:text-foreground md:h-8 md:w-8"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Ingredientes</span>
+                  <span className="sr-only">Ventas</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Ingredientes</TooltipContent>
+              <TooltipContent side="right">Ventas</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -124,11 +125,23 @@ export default async function HeaderUno() {
                   href="/dashboard/productos/ingredientes"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <Wheat className="h-5 w-5" />
+                  <span className="sr-only">Ingredientes</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
+              <TooltipContent side="right">Ingredientes</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/dashboard/productos/ingredientes"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Users2 className="h-5 w-5" />
+                  <span className="sr-only">Clientes</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Clientes</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -189,11 +202,11 @@ export default async function HeaderUno() {
                   Dashboard
                 </Link>
                 <Link
-                  href="/dashboard/productos/ingredientes"
+                  href="/ventas"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  Ingredientes
+                  Ventas
                 </Link>
                 <Link
                   href="/dashboard/productos"
@@ -206,8 +219,15 @@ export default async function HeaderUno() {
                   href="/dashboard/productos/ingredientes"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
+                  <Wheat className="h-5 w-5" />
+                  Ingredientes
+                </Link>
+                <Link
+                  href="/dashboard/productos/ingredientes"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
                   <Users2 className="h-5 w-5" />
-                  Customers
+                  Clientes
                 </Link>
                 <Link
                   href="/dashboard/productos/ingredientes"
