@@ -13,6 +13,7 @@ import {
   Package2,
   PanelLeft,
   PlusCircle,
+  ReceiptText,
   Search,
   Settings,
   ShoppingCart,
@@ -149,6 +150,18 @@ export default async function HeaderUno() {
                   href="/dashboard/productos/ingredientes"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
+                  <ReceiptText  className="h-5 w-5" />
+                  <span className="sr-only">Expensas</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Expensas</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/dashboard/productos/ingredientes"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
                   <LineChart className="h-5 w-5" />
                   <span className="sr-only">Analytics</span>
                 </Link>
@@ -228,6 +241,13 @@ export default async function HeaderUno() {
                 >
                   <Users2 className="h-5 w-5" />
                   Clientes
+                </Link>
+                <Link
+                  href="/dashboard/productos/ingredientes"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <ReceiptText  className="h-5 w-5" />
+                  Expensas
                 </Link>
                 <Link
                   href="/dashboard/productos/ingredientes"
