@@ -5,13 +5,14 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function ItemsDashboard() {
     const { data: stockall, error: stockErrorall } = useSWR('/api/stock/all', fetcher);
+    // const { data: stockall, error: stockErrorall } = useSWR('/api/stock/log', fetcher);
 console.log(stockall)
     return (
        <>
         <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
-            Productos Disponibles
+            Porciones Disponibles
           </CardTitle>
           <svg
             xmlns="http://www.w3.org/2000/svg"

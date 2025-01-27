@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
-
-
-/**
- * Registrar una venta (POST /api/sales)
- */
+/** Registrar una venta (POST /api/sales) */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const clientId = searchParams.get("clientId");
   const startDate = searchParams.get("startDate");
   const endDate = searchParams.get("endDate");
-
   try {
     const sales = await prisma.sale.findMany({
       where: {
@@ -48,8 +43,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Error al obtener las ventas" }, { status: 500 });
   }
 }
-
-
 export async function POST(req: Request) {
   try {
     const { clientId, paymentMethod, products } = await req.json();
@@ -61,7 +54,17 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate stock and calculate totals
+    // Definir los descuentos según el método de pago
+    const discountRates: { [key: string]: number } = {
+      EFECTIVO: 0.15, // 15% de descuento
+      TRANSFERENCIA: 0.10, // 10% de descuento
+      POSNET: 0.05, // 5% de descuento
+    };
+
+    // Validar si el método de pago es válido
+    const discountRate = discountRates[paymentMethod.toUpperCase()] || 0;
+
+    // Validar stock y calcular el total antes del descuento
     let totalAmount = 0;
 
     const saleProducts = await Promise.all(
@@ -74,7 +77,7 @@ export async function POST(req: Request) {
           throw new Error(`Product with ID: ${productId} not found`);
         }
 
-        // Check stock availability
+        // Verificar disponibilidad en el stock
         const productStock = await prisma.productStock.findUnique({
           where: { productId },
         });
@@ -85,11 +88,11 @@ export async function POST(req: Request) {
           );
         }
 
-        // Calculate total price for the product
-        const totalPrice = product.priceWithoutTax * quantity;
+        // Calcular el precio total del producto
+        const totalPrice = product.pricePerPortion * quantity;
         totalAmount += totalPrice;
 
-        // Reduce stock
+        // Reducir el stock
         await prisma.productStock.update({
           where: { productId },
           data: { stock: productStock.stock - quantity },
@@ -103,12 +106,16 @@ export async function POST(req: Request) {
       })
     );
 
-    // Create the sale
+    // Aplicar el descuento al total de la compra
+    const discountAmount = totalAmount * discountRate;
+    const finalTotalAmount = totalAmount - discountAmount;
+
+    // Crear la venta
     const sale = await prisma.sale.create({
       data: {
         clientId,
         paymentMethod,
-        totalAmount,
+        totalAmount: finalTotalAmount, // Total después del descuento
         products: {
           create: saleProducts,
         },
@@ -118,7 +125,16 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(sale, { status: 201 });
+    return NextResponse.json(
+      {
+        sale,
+        discountRate,
+        discountAmount,
+        originalTotalAmount: totalAmount,
+        finalTotalAmount,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: (error as any).message || "An error occurred" },
@@ -126,6 +142,85 @@ export async function POST(req: Request) {
     );
   }
 }
+
+
+//codigo legacy, no aplica descuentos
+// export async function POST(req: Request) {
+//   try {
+//     const { clientId, paymentMethod, products } = await req.json();
+
+//     if (!clientId || !paymentMethod || !products || products.length === 0) {
+//       return NextResponse.json(
+//         { error: "Missing required fields or products" },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Validate stock and calculate totals
+//     let totalAmount = 0;
+
+//     const saleProducts = await Promise.all(
+//       products.map(async ({ productId, quantity }) => {
+//         const product = await prisma.product.findUnique({
+//           where: { id: productId },
+//         });
+
+//         if (!product) {
+//           throw new Error(`Product with ID: ${productId} not found`);
+//         }
+
+//         // Check stock availability
+//         const productStock = await prisma.productStock.findUnique({
+//           where: { productId },
+//         });
+
+//         if (!productStock || productStock.stock < quantity) {
+//           throw new Error(
+//             `Insufficient stock for product with ID: ${productId}`
+//           );
+//         }
+
+//         // Calculate total price for the product
+//         const totalPrice = product.pricePerPortion * quantity;
+//         totalAmount += totalPrice;
+
+//         // Reduce stock
+//         await prisma.productStock.update({
+//           where: { productId },
+//           data: { stock: productStock.stock - quantity },
+//         });
+
+//         return {
+//           productId,
+//           quantity,
+//           totalPrice,
+//         };
+//       })
+//     );
+
+//     // Create the sale
+//     const sale = await prisma.sale.create({
+//       data: {
+//         clientId,
+//         paymentMethod,
+//         totalAmount,
+//         products: {
+//           create: saleProducts,
+//         },
+//       },
+//       include: {
+//         products: true,
+//       },
+//     });
+
+//     return NextResponse.json(sale, { status: 201 });
+//   } catch (error) {
+//     return NextResponse.json(
+//       { error: (error as any).message || "An error occurred" },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 // export async function POST(request) {
 //   try {
