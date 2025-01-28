@@ -71,8 +71,8 @@ export default function Ventas() {
             <ItemsDashboard />
           </div>
           <div className="sm:grid gap-6 md:grid-cols-2  sm:grid-cols-2  lg:grid-cols-7 mb-8">
+          <Resumenstock />
             <RecentSales />
-            <Resumenstock />
           </div>
         </div>
       </main>

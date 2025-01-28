@@ -17,11 +17,13 @@ export function AgregarStock() {
   const [formData, setFormData] = useState({
     productId: "",
     quantity: "",
-    type: "PRODUCED",
+    type: "PRODUCIDO",
     comment: "",
   });
 
-  const stockTypes = ["PRODUCIDO", "VENDIDO", "DEFECTUOSO", "AJUSTE"];
+  const stockTypes = ["PRODUCIDO",
+    //  "VENDIDO"
+     ,"DEFECTUOSO", "AJUSTE"];
 
   // Fetch products from the backend
   useEffect(() => {
@@ -75,11 +77,11 @@ export function AgregarStock() {
     <>
       <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
         <DialogTrigger asChild>
-          <Button>Gestionar Stock</Button>
+          <Button>Añadir Stock</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px] w-full">
           <DialogHeader>
-            <DialogTitle>Actualizar Stock</DialogTitle>
+            <DialogTitle>Añadir Stock</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-4">
@@ -164,7 +166,7 @@ export function AgregarStock() {
               >
                 Cancelar
               </Button>
-              <Button type="submit">Actualizar Stock</Button>
+              <Button type="submit">Añadir Stock</Button>
             </div>
           </form>
         </DialogContent>
