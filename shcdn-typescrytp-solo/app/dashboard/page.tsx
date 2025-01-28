@@ -73,6 +73,7 @@ import { Grafico } from "@/components/grafico";
 import { RecentSaleslegacy } from "@/components/ventas-recientes-legacy";
 import { Produccionstock } from "@/components/produccion-stock";
 import { ItemsDashboard } from "@/components/items-dashboard";
+import { AgregarStock } from "@/components/boton-agregar-stock";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -100,6 +101,7 @@ export default function Dashboard() {
                   Jan 20, 2023 - Feb 09, 2023
                 </span>
               </Button>
+              <AgregarStock />
               <Button>
                 <DownloadIcon className="mr-2 h-4 w-4" />
                 <span className="hidden sm:inline">Download</span>
