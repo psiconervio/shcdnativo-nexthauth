@@ -126,9 +126,10 @@ enum PaymentMethod {
 //EXPENSAS
 model Expense {
   id            Int       @id @default(autoincrement())
-  name          String    // Nombre del gasto (Ej: "Alquiler", "Compra de maquinaria")
-  amount        Float     // Monto del gasto
-  date          DateTime  // Fecha del gasto
+  nombre        String    // Nombre del gasto (Ej: "Alquiler", "Compra de maquinaria")
+  monto         Float     // Monto del gasto
+  fecha         DateTime?  // Fecha del gasto
+  descripcion   String?  @db.Text   // Descripción opcional
   type          ExpenseType // Tipo de gasto (único o recurrente)
   recurrence    Recurrence? // Opcional, solo si es recurrente
   createdAt     DateTime  @default(now()) // Fecha de creación
