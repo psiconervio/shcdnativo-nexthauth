@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"; // Asegúrate de que estos componentes existen
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"; // Asegúrate de que estos componentes existen
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { Input } from "./ui/input";
 
 export function AgregarStock() {
@@ -21,9 +27,13 @@ export function AgregarStock() {
     comment: "",
   });
 
-  const stockTypes = ["PRODUCIDO",
+  const stockTypes = [
+    "PRODUCIDO",
+    ,
     //  "VENDIDO"
-     ,"DEFECTUOSO", "AJUSTE"];
+    "DEFECTUOSO",
+    "AJUSTE",
+  ];
 
   // Fetch products from the backend
   useEffect(() => {
@@ -79,13 +89,121 @@ export function AgregarStock() {
         <DialogTrigger asChild>
           <Button>Añadir Stock</Button>
         </DialogTrigger>
+
+        <DialogContent className="sm:max-w-[600px] w-full max-h-[95dvh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Añadir Stock</DialogTitle>
+          </DialogHeader>
+
+          {/* Contenedor scrollable */}
+          <div className="flex-1 overflow-y-auto px-1">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid gap-4">
+                {/* Selección de Producto */}
+                <div className="grid gap-2">
+                  <Label htmlFor="product">Producto</Label>
+                  <Select
+                    value={formData.productId}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, productId: value })
+                    }
+                  >
+                    <SelectTrigger id="product">
+                      <SelectValue placeholder="Selecciona un producto" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          {product.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Cantidad */}
+                <div className="grid gap-2">
+                  <Label htmlFor="quantity">Cantidad</Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    value={formData.quantity}
+                    onChange={(e) =>
+                      setFormData({ ...formData, quantity: e.target.value })
+                    }
+                    placeholder="Ingresa la cantidad"
+                    className="text-[16px]" // Previene zoom en iOS
+                  />
+                </div>
+
+                {/* Tipo de Movimiento */}
+                <div className="grid gap-2">
+                  <Label htmlFor="type">Tipo de Movimiento</Label>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, type: value })
+                    }
+                  >
+                    <SelectTrigger id="type">
+                      <SelectValue placeholder="Selecciona el tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {stockTypes.map((type) => (
+                        <SelectItem key={type} value={type || ""}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Comentario */}
+                <div className="grid gap-2">
+                  <Label htmlFor="comment">Comentario</Label>
+                  <Input
+                    id="comment"
+                    value={formData.comment}
+                    onChange={(e) =>
+                      setFormData({ ...formData, comment: e.target.value })
+                    }
+                    placeholder="Agrega un comentario"
+                    className="text-[16px]"
+                  />
+                </div>
+              </div>
+
+              {/* Botones Fijos */}
+              <div className="sticky bottom-0 bg-background border-t pt-4 -mx-1 px-2">
+                <div className="flex justify-end gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsOpen(false)}
+                    className="min-w-[100px]"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button type="submit" className="min-w-[100px]">
+                    Añadir Stock
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+        <DialogTrigger asChild>
+          <Button>Añadir Stock</Button>
+        </DialogTrigger>
         <DialogContent className="sm:max-w-[600px] w-full">
           <DialogHeader>
             <DialogTitle>Añadir Stock</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-4">
-              {/* Product Selection */}
               <div className="grid gap-2">
                 <Label htmlFor="product">Producto</Label>
                 <Select
@@ -106,8 +224,6 @@ export function AgregarStock() {
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* Quantity Input */}
               <div className="grid gap-2">
                 <Label htmlFor="quantity">Cantidad</Label>
                 <Input
@@ -121,8 +237,6 @@ export function AgregarStock() {
                   placeholder="Ingresa la cantidad"
                 />
               </div>
-
-              {/* Stock Type */}
               <div className="grid gap-2">
                 <Label htmlFor="type">Tipo de Movimiento</Label>
                 <Select
@@ -143,8 +257,6 @@ export function AgregarStock() {
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* Comment Input */}
               <div className="grid gap-2">
                 <Label htmlFor="comment">Comentario</Label>
                 <Input
@@ -170,7 +282,7 @@ export function AgregarStock() {
             </div>
           </form>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 }
