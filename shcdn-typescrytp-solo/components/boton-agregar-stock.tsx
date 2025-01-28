@@ -136,7 +136,7 @@ export function AgregarStock() {
                   </SelectTrigger>
                   <SelectContent>
                     {stockTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
+                      <SelectItem key={type} value={type || ""}>
                         {type}
                       </SelectItem>
                     ))}
