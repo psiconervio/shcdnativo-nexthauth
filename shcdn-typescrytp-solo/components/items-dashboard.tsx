@@ -9,7 +9,7 @@ import { useTotalLastDaySales } from "@/hooks/useTotalLastDaySales";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function ItemsDashboard() {
-  const { sales,totalSales, loading, error } = useSales();
+  const { sales, totalSales, loading, error } = useSales();
   const { recentSales, totalRecentQuantity, loadingRecent, errorRecent } = useRecentSales();
   const { totalLastDaySales, isLoading, fetchError } = useTotalLastDaySales();
 
