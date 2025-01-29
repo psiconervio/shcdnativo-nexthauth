@@ -39,13 +39,13 @@ const recentSales = [
               {recentSales.map((item) => (
                 <TableRow key={item.name}>
                   <TableCell className="flex items-center">
-                    <Avatar>
+                    {/* <Avatar>
                       <AvatarFallback>{item.name[0]}</AvatarFallback>
                       <AvatarImage
                         src={`https://randomuser.me/api/portraits/men/${item.id}.jpg`}
                         alt={item.name}
                       />
-                    </Avatar>
+                    </Avatar> */}
                     <span className="ml-2">{item.name}</span>
                   </TableCell>
                   <TableCell>{item.email}</TableCell>

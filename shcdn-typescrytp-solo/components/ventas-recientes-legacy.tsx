@@ -64,13 +64,13 @@ export function RecentSaleslegacy() {
             {ventas.map((venta) => (
               <TableRow key={venta.id}>
                 <TableCell className="flex items-center">
-                  <Avatar>
+                  {/* <Avatar> */}
                     {/* <AvatarFallback>{item.name[0]}</AvatarFallback>
                       <AvatarImage
                         src={`https://randomuser.me/api/portraits/men/${item.id}.jpg`}
                         alt={item.name}
                       /> */}
-                  </Avatar>
+                  {/* </Avatar> */}
                   <span className="ml-2">{venta.client?.name}</span>
                 </TableCell>
                 <TableCell>
