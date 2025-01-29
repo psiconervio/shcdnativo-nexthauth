@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import React from "react";
-// import { NewClientModal } from "@/components/boton-create-cliente";
 import { ClienteModal } from "@/components/boton-create-cliente";
 import { RecentSales } from "@/components/ventas-recientes";
 import { Resumenstock } from "@/components/resumen-stock";
