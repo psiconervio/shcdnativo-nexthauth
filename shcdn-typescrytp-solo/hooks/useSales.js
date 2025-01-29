@@ -1,9 +1,9 @@
-// 📂 hooks/useSales.js
 import { useState, useEffect } from "react";
 import { fetchSales } from "@/lib/apisales";
 
 export const useSales = () => {
   const [sales, setSales] = useState([]);
+  const [totalSales, setTotalSales] = useState(0); // 🔹 Nuevo estado para el total de ventas
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,21 +12,26 @@ export const useSales = () => {
       try {
         const rawSales = await fetchSales();
 
-        // 🔹 Transformar los datos: Agrupar ventas por fecha y sumar cantidades
+        let totalQuantity = 0; // 🔹 Acumulador de todas las cantidades vendidas
+
         const salesByDay = rawSales.reduce((acc, sale) => {
           const date = sale.date.split("T")[0]; // YYYY-MM-DD
 
           if (!acc[date]) acc[date] = { date, totalQuantity: 0 };
 
-          acc[date].totalQuantity += sale.products.reduce(
+          const dayQuantity = sale.products.reduce(
             (sum, product) => sum + product.quantity,
             0
           );
 
+          acc[date].totalQuantity += dayQuantity;
+          totalQuantity += dayQuantity; // 🔹 Sumar al total general
+
           return acc;
         }, {});
 
-        setSales(Object.values(salesByDay)); // Convertir a array para mapearlo en el componente
+        setSales(Object.values(salesByDay)); // Convertir a array
+        setTotalSales(totalQuantity); // Guardar el total de ventas
       } catch (err) {
         setError(err.message);
       } finally {
@@ -37,5 +42,5 @@ export const useSales = () => {
     getSales();
   }, []);
 
-  return { sales, loading, error };
+  return { sales, totalSales, loading, error };
 };

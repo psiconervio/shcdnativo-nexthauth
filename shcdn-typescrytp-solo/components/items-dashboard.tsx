@@ -2,20 +2,24 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import useSWR from 'swr';
 // import { fetchSales } from "../lib/fetchsales";
 import { useSales } from "../hooks/useSales";
-
+import { useRecentSales } from "../hooks/useRecentSales";
+import { useTotalLastDaySales } from "@/hooks/useTotalLastDaySales";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function ItemsDashboard() {
-  const { sales, loading, error } = useSales();
+  const { sales,totalSales, loading, error } = useSales();
+  const { recentSales, totalRecentQuantity, loadingRecent, errorRecent } = useRecentSales();
+  const { totalLastDaySales, isLoading, fetchError } = useTotalLastDaySales();
+
 
     const { data: stockall, error: _stockErrorall } = useSWR('/api/stock/all', fetcher);
     // const { data: ventas, error: _salesErrorall } = useSWR('/api/sales', fetcher);
     
     // Check if data is still loading or if there's an error
-    if (!stockall) return <div>Loading...</div>;
-    if (_stockErrorall) return <div>Error loading data</div>;
+    // if (!stockall) return <div>Loading...</div>;
+    // if (_stockErrorall) return <div>Error loading data</div>;
     //sacar cantidad
     // const totalQuantity = sales.reduce((sum, sale) => {
     //   return sum + sale.products.reduce((subSum, product) => subSum + product.quantity, 0);
@@ -41,6 +45,29 @@ export function ItemsDashboard() {
     return (
        <>
         <Card>
+        {/* <ul>
+        {sales.map(({ date, totalQuantity }) => (
+          <li key={date}>
+            <strong>📅 {date}</strong> - Cantidad vendida: {totalQuantity}
+          </li>
+        ))}
+      </ul> */}
+         {/* <h2>📅 Ventas de los Últimos 7 Días</h2>
+      <ul>
+        {sales.map(({ date, totalQuantity }) => (
+          <li key={date}>
+            <strong>{date}</strong> - Cantidad vendida: {totalQuantity}
+          </li>
+        ))}
+      </ul>
+      <ul>
+        {recentSales.map(({ date, totalQuantity }) => (
+          <li key={date}>
+            <strong>{date}</strong> - Cantidad vendida: {totalQuantity}
+          </li>
+        ))}
+      </ul> */}
+      <h3> </h3>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Porciones Disponibles</CardTitle>
                 <svg
@@ -57,7 +84,7 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">{stockall.totalStock}</div>
+                {/* <div className="text-2xl font-bold">{stockall.totalStock}</div> */}
                 <p className="text-xs text-muted-foreground">+20.1% from last month</p>
             </CardContent>
         </Card>
@@ -80,13 +107,13 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">{stockall.defectiveProductsTotal}</div>
+                {/* <div className="text-2xl font-bold">{stockall.defectiveProductsTotal}</div> */}
                 <p className="text-xs text-muted-foreground">+180.1% from last month</p>
             </CardContent>
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Ventas</CardTitle>
+                <CardTitle className="text-sm font-medium">Ventas Totales</CardTitle>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -102,8 +129,8 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+12,234
-                  {/* {sales?.} */}
+                <div className="text-2xl font-bold">+
+                {totalRecentQuantity}
                   </div>
                 <p className="text-xs text-muted-foreground">+19% from last month</p>
             </CardContent>
@@ -125,7 +152,7 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+573</div>
+                <div className="text-2xl font-bold">+573{totalLastDaySales}</div>
                 <p className="text-xs text-muted-foreground">+201 since last hour</p>
             </CardContent>
         </Card>
