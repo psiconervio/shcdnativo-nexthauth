@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import React from "react";
-import { ClienteModal } from "@/components/boton-create-cliente";
+import NewClientModal from "@/components/boton-create-cliente";
 import { RecentSales } from "@/components/ventas-recientes";
 import { Resumenstock } from "@/components/resumen-stock";
 import { ItemsDashboard } from "@/components/items-dashboard";
@@ -64,8 +64,8 @@ export default function Ventas() {
             <h1 className="text-3xl font-bold">Ventaas</h1>
             <div className="flex items-center space-x-4">
               <Botonesventa />
-              <ClienteModal />
-              {/* <NewClientModal /> */}
+              {/* <ClienteModal /> */}
+              <NewClientModal />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
