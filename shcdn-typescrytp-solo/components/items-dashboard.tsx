@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import useSWR from 'swr';
 // import { fetchSales } from "../lib/fetchsales";
-import { useSales } from "@/hooks/useSales";
+import { useSales } from "../hooks/useSales";
 
 
 
