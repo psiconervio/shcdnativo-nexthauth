@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ClienteModal() {
+export function ClienteModal() {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
 
