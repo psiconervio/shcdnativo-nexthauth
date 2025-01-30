@@ -3,58 +3,19 @@ import { useState, useEffect } from "react";
 import React from "react";
 import NewClientModal from "@/components/boton-create-cliente";
 import { RecentSales } from "@/components/ventas-recientes";
-import { Resumenstock } from "@/components/resumen-stock";
+import { ResumenStock } from "@/components/resumen-stock";
 import { ItemsDashboard } from "@/components/items-dashboard";
 import { Botonesventa } from "@/components/botones-venta";
 
 
 export default function Ventas() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [products, setProducts] = useState([]);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
     productId: "",
     quantity: "",
     unitPrice: "",
   });
-
-  // Fetch products from the backend
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       const response = await fetch("/api/products");
-  //       const data = await response.json();
-  //       setProducts(data);
-  //     } catch (error) {
-  //       console.error("Error fetching products:", error);
-  //     }
-  //   };
-  //   fetchProducts();
-  // }, []);
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const response = await fetch("/api/sales", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(formData),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to create sale");
-  //     }
-
-  //     alert("Sale created successfully!");
-  //     setIsOpen(false);
-  //     setFormData({ productId: "", quantity: "", unitPrice: "" });
-  //   } catch (error) {
-  //     console.error("Error creating sale:", error);
-  //     alert("Error creating sale");
-  //   }
-  // };
-
-
   return (
     <div className="min-h-screen">
       <main className="container mx-auto p-4 sm:p-6">
@@ -72,7 +33,7 @@ export default function Ventas() {
             <ItemsDashboard />
           </div>
           <div className="sm:grid gap-6 md:grid-cols-2  sm:grid-cols-2  lg:grid-cols-7 mb-8">
-          <Resumenstock />
+          <ResumenStock />
             <RecentSales />
           </div>
         </div>
