@@ -166,7 +166,7 @@ export function BotonesVenta() {
 
               {/* Selección de Productos */}
               <div className="grid gap-4">
-                <Label>Productos</Label>
+                <Label>Añadir productos y cantidad al la venta</Label>
                 {formData.products.map((product, index) => (
                   <div key={index} className="flex items-center gap-4">
                     <Select

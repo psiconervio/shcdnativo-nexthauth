@@ -41,22 +41,23 @@ export function AgregarStock() {
       try {
         const response = await fetch("/api/products");
         const productsData = await response.json();
-  
+
         // Asegurar que el id sea string
-        const formattedProducts = productsData.map((product: { id: number; name: string }) => ({
-          id: String(product.id),
-          name: product.name,
-        }));
-  
+        const formattedProducts = productsData.map(
+          (product: { id: number; name: string }) => ({
+            id: String(product.id),
+            name: product.name,
+          })
+        );
+
         setProducts(formattedProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
-  
+
     fetchProducts();
   }, []);
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,11 +113,12 @@ export function AgregarStock() {
                 <div className="grid gap-2">
                   <Label htmlFor="product">Producto</Label>
                   <Select
-  value={formData.productId}
-  onValueChange={(value) =>
-    setFormData({ ...formData, productId: String(value) }) // Convertimos a string
-  }
->
+                    value={formData.productId}
+                    onValueChange={
+                      (value) =>
+                        setFormData({ ...formData, productId: String(value) }) // Convertimos a string
+                    }
+                  >
                     <SelectTrigger id="product">
                       <SelectValue placeholder="Selecciona un producto" />
                     </SelectTrigger>
@@ -132,7 +134,7 @@ export function AgregarStock() {
 
                 {/* Cantidad */}
                 <div className="grid gap-2">
-                  <Label htmlFor="quantity">Cantidad</Label>
+                  <Label htmlFor="quantity">Cantidad De Porciones Producidas</Label>
                   <Input
                     id="quantity"
                     type="number"
@@ -177,13 +179,16 @@ export function AgregarStock() {
                     onChange={(e) =>
                       setFormData({ ...formData, comment: e.target.value })
                     }
-                    placeholder="Agrega un comentario"
+                    placeholder="Agrega un comentario "
                     className="text-[16px]"
                   />
                 </div>
+
               </div>
 
               {/* Botones Fijos */}
+              <p>*Al añadir esperar confirmacion*</p>
+
               <div className="sticky bottom-0 bg-background border-t pt-4 -mx-1 px-2">
                 <div className="flex justify-end gap-4">
                   <Button

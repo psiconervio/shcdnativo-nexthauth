@@ -74,10 +74,16 @@ import { RecentSaleslegacy } from "@/components/ventas-recientes-legacy";
 import { Produccionstock } from "@/components/produccion-stock";
 import { ItemsDashboard } from "@/components/items-dashboard";
 import { AgregarStock } from "@/components/boton-agregar-stock";
+import  useSalesByDay  from "@/hooks/useSalesByDay";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Dashboard() {
+  const { salesByDay, loading, error } = useSalesByDay();
+  console.log(salesByDay)
+
+
+
   // const { data: stockDataa, error: stockError } = useSWR('/api/stock', fetcher);
   // const { data: stockall, error: stockErrorall } = useSWR('/api/all', fetcher);
   // const { data: salesData, error: salesError } = useSWR('/api/sales', fetcher);
@@ -90,7 +96,7 @@ export default function Dashboard() {
     <div className="min-h-screen">
       <main className="container mx-auto p-2 sm:p-6">
         {/* modificando aqui el dashboard */}
-        <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-12">
           {/* header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
             <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -108,7 +114,6 @@ export default function Dashboard() {
               </Button> */}
             </div>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <ItemsDashboard />
           </div>
@@ -120,7 +125,7 @@ export default function Dashboard() {
           <div className="xl:gap-6 md:grid-cols-2 lg:grid-cols-7 mb-8">
           <RecentSaleslegacy />
             <Produccionstock/>
-            <RecentSales />
+            {/* <RecentSales /> */}
           </div>
         </div>
       </main>

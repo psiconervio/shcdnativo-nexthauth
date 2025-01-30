@@ -50,7 +50,7 @@ export function Produccionstock() {
                   <TableCell>{item.product.name}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>{item.type}</TableCell>
-                  <TableCell>{/* Aquí puedes agregar la lógica para mostrar los defectuosos */}</TableCell>
+                    {/* <TableCell>Aquí puedes agregar la lógica para mostrar los defectuosos</TableCell> */}
                   <TableCell>{formattedDate}</TableCell>
                 </TableRow>
               );
