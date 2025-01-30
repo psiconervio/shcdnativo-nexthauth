@@ -41,13 +41,22 @@ export function AgregarStock() {
       try {
         const response = await fetch("/api/products");
         const productsData = await response.json();
-        setProducts(productsData);
+  
+        // Asegurar que el id sea string
+        const formattedProducts = productsData.map((product: { id: number; name: string }) => ({
+          id: String(product.id),
+          name: product.name,
+        }));
+  
+        setProducts(formattedProducts);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
+  
     fetchProducts();
   }, []);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,11 +112,11 @@ export function AgregarStock() {
                 <div className="grid gap-2">
                   <Label htmlFor="product">Producto</Label>
                   <Select
-                    value={formData.productId}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, productId: value })
-                    }
-                  >
+  value={formData.productId}
+  onValueChange={(value) =>
+    setFormData({ ...formData, productId: String(value) }) // Convertimos a string
+  }
+>
                     <SelectTrigger id="product">
                       <SelectValue placeholder="Selecciona un producto" />
                     </SelectTrigger>

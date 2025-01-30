@@ -10,13 +10,15 @@ interface StockItem {
   };
   stock: number;
   createdAt: string;
+  quantity:number;
+  type: string;
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function Produccionstock() {
   const { data: produccion, error: stockError } = useSWR('/api/stock/all', fetcher);
-  console.log(produccion);
+  console.log(produccion?.stockLog);
   
   if (stockError) return <div>Error al cargar los datos</div>;
   if (!produccion) return <div>Cargando...</div>;
@@ -34,7 +36,7 @@ export function Produccionstock() {
           <TableHeader>
             <TableRow>
               <TableHead>Producto</TableHead>
-              <TableHead>Disponible</TableHead>
+              <TableHead>Porciones</TableHead>
               <TableHead>Defectuosos</TableHead>
               <TableHead>Fecha Produccion</TableHead>
             </TableRow>
@@ -46,7 +48,8 @@ export function Produccionstock() {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{item.product.name}</TableCell>
-                  <TableCell>{item.stock}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.type}</TableCell>
                   <TableCell>{/* Aquí puedes agregar la lógica para mostrar los defectuosos */}</TableCell>
                   <TableCell>{formattedDate}</TableCell>
                 </TableRow>
