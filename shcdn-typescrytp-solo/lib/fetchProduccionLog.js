@@ -1,15 +1,14 @@
+export const fetchProduction = async () => {
+  try {
+    const response = await fetch("/api/stock/all");
 
-//produccion 
-export const fetchProductionLog = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/stock/log?type=PRODUCED');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Fetch error:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Error al obtener los datos: ${response.statusText}`);
     }
-  };
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en fetchProduction:", error);
+    throw error;
+  }
+};

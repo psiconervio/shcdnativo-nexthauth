@@ -68,7 +68,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RecentSales } from "@/components/ventas-recientes";
-import { Resumenstock } from "@/components/resumen-stock";
+import { ResumenStock } from "@/components/resumen-stock";
 import { Grafico } from "@/components/grafico";
 import { RecentSaleslegacy } from "@/components/ventas-recientes-legacy";
 import { Produccionstock } from "@/components/produccion-stock";
@@ -115,7 +115,7 @@ export default function Dashboard() {
 
           <div className=" xl:gap-6 sm:grid md:grid-cols-2 lg:grid-cols-7 mb-8">
             <Grafico />
-            <Resumenstock />
+            <ResumenStock />
           </div>
           <div className="xl:gap-6 md:grid-cols-2 lg:grid-cols-7 mb-8">
           <RecentSaleslegacy />

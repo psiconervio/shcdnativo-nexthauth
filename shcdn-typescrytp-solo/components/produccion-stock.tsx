@@ -41,7 +41,7 @@ export function Produccionstock() {
           </TableHeader>
           <TableBody>
             {produccion.stockLog.map((item: StockItem) => {
-              console.log(produccion.stock);
+              // console.log(produccion.stock);
               const formattedDate = new Date(item.createdAt).toISOString().replace('T', ' ').substring(0, 16);
               return (
                 <TableRow key={item.id}>

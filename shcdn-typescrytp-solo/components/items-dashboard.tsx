@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import { useSales } from "../hooks/useSales";
 import { useRecentSales } from "../hooks/useRecentSales";
 import { useTotalLastDaySales } from "@/hooks/useTotalLastDaySales";
+// import useStock from "../hooks/useStock";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -12,6 +13,8 @@ export function ItemsDashboard() {
   const { sales, totalSales, loading, error } = useSales();
   const { recentSales, totalRecentQuantity, loadingRecent, errorRecent } = useRecentSales();
   const { totalLastDaySales, isLoading, fetchError } = useTotalLastDaySales();
+  // const { dataStock, dataStockloading, stockerror } = useStock();
+  // console.log(dataStock);
 
 
     const { data: stockall, error: _stockErrorall } = useSWR('/api/stock/all', fetcher);
@@ -84,7 +87,10 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">{stockall.totalStock}</div>
+                <div className="text-2xl font-bold">
+                  {stockall?.totalStock}
+
+                </div>
                 <p className="text-xs text-muted-foreground">+20.1% from last month</p>
             </CardContent>
         </Card>
@@ -107,7 +113,9 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">{stockall.defectiveProductsTotal}</div>
+                <div className="text-2xl font-bold">
+                  {stockall?.defectiveProductsTotal}
+                  </div>
                 <p className="text-xs text-muted-foreground">+180.1% from last month</p>
             </CardContent>
         </Card>
@@ -130,7 +138,7 @@ export function ItemsDashboard() {
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold">+
-                {totalRecentQuantity}
+                {totalSales}
                   </div>
                 <p className="text-xs text-muted-foreground">+19% from last month</p>
             </CardContent>

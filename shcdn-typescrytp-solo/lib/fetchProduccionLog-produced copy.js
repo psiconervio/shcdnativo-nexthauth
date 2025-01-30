@@ -1,6 +1,8 @@
-export const fetchstock = async () => {
+
+//produccion 
+export const fetchProductionLog = async () => {
     try {
-      const response = await fetch('/api/stock/');
+      const response = await fetch('http://localhost:3000/api/stock/log?type=PRODUCIDO');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
