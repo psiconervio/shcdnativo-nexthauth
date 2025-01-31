@@ -24,7 +24,7 @@ export function ResumenStock() {
   return (
     <Card className="col-span-full lg:col-span-3">
       <CardHeader>
-        <CardTitle>Resumen de Stock Disponible</CardTitle>
+        <CardTitle>Resumen de Porciones Disponible</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -32,7 +32,7 @@ export function ResumenStock() {
             <TableRow>
               <TableHead>Producto</TableHead>
               <TableHead>Disponible</TableHead>
-              <TableHead>Defectuosos</TableHead>
+              {/* <TableHead>Defectuosos</TableHead> */}
               <TableHead>Fecha Producción</TableHead>
             </TableRow>
           </TableHeader>
@@ -42,7 +42,7 @@ export function ResumenStock() {
                 <TableRow key={item.id}>
                   <TableCell>{item.product.name}</TableCell>
                   <TableCell>{item.stock}</TableCell>
-                  <TableCell className="font-medium">{item.id}</TableCell>
+                  {/* <TableCell className="font-medium">{item.id}</TableCell> */}
                   <TableCell>
                     {new Date(item.createdAt).toISOString().replace('T', ' ').substring(0, 16)}
                   </TableCell>

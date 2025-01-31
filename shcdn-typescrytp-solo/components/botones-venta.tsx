@@ -1,12 +1,10 @@
-"use client"
-
 import { useState, useEffect, useCallback } from "react"
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { Plus, Trash2 } from "lucide-react"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { Trash2, Plus } from "lucide-react"
 
 interface Product {
   id: string
@@ -40,7 +38,6 @@ export function BotonesVenta() {
 
   const paymentMethods = ["EFECTIVO", "TRANSFERENCIA", "POSNET", "POSNET_CUOTAS"]
 
-  // Fetch de productos y clientes
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,7 +53,7 @@ export function BotonesVenta() {
 
         setProducts(productsData)
         setClients(clientsData)
-        setFilteredClients(clientsData) // Inicialmente, la lista filtrada es igual a todos los clientes
+        setFilteredClients(clientsData)
       } catch (error) {
         console.error("Error fetching data:", error)
       }
@@ -65,7 +62,6 @@ export function BotonesVenta() {
     fetchData()
   }, [])
 
-  // Manejo de búsqueda con debounce (300ms)
   const handleClientSearch = useCallback((search: string) => {
     setSearchTerm(search)
   }, [])
@@ -76,7 +72,7 @@ export function BotonesVenta() {
       setFilteredClients(clients.filter((client) => client.name.toLowerCase().includes(searchLower)))
     }, 300)
 
-    return () => clearTimeout(timeoutId) // Limpia el timeout si el usuario sigue escribiendo
+    return () => clearTimeout(timeoutId)
   }, [searchTerm, clients])
 
   const handleAddProduct = () => {
@@ -124,127 +120,363 @@ export function BotonesVenta() {
   }
 
   return (
-    <>
-      <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
-        <DialogTrigger asChild>
-          <Button>Nueva Venta</Button>
-        </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+      <DialogTrigger asChild>
+        <Button>Nueva Venta</Button>
+      </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[600px] w-full">
-          <DialogHeader>
-            <DialogTitle>Nueva Venta</DialogTitle>
-          </DialogHeader>
+      <DialogContent className="sm:max-w-[600px] w-full">
+        <DialogHeader>
+          <DialogTitle>Nueva Venta</DialogTitle>
+        </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid gap-4">
+            {/* Búsqueda y Selección de Cliente */}
+            <div className="grid gap-2">
+              <Label htmlFor="clientSearch">Cliente</Label>
+              <Input
+                id="clientSearch"
+                placeholder="Buscar cliente por nombre..."
+                value={searchTerm}
+                onChange={(e) => handleClientSearch(e.target.value)}
+              />
+              <Select
+                value={formData.clientId || ""}
+                onValueChange={(value) => setFormData({ ...formData, clientId: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue>
+                    {clients.find((c) => c.id.toString() === formData.clientId)?.name || "Selecciona un cliente"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredClients.map((client) => (
+                    <SelectItem key={client.id} value={client.id.toString()}>
+                      {client.name} ({client.phone})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Selección de Productos */}
             <div className="grid gap-4">
-              {/* Búsqueda y Selección de Cliente */}
-              <div className="grid gap-2">
-                <Label htmlFor="clientSearch">Cliente</Label>
-                <p>Escribir nombre cliente y buscarlo en la seleccion</p>
-                <Input
-                  id="clientSearch"
-                  placeholder="Buscar cliente por nombre..."
-                  value={searchTerm}
-                  onChange={(e) => handleClientSearch(e.target.value)}
-                />
-                <Select
-                  value={formData.clientId}
-                  onValueChange={(value) => setFormData({ ...formData, clientId: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un cliente" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredClients.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.name} ({client.phone})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <Label>Añadir productos</Label>
+              {formData.products.map((product, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <Select
+                    value={product.productId || ""}
+                    onValueChange={(value) => {
+                      const updatedProducts = [...formData.products]
+                      updatedProducts[index].productId = value
+                      setFormData({ ...formData, products: updatedProducts })
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {products.find((p) => p.id.toString() === product.productId)?.name || "Selecciona un producto"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((prod) => (
+                        <SelectItem key={prod.id} value={prod.id.toString()}>
+                          {prod.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-              {/* Selección de Productos */}
-              <div className="grid gap-4">
-                <Label>Añadir productos y cantidad al la venta</Label>
-                {formData.products.map((product, index) => (
-                  <div key={index} className="flex items-center gap-4">
-                    <Select
-                      value={product.productId}
-                      onValueChange={(value) => {
-                        const updatedProducts = [...formData.products]
-                        updatedProducts[index].productId = value
-                        setFormData({ ...formData, products: updatedProducts })
-                      }}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Selecciona un producto" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products.map((prod) => (
-                          <SelectItem key={prod.id} value={prod.id}>
-                            {prod.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={product.quantity}
+                    onChange={(e) => {
+                      const updatedProducts = [...formData.products]
+                      updatedProducts[index].quantity = e.target.value
+                      setFormData({ ...formData, products: updatedProducts })
+                    }}
+                    className="w-20"
+                  />
 
-                    <Input
-                      type="number"
-                      min="1"
-                      value={product.quantity}
-                      onChange={(e) => {
-                        const updatedProducts = [...formData.products]
-                        updatedProducts[index].quantity = e.target.value
-                        setFormData({ ...formData, products: updatedProducts })
-                      }}
-                      className="w-20"
-                    />
-
-                    <Button type="button" variant="outline" onClick={() => handleRemoveProduct(index)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                <Button type="button" variant="secondary" onClick={handleAddProduct}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Agregar Producto
-                </Button>
-              </div>
-
-              {/* Método de Pago */}
-              <div className="grid gap-2">
-                <Label>Método de Pago</Label>
-                <Select
-                  value={formData.paymentMethod}
-                  onValueChange={(value) => setFormData({ ...formData, paymentMethod: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un método" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {paymentMethods.map((method) => (
-                      <SelectItem key={method} value={method}>
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-4">
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
-                Cancelar
+                  <Button type="button" variant="outline" onClick={() => handleRemoveProduct(index)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button type="button" variant="secondary" onClick={handleAddProduct}>
+                <Plus className="mr-2 h-4 w-4" />
+                Agregar Producto
               </Button>
-              <Button type="submit">Crear Venta</Button>
             </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
+
+            {/* Método de Pago */}
+            <Label>Método de Pago</Label>
+            <Select value={formData.paymentMethod} onValueChange={(value) => setFormData({ ...formData, paymentMethod: value })}>
+              <SelectTrigger>
+                <SelectValue>{formData.paymentMethod}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {paymentMethods.map((method) => <SelectItem key={method} value={method}>{method}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button type="submit">Crear Venta</Button>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }
+
+
+// "use client"
+
+// import { useState, useEffect, useCallback } from "react"
+// import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
+// import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+// import { Label } from "@/components/ui/label"
+// import { Plus, Trash2 } from "lucide-react"
+
+// interface Product {
+//   id: string
+//   name: string
+// }
+
+// interface Client {
+//   id: string
+//   name: string
+//   phone: string
+// }
+
+// interface SaleFormData {
+//   clientId: string
+//   paymentMethod: string
+//   products: { productId: string; quantity: string }[]
+// }
+
+// export function BotonesVenta() {
+//   const [isOpen, setIsOpen] = useState(false)
+//   const [products, setProducts] = useState<Product[]>([])
+//   const [clients, setClients] = useState<Client[]>([])
+//   const [filteredClients, setFilteredClients] = useState<Client[]>([])
+//   const [searchTerm, setSearchTerm] = useState("")
+
+//   const [formData, setFormData] = useState<SaleFormData>({
+//     clientId: "",
+//     paymentMethod: "EFECTIVO",
+//     products: [{ productId: "", quantity: "1" }],
+//   })
+
+//   const paymentMethods = ["EFECTIVO", "TRANSFERENCIA", "POSNET", "POSNET_CUOTAS"]
+
+//   // Fetch de productos y clientes
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const [productResponse, clientResponse] = await Promise.all([
+//           fetch("/api/products"),
+//           fetch("/api/clients"),
+//         ])
+
+//         if (!productResponse.ok || !clientResponse.ok) throw new Error("Error en la carga de datos")
+
+//         const productsData = await productResponse.json()
+//         const clientsData = await clientResponse.json()
+
+//         setProducts(productsData)
+//         setClients(clientsData)
+//         setFilteredClients(clientsData) // Inicialmente, la lista filtrada es igual a todos los clientes
+//       } catch (error) {
+//         console.error("Error fetching data:", error)
+//       }
+//     }
+
+//     fetchData()
+//   }, [])
+
+//   // Manejo de búsqueda con debounce (300ms)
+//   const handleClientSearch = useCallback((search: string) => {
+//     setSearchTerm(search)
+//   }, [])
+
+//   useEffect(() => {
+//     const timeoutId = setTimeout(() => {
+//       const searchLower = searchTerm.toLowerCase()
+//       setFilteredClients(clients.filter((client) => client.name.toLowerCase().includes(searchLower)))
+//     }, 300)
+
+//     return () => clearTimeout(timeoutId) // Limpia el timeout si el usuario sigue escribiendo
+//   }, [searchTerm, clients])
+
+//   const handleAddProduct = () => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       products: [...prev.products, { productId: "", quantity: "1" }],
+//     }))
+//   }
+
+//   const handleRemoveProduct = (index: number) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       products: prev.products.filter((_, i) => i !== index),
+//     }))
+//   }
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault()
+
+//     const saleData = {
+//       clientId: parseInt(formData.clientId, 10),
+//       paymentMethod: formData.paymentMethod,
+//       products: formData.products.map((product) => ({
+//         productId: parseInt(product.productId, 10),
+//         quantity: parseInt(product.quantity, 10),
+//       })),
+//     }
+
+//     try {
+//       const response = await fetch("/api/sales", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(saleData),
+//       })
+
+//       if (!response.ok) throw new Error("Failed to create sale")
+
+//       alert("Venta creada con éxito")
+//       setIsOpen(false)
+//       setFormData({ clientId: "", paymentMethod: "EFECTIVO", products: [{ productId: "", quantity: "1" }] })
+//     } catch (error) {
+//       console.error("Error creating sale:", error)
+//       alert("Error al crear la venta")
+//     }
+//   }
+
+//   return (
+//     <>
+//       <Dialog open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
+//         <DialogTrigger asChild>
+//           <Button>Nueva Venta</Button>
+//         </DialogTrigger>
+
+//         <DialogContent className="sm:max-w-[600px] w-full">
+//           <DialogHeader>
+//             <DialogTitle>Nueva Venta</DialogTitle>
+//           </DialogHeader>
+
+//           <form onSubmit={handleSubmit} className="space-y-6">
+//             <div className="grid gap-4">
+//               {/* Búsqueda y Selección de Cliente */}
+//               <div className="grid gap-2">
+//                 <Label htmlFor="clientSearch">Cliente</Label>
+//                 <p>Escribir nombre cliente y buscarlo en la seleccion</p>
+//                 <Input
+//                   id="clientSearch"
+//                   placeholder="Buscar cliente por nombre..."
+//                   value={searchTerm}
+//                   onChange={(e) => handleClientSearch(e.target.value)}
+//                 />
+//                 <Select
+//                   value={formData.clientId}
+//                   onValueChange={(value) => setFormData({ ...formData, clientId: value })}
+//                 >
+//                   <SelectTrigger>
+//                     <SelectValue placeholder="Selecciona un cliente" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {filteredClients.map((client) => (
+//                       <SelectItem key={client.id} value={client.id}>
+//                         {client.name} ({client.phone})
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+
+//               {/* Selección de Productos */}
+//               <div className="grid gap-4">
+//                 <Label>Añadir productos y cantidad al la venta</Label>
+//                 {formData.products.map((product, index) => (
+//                   <div key={index} className="flex items-center gap-4">
+//                     <Select
+//                       value={product.productId}
+//                       onValueChange={(value) => {
+//                         const updatedProducts = [...formData.products]
+//                         updatedProducts[index].productId = value
+//                         setFormData({ ...formData, products: updatedProducts })
+//                       }}
+//                     >
+//                       <SelectTrigger className="w-full">
+//                         <SelectValue placeholder="Selecciona un producto" />
+//                       </SelectTrigger>
+//                       <SelectContent>
+//                         {products.map((prod) => (
+//                           <SelectItem key={prod.id} value={prod.id}>
+//                             {prod.name}
+//                           </SelectItem>
+//                         ))}
+//                       </SelectContent>
+//                     </Select>
+
+//                     <Input
+//                       type="number"
+//                       min="1"
+//                       value={product.quantity}
+//                       onChange={(e) => {
+//                         const updatedProducts = [...formData.products]
+//                         updatedProducts[index].quantity = e.target.value
+//                         setFormData({ ...formData, products: updatedProducts })
+//                       }}
+//                       className="w-20"
+//                     />
+
+//                     <Button type="button" variant="outline" onClick={() => handleRemoveProduct(index)}>
+//                       <Trash2 className="h-4 w-4" />
+//                     </Button>
+//                   </div>
+//                 ))}
+//                 <Button type="button" variant="secondary" onClick={handleAddProduct}>
+//                   <Plus className="mr-2 h-4 w-4" />
+//                   Agregar Producto
+//                 </Button>
+//               </div>
+
+//               {/* Método de Pago */}
+//               <div className="grid gap-2">
+//                 <Label>Método de Pago</Label>
+//                 <Select
+//                   value={formData.paymentMethod}
+//                   onValueChange={(value) => setFormData({ ...formData, paymentMethod: value })}
+//                 >
+//                   <SelectTrigger>
+//                     <SelectValue placeholder="Selecciona un método" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {paymentMethods.map((method) => (
+//                       <SelectItem key={method} value={method}>
+//                         {method}
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+//             </div>
+
+//             <div className="flex justify-end gap-4">
+//               <Button variant="outline" onClick={() => setIsOpen(false)}>
+//                 Cancelar
+//               </Button>
+//               <Button type="submit">Crear Venta</Button>
+//             </div>
+//           </form>
+//         </DialogContent>
+//       </Dialog>
+//     </>
+//   )
+// }
 
 // import { useState, useEffect } from "react"
 // import { Button } from "@/components/ui/button"

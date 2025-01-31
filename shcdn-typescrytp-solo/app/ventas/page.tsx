@@ -6,6 +6,7 @@ import { RecentSales } from "@/components/ventas-recientes";
 import { ResumenStock } from "@/components/resumen-stock";
 import { ItemsDashboard } from "@/components/items-dashboard";
 import { BotonesVenta } from "@/components/botones-venta";
+import { RecentSaleslegacy } from "@/components/ventas-recientes-legacy";
 
 
 export default function Ventas() {
@@ -34,7 +35,8 @@ export default function Ventas() {
           </div>
           <div className="sm:grid gap-6 md:grid-cols-2  sm:grid-cols-2  lg:grid-cols-7 mb-8">
           <ResumenStock />
-            <RecentSales />
+            {/* <RecentSales /> */}
+            <RecentSaleslegacy/>
           </div>
         </div>
       </main>
