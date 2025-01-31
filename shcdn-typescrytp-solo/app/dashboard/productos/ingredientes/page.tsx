@@ -147,7 +147,7 @@ interface Ingredient {
           <DialogTrigger asChild>
             <Button onClick={resetForm}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Ingredient
+              Añadir Nuevo Ingrediente
             </Button>
           </DialogTrigger>
           <p className="mt-5 text-center justify-center items-center ">Al actualiza un ingrediente, se actualizan los productos relacionados con el ingrediente.</p>
@@ -171,7 +171,7 @@ interface Ingredient {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="unit">Unidad</Label>
+                  <Label htmlFor="unit">Unidad (Ingresar kg, ml, unidad)</Label>
                   <Input
                     id="unit"
                     value={formData.unit}
