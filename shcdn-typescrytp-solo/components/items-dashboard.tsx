@@ -2,22 +2,28 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import useSWR from 'swr';
 // import { fetchSales } from "../lib/fetchsales";
 import { useSales } from "../hooks/useSales";
+import useStock from "@/hooks/useStock";
 import { useRecentSales } from "../hooks/useRecentSales";
 import { useTotalLastDaySales } from "@/hooks/useTotalLastDaySales";
+import { useState } from "react";
 // import useStock from "../hooks/useStock";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function ItemsDashboard() {
-  const { sales, totalSales, loading, error } = useSales();
-  const { recentSales, totalRecentQuantity, loadingRecent, errorRecent } = useRecentSales();
+  const { totalStock, dataStockloading, stockerror } = useStock();
+
+  //total sales son todas las ventas
+  //
+  const { totalSales, loading, error } = useSales();
+  // const { recentSales, totalRecentQuantity, loadingRecent, errorRecent } = useRecentSales();
   const { totalLastDaySales, isLoading, fetchError } = useTotalLastDaySales();
   // const { dataStock, dataStockloading, stockerror } = useStock();
-  // console.log(dataStock);
+  // console.log(sales);
 
 
-    const { data: stockall, error: _stockErrorall } = useSWR('/api/stock/all', fetcher);
+    const { data: stockall, error: _stockErrorall } = useSWR('/api/stock/all', fetcher); 
     // const { data: ventas, error: _salesErrorall } = useSWR('/api/sales', fetcher);
     
     // Check if data is still loading or if there's an error
@@ -88,7 +94,7 @@ export function ItemsDashboard() {
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold">
-                  {stockall?.totalStock}
+                  {totalStock}
 
                 </div>
                 <p className="text-xs text-muted-foreground">+20.1% from last month</p>

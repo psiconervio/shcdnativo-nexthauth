@@ -15,6 +15,7 @@ interface StockItem {
 }
 //resumen de la tabla stock disponible
 export function ResumenStock() {
+  
   const { dataStock, dataStockloading, stockerror } = useStock();
 
   if (stockerror) return <div>Error al cargar los datos</div>;
