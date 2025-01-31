@@ -11,13 +11,13 @@ import { useTotalLastDaySales } from "@/hooks/useTotalLastDaySales";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function ItemsDashboard() {
-  const { totalStock, dataStockloading, stockerror } = useStock();
-
+  const { totalStock, dataStockloading,todayStock, stockerror } = useStock();
+console.log(dataStockloading)
   //total sales son todas las ventas
   //
   const { totalSales, loading, error } = useSales();
   // const { recentSales, totalRecentQuantity, loadingRecent, errorRecent } = useRecentSales();
-  const { totalLastDaySales, isLoading, fetchError } = useTotalLastDaySales();
+  // const { totalLastDaySales, isLoading, fetchError } = useTotalLastDaySales();
   // const { dataStock, dataStockloading, stockerror } = useStock();
   // console.log(sales);
 
@@ -126,7 +126,9 @@ export function ItemsDashboard() {
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Ventas Totales</CardTitle>
+                <CardTitle className="text-sm font-medium">Venta Porciones
+                  {/* Ventas Totales */}
+                  </CardTitle>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -165,7 +167,9 @@ export function ItemsDashboard() {
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+573{totalLastDaySales}</div>
+                <div className="text-2xl font-bold">+{todayStock}
+                  {/* {totalLastDaySales} */}
+                  </div>
                 <p className="text-xs text-muted-foreground">+201 since last hour</p>
             </CardContent>
         </Card>

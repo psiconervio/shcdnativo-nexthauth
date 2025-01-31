@@ -66,7 +66,10 @@ model ProductStock {
   product       Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
   stock         Int        @default(0) // Cantidad total de porciones disponibles
   date          DateTime   @default(now())
+  // date          DateTime   @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'"))
+  // createdAt     DateTime   @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'"))
   createdAt     DateTime   @default(now())
+  // updatedAt     DateTime   @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'"))
   updatedAt     DateTime   @updatedAt
 }
 
@@ -77,7 +80,8 @@ model ProductStockLog {
   type          StockType   // Tipo de movimiento: PRODUCED, DEFECTIVE, SALE, ADJUSTMENT
   quantity      Int         // Cantidad que afecta al stock (positivo o negativo)
   comment       String?     // Comentario opcional (ej. "Producción del turno mañana")
-  createdAt     DateTime    @default(now())
+  // createdAt     DateTime    @default(now())
+  createdAt     DateTime    @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'"))
 
   @@index([productId, createdAt])
 }
@@ -102,6 +106,7 @@ model Sale {
   clientId        Int
   client          Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
   date            DateTime      @default(now()) // Fecha de la venta
+  // date            DateTime      @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'")) // Fecha de la venta
   totalAmount     Float         // Monto total de la venta (calculado)
   products        SaleProduct[] // Relación con los productos vendidos
   paymentMethod   PaymentMethod // Método de pago
@@ -132,8 +137,10 @@ model Expense {
   descripcion   String?  @db.Text   // Descripción opcional
   type          ExpenseType // Tipo de gasto (único o recurrente)
   recurrence    Recurrence? // Opcional, solo si es recurrente
+  // createdAt     DateTime  @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'")) // Fecha de creación
   createdAt     DateTime  @default(now()) // Fecha de creación
   updatedAt     DateTime  @updatedAt // Fecha de última actualización
+  // updatedAt     DateTime  @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'America/Argentina/Buenos_Aires'")) // Fecha de última actualización
 }
 
 // Enum para tipos de gastos
