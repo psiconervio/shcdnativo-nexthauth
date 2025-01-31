@@ -12,6 +12,7 @@ interface StockItem {
   };
   stock: number;
   createdAt: string;
+  //PONER EL ACTUALIZADO
 }
 //resumen de la tabla stock disponible
 export function ResumenStock() {

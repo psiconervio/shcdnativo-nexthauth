@@ -88,17 +88,20 @@ const useStock = () => {
       try {
         const result = await fetchstock();
         setData(result);
-
+  
         // Calcular la suma total del stock
         const stockSum = result.reduce((sum: number, item: StockItem) => sum + item.stock, 0);
         setTotalStock(stockSum);
-
+  
         // Obtener la fecha de hoy en formato YYYY-MM-DD
         const today = new Date().toISOString().split("T")[0];
-
-        // Filtrar productos creados hoy
-        const todayItems = result.filter((item: StockItem) => item.date.startsWith(today));
-
+  
+        // Filtrar productos creados hoy asegurando que item.date esté en el formato correcto
+        const todayItems = result.filter((item: StockItem) => {
+          const itemDate = new Date(item.date).toISOString().split("T")[0]; // Normalizar formato
+          return itemDate === today;
+        });
+  
         // Sumar la cantidad de stock producido hoy
         const todayStockSum = todayItems.reduce((sum: number, item: StockItem) => sum + item.stock, 0);
         setTodayStock(todayStockSum);
@@ -108,9 +111,38 @@ const useStock = () => {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
+  
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const result = await fetchstock();
+  //       setData(result);
+
+  //       // Calcular la suma total del stock
+  //       const stockSum = result.reduce((sum: number, item: StockItem) => sum + item.stock, 0);
+  //       setTotalStock(stockSum);
+
+  //       // Obtener la fecha de hoy en formato YYYY-MM-DD
+  //       const today = new Date().toISOString().split("T")[0];
+
+  //       // Filtrar productos creados hoy
+  //       const todayItems = result.filter((item: StockItem) => item.date.startsWith(today));
+
+  //       // Sumar la cantidad de stock producido hoy
+  //       const todayStockSum = todayItems.reduce((sum: number, item: StockItem) => sum + item.stock, 0);
+  //       setTodayStock(todayStockSum);
+  //     } catch (error) {
+  //       setError(error as Error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   return { dataStock, dataStockloading, stockerror, totalStock, todayStock }; // 👈 Retornamos todayStock también
 };

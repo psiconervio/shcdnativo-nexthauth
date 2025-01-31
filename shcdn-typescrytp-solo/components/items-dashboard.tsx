@@ -5,6 +5,7 @@ import { useSales } from "../hooks/useSales";
 import useStock from "@/hooks/useStock";
 import { useRecentSales } from "../hooks/useRecentSales";
 import { useTotalLastDaySales } from "@/hooks/useTotalLastDaySales";
+import useProductionLog from "@/hooks/useProductionLog";
 // import useStock from "../hooks/useStock";
 
 
@@ -12,7 +13,9 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function ItemsDashboard() {
   const { totalStock, dataStockloading,todayStock, stockerror } = useStock();
-console.log(dataStockloading)
+  const { data, producedToday, producedCurrentHour } = useProductionLog();
+
+console.log(todayStock)
   //total sales son todas las ventas
   //
   const { totalSales, loading, error } = useSales();
@@ -167,7 +170,7 @@ console.log(dataStockloading)
                 </svg>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+{todayStock}
+                <div className="text-2xl font-bold">+{producedToday}
                   {/* {totalLastDaySales} */}
                   </div>
                 <p className="text-xs text-muted-foreground">+201 since last hour</p>

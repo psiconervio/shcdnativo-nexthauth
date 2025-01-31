@@ -228,7 +228,7 @@ export default async function HeaderUno() {
                   Clientes
                 </Link>
                 <Link
-                  href="/dashboard/productos/ingredientes"
+                  href="/expensas"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <ReceiptText  className="h-5 w-5" />
